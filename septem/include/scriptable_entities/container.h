@@ -12,6 +12,10 @@
  struct container
  {
      container() = default;
+     
+     virtual void AddEntityToInventory( const shared_ptr< entity_wrapper > & ew)=0;
+
+     
      std::set< shared_ptr<entity_wrapper> > inventory;
  };
  #endif

@@ -28,7 +28,7 @@ LibraryPathSwitch      :=-L
 PreprocessorSwitch     :=-D
 SourceSwitch           :=-c 
 OutputFile             :=$(IntermediateDirectory)/$(ProjectName)
-Preprocessors          :=$(PreprocessorSwitch)AS_USE_STLNAMES=1 $(PreprocessorSwitch)AS_STRING_OBJNAME=\"string\" $(PreprocessorSwitch)_CRT_SECURE_NO_WARNINGS $(PreprocessorSwitch)AS_NO_EXCEPTIONS 
+Preprocessors          :=
 ObjectSwitch           :=-o 
 ArchiveOutputSwitch    := 
 PreprocessOnlySwitch   :=-E
@@ -60,8 +60,8 @@ AS       := /usr/bin/as
 ## User defined environment variables
 ##
 CodeLiteDir:=/usr/share/codelite
-Objects0=$(IntermediateDirectory)/up_up_septem_src_communication.cpp$(ObjectSuffix) $(IntermediateDirectory)/up_up_septem_src_test_lua.cpp$(ObjectSuffix) $(IntermediateDirectory)/up_up_septem_src_entity_manager.cpp$(ObjectSuffix) $(IntermediateDirectory)/up_up_septem_src_account_manager.cpp$(ObjectSuffix) $(IntermediateDirectory)/up_up_septem_src_main.cpp$(ObjectSuffix) $(IntermediateDirectory)/up_up_septem_src_account.cpp$(ObjectSuffix) $(IntermediateDirectory)/up_up_septem_src_septem.cpp$(ObjectSuffix) $(IntermediateDirectory)/up_up_septem_src_vfs_filesystem_manager.cpp$(ObjectSuffix) $(IntermediateDirectory)/up_up_septem_src_server_context_impl.cpp$(ObjectSuffix) $(IntermediateDirectory)/up_up_septem_src_server_connection.cpp$(ObjectSuffix) \
-	$(IntermediateDirectory)/up_up_septem_src_server_client.cpp$(ObjectSuffix) $(IntermediateDirectory)/up_up_septem_src_env_room.cpp$(ObjectSuffix) 
+Objects0=$(IntermediateDirectory)/up_up_septem_src_communication.cpp$(ObjectSuffix) $(IntermediateDirectory)/up_up_septem_src_entity_manager.cpp$(ObjectSuffix) $(IntermediateDirectory)/up_up_septem_src_account_manager.cpp$(ObjectSuffix) $(IntermediateDirectory)/up_up_septem_src_main.cpp$(ObjectSuffix) $(IntermediateDirectory)/up_up_septem_src_account.cpp$(ObjectSuffix) $(IntermediateDirectory)/up_up_septem_src_septem.cpp$(ObjectSuffix) $(IntermediateDirectory)/up_up_septem_src_vfs_filesystem_manager.cpp$(ObjectSuffix) $(IntermediateDirectory)/up_up_septem_src_server_context_impl.cpp$(ObjectSuffix) $(IntermediateDirectory)/up_up_septem_src_server_connection.cpp$(ObjectSuffix) $(IntermediateDirectory)/up_up_septem_src_server_client.cpp$(ObjectSuffix) \
+	$(IntermediateDirectory)/up_up_septem_src_env_room.cpp$(ObjectSuffix) 
 
 
 
@@ -73,28 +73,11 @@ Objects=$(Objects0)
 .PHONY: all clean PreBuild PrePreBuild PostBuild MakeIntermediateDirs
 all: $(OutputFile)
 
-$(OutputFile): $(IntermediateDirectory)/.d "../.build-debug/odin" "../.build-debug/telnetpp" "../.build-debug/terminalpp" $(Objects) 
+$(OutputFile): $(IntermediateDirectory)/.d $(Objects) 
 	@$(MakeDirCommand) $(@D)
 	@echo "" > $(IntermediateDirectory)/.d
 	@echo $(Objects0)  > $(ObjectsFileList)
 	$(LinkerName) $(OutputSwitch)$(OutputFile) @$(ObjectsFileList) $(LibPath) $(Libs) $(LinkOptions)
-
-"../.build-debug/odin":
-	@$(MakeDirCommand) "../.build-debug"
-	@echo stam > "../.build-debug/odin"
-
-
-"../.build-debug/telnetpp":
-	@$(MakeDirCommand) "../.build-debug"
-	@echo stam > "../.build-debug/telnetpp"
-
-
-"../.build-debug/terminalpp":
-	@$(MakeDirCommand) "../.build-debug"
-	@echo stam > "../.build-debug/terminalpp"
-
-
-
 
 MakeIntermediateDirs:
 	@test -d ./Debug || $(MakeDirCommand) ./Debug
@@ -116,14 +99,6 @@ $(IntermediateDirectory)/up_up_septem_src_communication.cpp$(DependSuffix): ../.
 
 $(IntermediateDirectory)/up_up_septem_src_communication.cpp$(PreprocessSuffix): ../../septem/src/communication.cpp
 	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/up_up_septem_src_communication.cpp$(PreprocessSuffix) ../../septem/src/communication.cpp
-
-$(IntermediateDirectory)/up_up_septem_src_test_lua.cpp$(ObjectSuffix): ../../septem/src/test_lua.cpp $(IntermediateDirectory)/up_up_septem_src_test_lua.cpp$(DependSuffix)
-	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/ken/git-repos/septem/septem/src/test_lua.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/up_up_septem_src_test_lua.cpp$(ObjectSuffix) $(IncludePath)
-$(IntermediateDirectory)/up_up_septem_src_test_lua.cpp$(DependSuffix): ../../septem/src/test_lua.cpp
-	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/up_up_septem_src_test_lua.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/up_up_septem_src_test_lua.cpp$(DependSuffix) -MM ../../septem/src/test_lua.cpp
-
-$(IntermediateDirectory)/up_up_septem_src_test_lua.cpp$(PreprocessSuffix): ../../septem/src/test_lua.cpp
-	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/up_up_septem_src_test_lua.cpp$(PreprocessSuffix) ../../septem/src/test_lua.cpp
 
 $(IntermediateDirectory)/up_up_septem_src_entity_manager.cpp$(ObjectSuffix): ../../septem/src/entity_manager.cpp $(IntermediateDirectory)/up_up_septem_src_entity_manager.cpp$(DependSuffix)
 	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/ken/git-repos/septem/septem/src/entity_manager.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/up_up_septem_src_entity_manager.cpp$(ObjectSuffix) $(IncludePath)

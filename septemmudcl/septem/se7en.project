@@ -30,7 +30,7 @@
       <File Name="../../septem/src/env/room.cpp"/>
     </VirtualDirectory>
     <File Name="../../septem/src/communication.cpp"/>
-    <File Name="../../septem/src/test_lua.cpp"/>
+    <File Name="../../septem/src/test_lua.cpp" ExcludeProjConfig="Debug"/>
     <File Name="../../septem/src/entity_manager.cpp"/>
     <File Name="../../septem/src/account_manager.cpp"/>
     <File Name="../../septem/src/main.cpp"/>
@@ -103,10 +103,6 @@
         <IncludePath Value="../../sol2"/>
         <IncludePath Value="../lua/src"/>
         <IncludePath Value="../../plog/include"/>
-        <Preprocessor Value="AS_USE_STLNAMES=1"/>
-        <Preprocessor Value="AS_STRING_OBJNAME=\&quot;string\&quot;"/>
-        <Preprocessor Value="_CRT_SECURE_NO_WARNINGS"/>
-        <Preprocessor Value="AS_NO_EXCEPTIONS"/>
       </Compiler>
       <Linker Options="-lz" Required="yes">
         <LibraryPath Value="/usr/lib/x86_64-linux-gnu/"/>
@@ -204,9 +200,5 @@
       </Completion>
     </Configuration>
   </Settings>
-  <Dependencies Name="Debug">
-    <Project Name="odin"/>
-    <Project Name="telnetpp"/>
-    <Project Name="terminalpp"/>
-  </Dependencies>
+  <Dependencies Name="Debug"/>
 </CodeLite_Project>

@@ -1,11 +1,14 @@
 inherit command
 c = command.new()
-c.verb = "look"
+c:SetVerb("look")
 
 function command:execute_command ( o, ... )
 	print( 'Type of o = ' .. type(o) )
 	p = player_cast(o)
-	print ( p.player_name )
+	if p ~= nil then
+		p:SendToEntity('HELLO FROM COMMAND')
+	end
+
 	printResult = ""
 	for i,v in ipairs(arg) do
 		printResult = printResult .. tostring(v) .. "\t"

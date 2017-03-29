@@ -3,8 +3,8 @@
  
  #include <string>
  #include <vector>
+#include <memory>
 
- 
  using namespace std;
  
  enum class EntityType {UNKNOWN, ROOM, ITEM, NPC, PLAYER, COMMAND}; 
@@ -18,12 +18,12 @@
          
      }
      
-     virtual EntityType& get_type()
+     virtual EntityType& GetType()
      {
          return entity_type;
      }
      
-    std::string get_entity_type() {
+    std::string GetEntityTypeString() {
       switch (entity_type) {
       case EntityType::UNKNOWN: return "unknown";
       case EntityType::ROOM: return "room";
@@ -35,10 +35,24 @@
       break;
       }
     }
-     
-public:
-protected:
+    
+    base_entity* GetEnvironment()
+    {
+        return environment_;
+    }
+    
+    void SetEnvironment( base_entity* r )
+    {
+        environment_ = r;
+       // environment_ = r;
+    }
+    
+
+    
+private:
+    base_entity* environment_; // the room the entity is in.
     EntityType entity_type = EntityType::UNKNOWN;
+   // std::weak_ptr<entity_wrapper> entity_;
 
  };
  #endif

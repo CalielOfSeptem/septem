@@ -138,6 +138,7 @@ bool entity_manager::load_player(shared_ptr<client> c)
                 }
                
                 player_objs.insert({ ent->get_object_uid(), ent }); 
+                
                 entity_wrapper & ew = *void_room;
                 move_entity(ent, ew);
             } break;
@@ -175,7 +176,7 @@ bool entity_manager::load_commands_from_fs(const fs::path& dir_path)
                     case EntityType::COMMAND: {
                         base_entity * be = &ent->script_obj.value();
                         command * ce = dynamic_cast<command*>(be);
-                        command_objs.insert({ boost::to_lower_copy(ce->verb),
+                        command_objs.insert({ boost::to_lower_copy(ce->GetVerb()),
                                            ent });
                         
                         LOG_INFO << "Loaded command: " << fpath;
@@ -268,8 +269,8 @@ bool entity_manager::move_entity(shared_ptr<entity_wrapper>& eorig, entity_wrapp
 {
 
     // Need some rules such as players can't be put into items, rooms can't be put into players, and so on.
-    EntityType eorig_et = eorig->script_obj.value().get_type();
-    EntityType dest_et = dest.script_obj.value().get_type();
+    EntityType eorig_et = eorig->script_obj.value().GetType();
+    EntityType dest_et = dest.script_obj.value().GetType();
 
     switch( dest_et )
     {
@@ -292,7 +293,7 @@ bool entity_manager::move_entity(shared_ptr<entity_wrapper>& eorig, entity_wrapp
                             sol::optional<base_entity&> bep = eorig->script_obj;
                             //player_entity * pe = dynamic_cast<player_entity*>(bep);
                         
-                            self["execute_command"](self, bep.value(), "hello billy");
+                            self["execute_command"](self, bep.value(), "");
                            // lua["print_some_val"]();
                            // ew->script_state[ew->script_obj_name][]
                            // base_entity * bec = &ew->script_obj.value();
@@ -340,6 +341,10 @@ T* downcast ( base_entity* b ) {
      return dynamic_cast<T*>(b);
 }
 
+//sol::optional<room&> entity_manager::get_environment(base_entity& r)
+//{
+    
+//}
 
 
 void entity_manager::_init_room_type(sol::state& lua)
@@ -347,16 +352,16 @@ void entity_manager::_init_room_type(sol::state& lua)
     lua.open_libraries(sol::lib::base, sol::lib::package, sol::lib::math, sol::lib::table);
     lua.new_usertype<exitobj>("exitobj", "get_exit_noun", &exitobj::get_exit_noun);
     lua.new_usertype<room>("room",
-                           "title",
-                           &room::title,
-                           "description",
-                           &room::description,
-                           "short_decscription",
-                           &room::short_description,
-                           "get_exits",
-                           &room::get_exits,
-                           "add_exit",
-                           &room::add_exit,
+                           "GetTitle", &room::GetTitle, 
+                           "SetTitle", &room::SetTitle, 
+                           "GetDescription", &room::GetDescription, 
+                           "SetDescription", &room::SetDescription, 
+                           "GetShortDescription", &room::GetShortDescription, 
+                           "SetShortDescription", &room::SetShortDescription, 
+                           "GetExits", &room::GetExits,
+                            "AddExit", &room::AddExit,
+                            "GetEnvironment", &room::GetEnvironment,
+                            "SetEnvironment", &room::SetEnvironment,
                            sol::base_classes,
                            sol::bases<base_entity>());
 }
@@ -365,7 +370,12 @@ void entity_manager::_init_player_type(sol::state& lua)
 {
     lua.open_libraries(sol::lib::base, sol::lib::package, sol::lib::math, sol::lib::table);
     lua.new_usertype<player_entity>(
-        "player", "player_name", &player_entity::player_name, sol::base_classes, sol::bases<living_entity, base_entity>());
+        "player", 
+        "player_name", &player_entity::player_name, 
+        "SendToEntity", &player_entity::SendToEntity, 
+        "GetEnvironment", &player_entity::GetEnvironment,
+        "SetEnvironment", &player_entity::SetEnvironment,
+        sol::base_classes, sol::bases<living_entity, base_entity>());
 }
 
 void entity_manager::_init_command_type(sol::state& lua)
@@ -373,8 +383,8 @@ void entity_manager::_init_command_type(sol::state& lua)
     lua.open_libraries(sol::lib::base, sol::lib::package, sol::lib::math, sol::lib::table);
     lua.new_usertype<command>(
         "command", 
-        "verb",
-        &command::verb,
+        "GetVerb", &command::GetVerb,
+        "SetVerb", &command::SetVerb,
         sol::base_classes, 
         sol::bases<base_entity>());
     lua.set_function( "command_cast", &downcast<command> );

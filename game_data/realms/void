@@ -1,8 +1,8 @@
 inherit room
 p1 = room.new()
-p1.title = 'The Void1'
-p1.description = 'Void Room1'
-p1:add_exit('test_noun', 'test/path')
+p1:SetTitle('The Void1')
+p1:SetDescription('Void Room1')
+p1:AddExit('test_noun', 'test/path')
 
 function room:heartbeat ()
 	--print('p1:Room heartbeat' .. 1)

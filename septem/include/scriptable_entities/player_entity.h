@@ -17,23 +17,23 @@ struct player_entity : living_entity, container
          
      }
      
-     
-     void send_to_player(std::string& str)
+     void SendToEntity(const std::string& str)
      {
-        //if (auto spt = client_ob/j.lock()) { // Has to be copied into a shared_ptr before usage
         if( client_obj )
             (*client_obj).send(str);
-        //std::cout << *spt << "\n";
-      //  }
-      //  else {
-           // std::cout << "gw is expired\n";
-      //  }
-        
+        living_entity::SendToEntity(str);
+     }
+     
+     void SendToEnvironment(const std::string& str)
+     {
+         // TODO: implement this
+         living_entity::SendToEnvironment(str);
      }
      
 public:
     shared_ptr< client > client_obj;
     std::string player_name; //for now. TODO: implement full player details and support
+    
     
 };
  
