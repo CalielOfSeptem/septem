@@ -1,0 +1,14 @@
+inherit command
+c = command.new()
+c.verb = "look"
+
+function command:execute_command ( o, ... )
+	print( 'Type of o = ' .. type(o) )
+	p = player_cast(o)
+	print ( p.player_name )
+	printResult = ""
+	for i,v in ipairs(arg) do
+		printResult = printResult .. tostring(v) .. "\t"
+	end
+	printResult = printResult .. "\n"
+end

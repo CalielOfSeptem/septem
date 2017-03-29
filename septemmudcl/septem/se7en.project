@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CodeLite_Project Name="septem" InternalType="Console" Version="10.0.0">
+  <VirtualDirectory Name="src">
+    <VirtualDirectory Name="vfs">
+      <File Name="../../septem/src/vfs/filesystem_manager.cpp"/>
+    </VirtualDirectory>
+    <VirtualDirectory Name="server">
+      <File Name="../../septem/src/server/context_impl.cpp"/>
+      <File Name="../../septem/src/server/connection.cpp"/>
+      <File Name="../../septem/src/server/client.cpp"/>
+    </VirtualDirectory>
+    <VirtualDirectory Name="env">
+      <File Name="../../septem/src/env/room.cpp"/>
+    </VirtualDirectory>
+    <File Name="../../septem/src/communication.cpp"/>
+    <File Name="../../septem/src/test_lua.cpp"/>
+    <File Name="../../septem/src/entity_manager.cpp"/>
+    <File Name="../../septem/src/account_manager.cpp"/>
+    <File Name="../../septem/src/main.cpp"/>
+    <File Name="../../septem/src/account.cpp"/>
+    <File Name="../../septem/src/se7en.cpp"/>
+  </VirtualDirectory>
+  <VirtualDirectory Name="include">
+    <VirtualDirectory Name="vfs">
+      <File Name="../../septem/include/vfs/test.h"/>
+      <File Name="../../septem/include/vfs/filesystem_manager.h"/>
+    </VirtualDirectory>
+    <VirtualDirectory Name="server">
+      <File Name="../../septem/include/server/connectionsm.hpp"/>
+      <File Name="../../septem/include/server/context_impl.hpp"/>
+      <File Name="../../septem/include/server/client.hpp"/>
+      <File Name="../../septem/include/server/connection.hpp"/>
+    </VirtualDirectory>
+    <VirtualDirectory Name="scriptable_entities">
+      <File Name="../../septem/include/scriptable_entities/command.h"/>
+      <File Name="../../septem/include/scriptable_entities/container.h"/>
+      <File Name="../../septem/include/scriptable_entities/room.hpp"/>
+      <File Name="../../septem/include/scriptable_entities/entity_wrapper.h"/>
+      <File Name="../../septem/include/scriptable_entities/player_entity.h"/>
+      <File Name="../../septem/include/scriptable_entities/base_entity.h"/>
+      <File Name="../../septem/include/scriptable_entities/living_entity.h"/>
+      <File Name="../../septem/include/scriptable_entities/base_item.hpp"/>
+    </VirtualDirectory>
+    <VirtualDirectory Name="utils">
+      <File Name="../../septem/include/utils/tinyxml2.h"/>
+      <File Name="../../septem/include/utils/password_validator.hpp"/>
+      <File Name="../../septem/include/utils/stringutils.hpp"/>
+    </VirtualDirectory>
+    <File Name="../../septem/include/account_manager.hpp"/>
+    <File Name="../../septem/include/dep_entity_manager.h"/>
+    <File Name="../../septem/include/welcome_screen.hpp"/>
+    <File Name="../../septem/include/world_context.hpp"/>
+    <File Name="../../septem/include/heartbeat_manager.h"/>
+    <File Name="../../septem/include/config.h"/>
+    <File Name="../../septem/include/entity_manager.h"/>
+    <File Name="../../septem/include/test_lua.h"/>
+    <File Name="../../septem/include/se7en.hpp"/>
+    <File Name="../../septem/include/communication.hpp"/>
+    <File Name="../../septem/include/account.hpp"/>
+  </VirtualDirectory>
+  <Plugins>
+    <Plugin Name="qmake">
+      <![CDATA[00010001N0005Debug000000000000]]>
+    </Plugin>
+    <Plugin Name="CMakePlugin">
+      <![CDATA[[{
+  "name": "Debug",
+  "enabled": false,
+  "buildDirectory": "build",
+  "sourceDirectory": "$(ProjectPath)",
+  "generator": "",
+  "buildType": "",
+  "arguments": [],
+  "parentProject": ""
+ }]]]>
+    </Plugin>
+  </Plugins>
+  <Description/>
+  <Dependencies/>
+  <Dependencies Name="Debug"/>
+  <Dependencies Name="Release"/>
+  <Settings Type="Executable">
+    <GlobalSettings>
+      <Compiler Options="" C_Options="" Assembler="">
+        <IncludePath Value="."/>
+      </Compiler>
+      <Linker Options="">
+        <LibraryPath Value="."/>
+      </Linker>
+      <ResourceCompiler Options=""/>
+    </GlobalSettings>
+    <Configuration Name="Debug" CompilerType="GCC" DebuggerType="GNU gdb debugger" Type="Executable" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
+      <Compiler Options="-g;-O0;-std=c++14;-Wall" C_Options="-g;-O0;-Wall" Assembler="" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" PCHFlags="" PCHFlagsPolicy="0">
+        <IncludePath Value="."/>
+        <IncludePath Value="../../telnetpp/include"/>
+        <IncludePath Value="../../terminalpp/include"/>
+        <IncludePath Value="../../ttvfs/ttvfs"/>
+        <IncludePath Value="../../odin/include"/>
+        <IncludePath Value="../../septem/include"/>
+        <IncludePath Value="../../septem/include/script"/>
+        <IncludePath Value="../../septem/include/scriptable_entities"/>
+        <IncludePath Value="../../../cereal/include"/>
+        <IncludePath Value="../../AngelscriptUtils/src"/>
+        <IncludePath Value="../../sol2"/>
+        <IncludePath Value="../lua/src"/>
+        <IncludePath Value="../../plog/include"/>
+        <Preprocessor Value="AS_USE_STLNAMES=1"/>
+        <Preprocessor Value="AS_STRING_OBJNAME=\&quot;string\&quot;"/>
+        <Preprocessor Value="_CRT_SECURE_NO_WARNINGS"/>
+        <Preprocessor Value="AS_NO_EXCEPTIONS"/>
+      </Compiler>
+      <Linker Options="-lz" Required="yes">
+        <LibraryPath Value="/usr/lib/x86_64-linux-gnu/"/>
+        <LibraryPath Value="../odin/Debug"/>
+        <LibraryPath Value="../telnetpp/Debug"/>
+        <LibraryPath Value="../terminalpp/Debug"/>
+        <LibraryPath Value="../ttvfs/Debug"/>
+        <LibraryPath Value="../angelscript/Debug"/>
+        <LibraryPath Value="../AngelscriptUtils/Debug"/>
+        <LibraryPath Value="../lua/build"/>
+        <LibraryPath Value="/usr/local/bin/"/>
+        <Library Value="pthread"/>
+        <Library Value="boost_system"/>
+        <Library Value="boost_program_options"/>
+        <Library Value="boost_filesystem"/>
+        <Library Value="odin"/>
+        <Library Value="telnetpp"/>
+        <Library Value="terminalpp"/>
+        <Library Value="cryptopp"/>
+        <Library Value="ttvfs"/>
+        <Library Value="angelscript"/>
+        <Library Value="AngelscriptUtils"/>
+        <Library Value="lua"/>
+      </Linker>
+      <ResourceCompiler Options="" Required="no"/>
+      <General OutputFile="$(IntermediateDirectory)/$(ProjectName)" IntermediateDirectory="./Debug" Command="./$(ProjectName)" CommandArguments="6666" UseSeparateDebugArgs="no" DebugArguments="" WorkingDirectory="$(IntermediateDirectory)" PauseExecWhenProcTerminates="yes" IsGUIProgram="no" IsEnabled="yes"/>
+      <BuildSystem Name="Default"/>
+      <Environment EnvVarSetName="&lt;Use Defaults&gt;" DbgSetName="&lt;Use Defaults&gt;">
+        <![CDATA[]]>
+      </Environment>
+      <Debugger IsRemote="no" RemoteHostName="" RemoteHostPort="" DebuggerPath="" IsExtended="yes">
+        <DebuggerSearchPaths/>
+        <PostConnectCommands/>
+        <StartupCommands>6666</StartupCommands>
+      </Debugger>
+      <PreBuild/>
+      <PostBuild/>
+      <CustomBuild Enabled="no">
+        <RebuildCommand/>
+        <CleanCommand/>
+        <BuildCommand/>
+        <PreprocessFileCommand/>
+        <SingleFileCommand/>
+        <MakefileGenerationCommand/>
+        <ThirdPartyToolName>None</ThirdPartyToolName>
+        <WorkingDirectory/>
+      </CustomBuild>
+      <AdditionalRules>
+        <CustomPostBuild/>
+        <CustomPreBuild/>
+      </AdditionalRules>
+      <Completion EnableCpp11="no" EnableCpp14="no">
+        <ClangCmpFlagsC/>
+        <ClangCmpFlags/>
+        <ClangPP/>
+        <SearchPaths/>
+      </Completion>
+    </Configuration>
+    <Configuration Name="Release" CompilerType="GCC" DebuggerType="GNU gdb debugger" Type="Executable" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
+      <Compiler Options="-O2;-Wall" C_Options="-O2;-Wall" Assembler="" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" PCHFlags="" PCHFlagsPolicy="0">
+        <IncludePath Value="."/>
+        <Preprocessor Value="NDEBUG"/>
+      </Compiler>
+      <Linker Options="" Required="yes"/>
+      <ResourceCompiler Options="" Required="no"/>
+      <General OutputFile="$(IntermediateDirectory)/$(ProjectName)" IntermediateDirectory="./Release" Command="./$(ProjectName)" CommandArguments="" UseSeparateDebugArgs="no" DebugArguments="" WorkingDirectory="$(IntermediateDirectory)" PauseExecWhenProcTerminates="yes" IsGUIProgram="no" IsEnabled="yes"/>
+      <BuildSystem Name="Default"/>
+      <Environment EnvVarSetName="&lt;Use Defaults&gt;" DbgSetName="&lt;Use Defaults&gt;">
+        <![CDATA[]]>
+      </Environment>
+      <Debugger IsRemote="no" RemoteHostName="" RemoteHostPort="" DebuggerPath="" IsExtended="yes">
+        <DebuggerSearchPaths/>
+        <PostConnectCommands/>
+        <StartupCommands/>
+      </Debugger>
+      <PreBuild/>
+      <PostBuild/>
+      <CustomBuild Enabled="no">
+        <RebuildCommand/>
+        <CleanCommand/>
+        <BuildCommand/>
+        <PreprocessFileCommand/>
+        <SingleFileCommand/>
+        <MakefileGenerationCommand/>
+        <ThirdPartyToolName>None</ThirdPartyToolName>
+        <WorkingDirectory/>
+      </CustomBuild>
+      <AdditionalRules>
+        <CustomPostBuild/>
+        <CustomPreBuild/>
+      </AdditionalRules>
+      <Completion EnableCpp11="no" EnableCpp14="no">
+        <ClangCmpFlagsC/>
+        <ClangCmpFlags/>
+        <ClangPP/>
+        <SearchPaths/>
+      </Completion>
+    </Configuration>
+  </Settings>
+</CodeLite_Project>

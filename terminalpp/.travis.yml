@@ -1,0 +1,159 @@
+language: cpp
+sudo: false
+
+compiler:
+  - clang
+
+env:
+  - CONFIG=Release SHARED=1 CCOMPILE=clang CXXCOMPILE=clang++
+  - CONFIG=Release SHARED=0 CCOMPILE=clang CXXCOMPILE=clang++
+  - CONFIG=Debug SHARED=1 CCOMPILE=clang CXXCOMPILE=clang++
+  - CONFIG=Debug SHARED=0 CCOMPILE=clang CXXCOMPILE=clang++
+  - CONFIG=Debug SHARED=0 CCOMPILE=clang CXXCOMPILE=clang++ SANITIZE=address
+#  - CONFIG=Debug SHARED=0 CCOMPILE=clang CXXCOMPILE=clang++ SANITIZE=thread
+  - CONFIG=Debug SHARED=0 CCOMPILE=clang CXXCOMPILE=clang++ SANITIZE=undefined
+
+addons:
+  apt:
+    sources: &sources
+      - ubuntu-toolchain-r-test
+      - boost-latest
+    packages:
+      - clang
+      - gcc-4.8
+      - g++-4.8
+      - libgtest-dev
+      - libboost1.55-all-dev
+
+matrix:
+  include:
+
+    # g++-5.2 with coverage
+    - compiler: g++
+      env: CONFIG=Debug SHARED=0 CCOMPILE=gcc-5 CXXCOMPILE=g++-5 COVERAGE=ON
+      addons:
+        apt:
+          sources: *sources
+          packages:
+            - gcc-5
+            - g++-5
+            - libgtest-dev
+            - libboost1.55-all-dev
+
+    # g++-5.2
+    - compiler: g++
+      env: CONFIG=Release SHARED=1 CCOMPILE=gcc-5 CXXCOMPILE=g++-5
+      addons:
+        apt:
+          sources: *sources
+          packages:
+            - clang
+            - gcc-5
+            - g++-5
+            - libgtest-dev
+            - libboost1.55-all-dev
+
+    - compiler: g++
+      env: CONFIG=Release SHARED=0 CCOMPILE=gcc-5 CXXCOMPILE=g++-5
+      addons:
+        apt:
+          sources: *sources
+          packages:
+            - clang
+            - gcc-5
+            - g++-5
+            - libgtest-dev
+            - libboost1.55-all-dev
+
+    - compiler: g++
+      env: CONFIG=Debug SHARED=1 CCOMPILE=gcc-5 CXXCOMPILE=g++-5
+      addons:
+        apt:
+          sources: *sources
+          packages:
+            - clang
+            - gcc-5
+            - g++-5
+            - libgtest-dev
+            - libboost1.55-all-dev
+
+    - compiler: g++
+      env: CONFIG=Debug SHARED=0 CCOMPILE=gcc-5 CXXCOMPILE=g++-5
+      addons:
+        apt:
+          sources: *sources
+          packages:
+            - clang
+            - gcc-5
+            - g++-5
+            - libgtest-dev
+            - libboost1.55-all-dev
+
+cache:
+  - apt: true
+  - directories:
+    - cmake-3.4.0-Linux-x86_64
+    - lcov
+    - gtest
+
+before_install:
+# workaround for not having CMake 3.2
+  - if [ ! -d "cmake-3.4.0-Linux-x86_64/bin" ]; then
+      wget --no-check-certificate https://cmake.org/files/v3.4/cmake-3.4.0-Linux-x86_64.tar.gz;
+      tar -xzf cmake-3.4.0-Linux-x86_64.tar.gz;
+    fi
+  - export CMAKE=../cmake-3.4.0-Linux-x86_64/bin/cmake
+# workaround for not having lcov 1.13
+  - if [ ! -d "lcov/usr/local/bin/lcov" ]; then
+      wget http://ftp.de.debian.org/debian/pool/main/l/lcov/lcov_1.13.orig.tar.gz;
+      tar -xzf lcov_1.13.orig.tar.gz;
+      mkdir lcov || true;
+      DESTDIR=$HOME/lcov make -C lcov-1.13/ install;
+    fi
+  - export LCOV=$HOME/lcov/usr/local/bin/lcov
+# workaround for gtest not providing its own libraries (sigh)
+  - if [ ! -d "gtest/libgtest.a" ]; then
+      cd gtest;
+      CC=$CCOMPILE CXX=$CXXCOMPILE $CMAKE /usr/src/gtest -DCMAKE_CXX_FLAGS="-fPIC" && make;
+      cd ..;
+    fi
+  - export GTEST_ROOT=$PWD/gtest
+# install coverage software
+  - if [ "$COVERAGE" == "ON" ]; then gem install coveralls-lcov; fi
+
+before_script:
+  - mkdir build || true
+  - cd build
+  - CC=$CCOMPILE CXX=$CXXCOMPILE $CMAKE -DCMAKE_BUILD_TYPE=$CONFIG -DBUILD_SHARED_LIBS=$SHARED -DTERMINALPP_SANITIZE=$SANITIZE -DTERMINALPP_COVERAGE=$COVERAGE ..
+
+script:
+  - make -j2
+  - if [ "$COVERAGE" == "ON" ]; then
+        $LCOV --gcov-tool=gcov-5 --base-directory . --directory . --zerocounters -q;
+    fi
+  - make test
+
+after_failure:
+  - cat Testing/Temporary/LastTest.log
+
+after_success:
+  - if [ "$COVERAGE" == "ON" ]; then
+        $LCOV --gcov-tool=gcov-5 --base-directory . --directory .  --capture --output-file coverage.info;
+        $LCOV --gcov-tool=gcov-5 --remove coverage.info '*/test/*' '/usr/*' --output-file coverage.info;
+        $LCOV --gcov-tool=gcov-5 --list coverage.info;
+        coveralls-lcov --repo-token ${COVERALLS_TOKEN} coverage.info;
+    fi
+
+notifications:
+  email:
+    on_success: change # [always|never|change] # default: change
+    on_failure: change # [always|never|change] # default: always
+  slack:
+    rooms:
+      - kazdragon:E8B4Cs4p3TiVLqHAq8wYYTr3#ci
+  webhooks:
+    urls:
+      - https://webhooks.gitter.im/e/4812102d2070137f8429
+    on_success: change  # options: [always|never|change] default: always
+    on_failure: always  # options: [always|never|change] default: always
+    on_start: never     # options: [always|never|change] default: always

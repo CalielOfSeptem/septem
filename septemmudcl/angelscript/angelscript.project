@@ -1,0 +1,250 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CodeLite_Project Name="angelscript" Version="10.0.0" InternalType="Library">
+  <Plugins>
+    <Plugin Name="qmake">
+      <![CDATA[00010001N0005Debug000000000000]]>
+    </Plugin>
+  </Plugins>
+  <VirtualDirectory Name="add_on">
+    <VirtualDirectory Name="scriptmath">
+      <File Name="../../angelscript/add_on/scriptmath/scriptmathcomplex.cpp"/>
+      <File Name="../../angelscript/add_on/scriptmath/scriptmathcomplex.h"/>
+      <File Name="../../angelscript/add_on/scriptmath/scriptmath.h"/>
+      <File Name="../../angelscript/add_on/scriptmath/scriptmath.cpp"/>
+    </VirtualDirectory>
+    <VirtualDirectory Name="scripthelper">
+      <File Name="../../angelscript/add_on/scripthelper/scripthelper.h"/>
+      <File Name="../../angelscript/add_on/scripthelper/scripthelper.cpp"/>
+    </VirtualDirectory>
+    <VirtualDirectory Name="scriptgrid">
+      <File Name="../../angelscript/add_on/scriptgrid/scriptgrid.h"/>
+      <File Name="../../angelscript/add_on/scriptgrid/scriptgrid.cpp"/>
+    </VirtualDirectory>
+    <VirtualDirectory Name="contextmgr">
+      <File Name="../../angelscript/add_on/contextmgr/contextmgr.h"/>
+      <File Name="../../angelscript/add_on/contextmgr/contextmgr.cpp"/>
+    </VirtualDirectory>
+    <VirtualDirectory Name="scriptstdstring">
+      <File Name="../../angelscript/add_on/scriptstdstring/scriptstdstring.cpp"/>
+      <File Name="../../angelscript/add_on/scriptstdstring/scriptstdstring.h"/>
+      <File Name="../../angelscript/add_on/scriptstdstring/scriptstdstring_utils.cpp"/>
+    </VirtualDirectory>
+    <VirtualDirectory Name="scriptbuilder">
+      <File Name="../../angelscript/add_on/scriptbuilder/scriptbuilder.h"/>
+      <File Name="../../angelscript/add_on/scriptbuilder/scriptbuilder.cpp"/>
+    </VirtualDirectory>
+    <VirtualDirectory Name="scripthandle">
+      <File Name="../../angelscript/add_on/scripthandle/scripthandle.h"/>
+      <File Name="../../angelscript/add_on/scripthandle/scripthandle.cpp"/>
+    </VirtualDirectory>
+    <VirtualDirectory Name="datetime">
+      <File Name="../../angelscript/add_on/datetime/datetime.cpp"/>
+      <File Name="../../angelscript/add_on/datetime/datetime.h"/>
+    </VirtualDirectory>
+    <VirtualDirectory Name="scriptfile">
+      <File Name="../../angelscript/add_on/scriptfile/scriptfile.h"/>
+      <File Name="../../angelscript/add_on/scriptfile/scriptfilesystem.h"/>
+      <File Name="../../angelscript/add_on/scriptfile/scriptfile.cpp"/>
+      <File Name="../../angelscript/add_on/scriptfile/scriptfilesystem.cpp"/>
+    </VirtualDirectory>
+    <VirtualDirectory Name="scriptdictionary">
+      <File Name="../../angelscript/add_on/scriptdictionary/scriptdictionary.cpp"/>
+      <File Name="../../angelscript/add_on/scriptdictionary/scriptdictionary.h"/>
+    </VirtualDirectory>
+    <VirtualDirectory Name="scriptarray">
+      <File Name="../../angelscript/add_on/scriptarray/scriptarray.cpp"/>
+      <File Name="../../angelscript/add_on/scriptarray/scriptarray.h"/>
+    </VirtualDirectory>
+    <VirtualDirectory Name="serializer">
+      <File Name="../../angelscript/add_on/serializer/serializer.h"/>
+      <File Name="../../angelscript/add_on/serializer/serializer.cpp"/>
+    </VirtualDirectory>
+    <VirtualDirectory Name="weakref">
+      <File Name="../../angelscript/add_on/weakref/weakref.cpp"/>
+      <File Name="../../angelscript/add_on/weakref/weakref.h"/>
+    </VirtualDirectory>
+    <VirtualDirectory Name="scriptany">
+      <File Name="../../angelscript/add_on/scriptany/scriptany.cpp"/>
+      <File Name="../../angelscript/add_on/scriptany/scriptany.h"/>
+    </VirtualDirectory>
+    <VirtualDirectory Name="debugger">
+      <File Name="../../angelscript/add_on/debugger/debugger.cpp"/>
+      <File Name="../../angelscript/add_on/debugger/debugger.h"/>
+    </VirtualDirectory>
+  </VirtualDirectory>
+  <Description/>
+  <Dependencies/>
+  <VirtualDirectory Name="include">
+    <File Name="../../angelscript/include/angelscript.h"/>
+  </VirtualDirectory>
+  <VirtualDirectory Name="source">
+    <File Name="../../angelscript/source/as_string.cpp"/>
+    <File Name="../../angelscript/source/as_string.h"/>
+    <File Name="../../angelscript/source/as_restore.h"/>
+    <File Name="../../angelscript/source/as_scriptnode.h"/>
+    <File Name="../../angelscript/source/as_variablescope.h"/>
+    <File Name="../../angelscript/source/as_parser.h"/>
+    <File Name="../../angelscript/source/as_tokenizer.h"/>
+    <File Name="../../angelscript/source/as_config.h"/>
+    <File Name="../../angelscript/source/as_scriptengine.cpp"/>
+    <File Name="../../angelscript/source/as_restore.cpp"/>
+    <File Name="../../angelscript/source/as_outputbuffer.cpp"/>
+    <File Name="../../angelscript/source/as_thread.cpp"/>
+    <File Name="../../angelscript/source/as_array.h"/>
+    <File Name="../../angelscript/source/as_callfunc_arm.cpp"/>
+    <File Name="../../angelscript/source/as_generic.cpp"/>
+    <File Name="../../angelscript/source/as_bytecode.cpp"/>
+    <File Name="../../angelscript/source/as_property.h"/>
+    <File Name="../../angelscript/source/as_compiler.h"/>
+    <File Name="../../angelscript/source/as_callfunc_x64_mingw.cpp"/>
+    <File Name="../../angelscript/source/as_atomic.h"/>
+    <File Name="../../angelscript/source/as_thread.h"/>
+    <File Name="../../angelscript/source/as_memory.h"/>
+    <File Name="../../angelscript/source/as_generic.h"/>
+    <File Name="../../angelscript/source/as_callfunc.cpp"/>
+    <File Name="../../angelscript/source/as_gc.cpp"/>
+    <File Name="../../angelscript/source/as_builder.cpp"/>
+    <File Name="../../angelscript/source/as_scriptobject.cpp"/>
+    <File Name="../../angelscript/source/as_atomic.cpp"/>
+    <File Name="../../angelscript/source/as_bytecode.h"/>
+    <File Name="../../angelscript/source/as_texts.h"/>
+    <File Name="../../angelscript/source/as_objecttype.cpp"/>
+    <File Name="../../angelscript/source/as_callfunc_ppc_64.cpp"/>
+    <File Name="../../angelscript/source/as_context.cpp"/>
+    <File Name="../../angelscript/source/as_variablescope.cpp"/>
+    <File Name="../../angelscript/source/as_scriptcode.cpp"/>
+    <File Name="../../angelscript/source/as_context.h"/>
+    <File Name="../../angelscript/source/as_string_util.cpp"/>
+    <File Name="../../angelscript/source/as_scriptfunction.h"/>
+    <File Name="../../angelscript/source/as_callfunc_ppc.cpp"/>
+    <File Name="../../angelscript/source/as_typeinfo.h"/>
+    <File Name="../../angelscript/source/as_configgroup.cpp"/>
+    <File Name="../../angelscript/source/as_memory.cpp"/>
+    <File Name="../../angelscript/source/as_callfunc_xenon.cpp"/>
+    <File Name="../../angelscript/source/as_symboltable.h"/>
+    <File Name="../../angelscript/source/as_scriptobject.h"/>
+    <File Name="../../angelscript/source/as_module.h"/>
+    <File Name="../../angelscript/source/as_tokendef.h"/>
+    <File Name="../../angelscript/source/as_string_util.h"/>
+    <File Name="../../angelscript/source/as_datatype.h"/>
+    <File Name="../../angelscript/source/as_typeinfo.cpp"/>
+    <File Name="../../angelscript/source/as_callfunc_x86.cpp"/>
+    <File Name="../../angelscript/source/as_globalproperty.cpp"/>
+    <File Name="../../angelscript/source/as_callfunc_sh4.cpp"/>
+    <File Name="../../angelscript/source/as_tokenizer.cpp"/>
+    <File Name="../../angelscript/source/as_outputbuffer.h"/>
+    <File Name="../../angelscript/source/as_callfunc.h"/>
+    <File Name="../../angelscript/source/as_compiler.cpp"/>
+    <File Name="../../angelscript/source/as_configgroup.h"/>
+    <File Name="../../angelscript/source/as_scriptfunction.cpp"/>
+    <File Name="../../angelscript/source/as_objecttype.h"/>
+    <File Name="../../angelscript/source/as_map.h"/>
+    <File Name="../../angelscript/source/as_builder.h"/>
+    <File Name="../../angelscript/source/as_scriptnode.cpp"/>
+    <File Name="../../angelscript/source/as_scriptcode.h"/>
+    <File Name="../../angelscript/source/as_namespace.h"/>
+    <File Name="../../angelscript/source/as_callfunc_x64_msvc.cpp"/>
+    <File Name="../../angelscript/source/as_scriptengine.h"/>
+    <File Name="../../angelscript/source/as_module.cpp"/>
+    <File Name="../../angelscript/source/as_debug.h"/>
+    <File Name="../../angelscript/source/as_callfunc_mips.cpp"/>
+    <File Name="../../angelscript/source/as_datatype.cpp"/>
+    <File Name="../../angelscript/source/as_gc.h"/>
+    <File Name="../../angelscript/source/as_callfunc_x64_gcc.cpp"/>
+    <File Name="../../angelscript/source/as_criticalsection.h"/>
+    <File Name="../../angelscript/source/as_parser.cpp"/>
+  </VirtualDirectory>
+  <Settings Type="Static Library">
+    <GlobalSettings>
+      <Compiler Options="" C_Options="" Assembler="">
+        <IncludePath Value="."/>
+      </Compiler>
+      <Linker Options="">
+        <LibraryPath Value="."/>
+      </Linker>
+      <ResourceCompiler Options=""/>
+    </GlobalSettings>
+    <Configuration Name="Debug" CompilerType="GCC" DebuggerType="GNU gdb debugger" Type="Static Library" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
+      <Compiler Options="-g;--std=c++14" C_Options="-g" Assembler="" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" PCHFlags="" PCHFlagsPolicy="0">
+        <IncludePath Value="."/>
+        <IncludePath Value="../../angelscript/include"/>
+        <Preprocessor Value="AS_USE_STLNAMES=1"/>
+      </Compiler>
+      <Linker Options="" Required="yes"/>
+      <ResourceCompiler Options="" Required="no"/>
+      <General OutputFile="$(IntermediateDirectory)/lib$(ProjectName).a" IntermediateDirectory="./Debug" Command="" CommandArguments="" UseSeparateDebugArgs="no" DebugArguments="" WorkingDirectory="$(IntermediateDirectory)" PauseExecWhenProcTerminates="yes" IsGUIProgram="no" IsEnabled="yes"/>
+      <BuildSystem Name="Default"/>
+      <Environment EnvVarSetName="&lt;Use Defaults&gt;" DbgSetName="&lt;Use Defaults&gt;">
+        <![CDATA[]]>
+      </Environment>
+      <Debugger IsRemote="no" RemoteHostName="" RemoteHostPort="" DebuggerPath="" IsExtended="yes">
+        <DebuggerSearchPaths/>
+        <PostConnectCommands/>
+        <StartupCommands/>
+      </Debugger>
+      <PreBuild/>
+      <PostBuild/>
+      <CustomBuild Enabled="no">
+        <RebuildCommand/>
+        <CleanCommand/>
+        <BuildCommand/>
+        <PreprocessFileCommand/>
+        <SingleFileCommand/>
+        <MakefileGenerationCommand/>
+        <ThirdPartyToolName/>
+        <WorkingDirectory/>
+      </CustomBuild>
+      <AdditionalRules>
+        <CustomPostBuild/>
+        <CustomPreBuild/>
+      </AdditionalRules>
+      <Completion EnableCpp11="no" EnableCpp14="no">
+        <ClangCmpFlagsC/>
+        <ClangCmpFlags/>
+        <ClangPP/>
+        <SearchPaths/>
+      </Completion>
+    </Configuration>
+    <Configuration Name="Release" CompilerType="GCC" DebuggerType="GNU gdb debugger" Type="Static Library" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
+      <Compiler Options="" C_Options="" Assembler="" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" PCHFlags="" PCHFlagsPolicy="0">
+        <IncludePath Value="."/>
+      </Compiler>
+      <Linker Options="" Required="yes"/>
+      <ResourceCompiler Options="" Required="no"/>
+      <General OutputFile="$(IntermediateDirectory)/lib$(ProjectName).a" IntermediateDirectory="./Release" Command="" CommandArguments="" UseSeparateDebugArgs="no" DebugArguments="" WorkingDirectory="$(IntermediateDirectory)" PauseExecWhenProcTerminates="yes" IsGUIProgram="no" IsEnabled="yes"/>
+      <BuildSystem Name="Default"/>
+      <Environment EnvVarSetName="&lt;Use Defaults&gt;" DbgSetName="&lt;Use Defaults&gt;">
+        <![CDATA[]]>
+      </Environment>
+      <Debugger IsRemote="no" RemoteHostName="" RemoteHostPort="" DebuggerPath="" IsExtended="yes">
+        <DebuggerSearchPaths/>
+        <PostConnectCommands/>
+        <StartupCommands/>
+      </Debugger>
+      <PreBuild/>
+      <PostBuild/>
+      <CustomBuild Enabled="no">
+        <RebuildCommand/>
+        <CleanCommand/>
+        <BuildCommand/>
+        <PreprocessFileCommand/>
+        <SingleFileCommand/>
+        <MakefileGenerationCommand/>
+        <ThirdPartyToolName/>
+        <WorkingDirectory/>
+      </CustomBuild>
+      <AdditionalRules>
+        <CustomPostBuild/>
+        <CustomPreBuild/>
+      </AdditionalRules>
+      <Completion EnableCpp11="no" EnableCpp14="no">
+        <ClangCmpFlagsC/>
+        <ClangCmpFlags/>
+        <ClangPP/>
+        <SearchPaths/>
+      </Completion>
+    </Configuration>
+  </Settings>
+  <Dependencies Name="Debug"/>
+  <Dependencies Name="Release"/>
+</CodeLite_Project>

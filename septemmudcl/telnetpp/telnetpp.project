@@ -1,0 +1,264 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CodeLite_Project Name="telnetpp" InternalType="Console" Version="10.0.0">
+  <Plugins>
+    <Plugin Name="qmake">
+      <![CDATA[00010001N0005Debug000000000000]]>
+    </Plugin>
+    <Plugin Name="CMakePlugin">
+      <![CDATA[[{
+  "name": "Debug",
+  "enabled": false,
+  "buildDirectory": "build",
+  "sourceDirectory": "$(ProjectPath)",
+  "generator": "",
+  "buildType": "",
+  "arguments": [],
+  "parentProject": ""
+ }]]]>
+    </Plugin>
+  </Plugins>
+  <VirtualDirectory Name="include">
+    <VirtualDirectory Name="telnetpp">
+      <VirtualDirectory Name="options">
+        <VirtualDirectory Name="terminal_type">
+          <VirtualDirectory Name="detail">
+            <File Name="../../telnetpp/include/telnetpp/options/terminal_type/detail/protocol.hpp"/>
+          </VirtualDirectory>
+          <File Name="../../telnetpp/include/telnetpp/options/terminal_type/client.hpp"/>
+        </VirtualDirectory>
+        <VirtualDirectory Name="mccp">
+          <VirtualDirectory Name="zlib">
+            <File Name="../../telnetpp/include/telnetpp/options/mccp/zlib/compressor.hpp"/>
+            <File Name="../../telnetpp/include/telnetpp/options/mccp/zlib/decompressor.hpp"/>
+          </VirtualDirectory>
+          <VirtualDirectory Name="detail">
+            <File Name="../../telnetpp/include/telnetpp/options/mccp/detail/protocol.hpp"/>
+          </VirtualDirectory>
+          <File Name="../../telnetpp/include/telnetpp/options/mccp/compressor.hpp"/>
+          <File Name="../../telnetpp/include/telnetpp/options/mccp/client.hpp"/>
+          <File Name="../../telnetpp/include/telnetpp/options/mccp/server.hpp"/>
+          <File Name="../../telnetpp/include/telnetpp/options/mccp/decompressor.hpp"/>
+          <File Name="../../telnetpp/include/telnetpp/options/mccp/codec.hpp"/>
+        </VirtualDirectory>
+        <VirtualDirectory Name="msdp">
+          <VirtualDirectory Name="detail">
+            <File Name="../../telnetpp/include/telnetpp/options/msdp/detail/encoder.hpp"/>
+            <File Name="../../telnetpp/include/telnetpp/options/msdp/detail/protocol.hpp"/>
+            <File Name="../../telnetpp/include/telnetpp/options/msdp/detail/decoder.hpp"/>
+          </VirtualDirectory>
+          <File Name="../../telnetpp/include/telnetpp/options/msdp/client.hpp"/>
+          <File Name="../../telnetpp/include/telnetpp/options/msdp/server.hpp"/>
+          <File Name="../../telnetpp/include/telnetpp/options/msdp/variable.hpp"/>
+        </VirtualDirectory>
+        <VirtualDirectory Name="echo">
+          <VirtualDirectory Name="detail">
+            <File Name="../../telnetpp/include/telnetpp/options/echo/detail/protocol.hpp"/>
+          </VirtualDirectory>
+          <File Name="../../telnetpp/include/telnetpp/options/echo/client.hpp"/>
+          <File Name="../../telnetpp/include/telnetpp/options/echo/server.hpp"/>
+        </VirtualDirectory>
+        <VirtualDirectory Name="new_environ">
+          <VirtualDirectory Name="detail">
+            <File Name="../../telnetpp/include/telnetpp/options/new_environ/detail/protocol.hpp"/>
+            <File Name="../../telnetpp/include/telnetpp/options/new_environ/detail/request_parser.hpp"/>
+            <File Name="../../telnetpp/include/telnetpp/options/new_environ/detail/response_parser.hpp"/>
+            <File Name="../../telnetpp/include/telnetpp/options/new_environ/detail/stream.hpp"/>
+          </VirtualDirectory>
+          <File Name="../../telnetpp/include/telnetpp/options/new_environ/client.hpp"/>
+          <File Name="../../telnetpp/include/telnetpp/options/new_environ/server.hpp"/>
+        </VirtualDirectory>
+        <VirtualDirectory Name="suppress_ga">
+          <VirtualDirectory Name="detail">
+            <File Name="../../telnetpp/include/telnetpp/options/suppress_ga/detail/protocol.hpp"/>
+          </VirtualDirectory>
+          <File Name="../../telnetpp/include/telnetpp/options/suppress_ga/client.hpp"/>
+          <File Name="../../telnetpp/include/telnetpp/options/suppress_ga/server.hpp"/>
+        </VirtualDirectory>
+        <VirtualDirectory Name="naws">
+          <VirtualDirectory Name="detail">
+            <File Name="../../telnetpp/include/telnetpp/options/naws/detail/protocol.hpp"/>
+          </VirtualDirectory>
+          <File Name="../../telnetpp/include/telnetpp/options/naws/client.hpp"/>
+          <File Name="../../telnetpp/include/telnetpp/options/naws/server.hpp"/>
+        </VirtualDirectory>
+        <File Name="../../telnetpp/include/telnetpp/options/subnegotiationless_server.hpp"/>
+        <File Name="../../telnetpp/include/telnetpp/options/subnegotiationless_client.hpp"/>
+      </VirtualDirectory>
+      <VirtualDirectory Name="detail">
+        <File Name="../../telnetpp/include/telnetpp/detail/routing_visitor.hpp"/>
+        <File Name="../../telnetpp/include/telnetpp/detail/parse_helper.hpp"/>
+        <File Name="../../telnetpp/include/telnetpp/detail/lambda_visitor.hpp"/>
+        <File Name="../../telnetpp/include/telnetpp/detail/generator.hpp"/>
+        <File Name="../../telnetpp/include/telnetpp/detail/export.hpp"/>
+        <File Name="../../telnetpp/include/telnetpp/detail/negotiation_router.hpp"/>
+        <File Name="../../telnetpp/include/telnetpp/detail/subnegotiation_router.hpp"/>
+        <File Name="../../telnetpp/include/telnetpp/detail/return_default.hpp"/>
+        <File Name="../../telnetpp/include/telnetpp/detail/generate_helper.hpp"/>
+        <File Name="../../telnetpp/include/telnetpp/detail/parser.hpp"/>
+        <File Name="../../telnetpp/include/telnetpp/detail/command_router.hpp"/>
+        <File Name="../../telnetpp/include/telnetpp/detail/registration.hpp"/>
+        <File Name="../../telnetpp/include/telnetpp/detail/router.hpp"/>
+      </VirtualDirectory>
+      <File Name="../../telnetpp/include/telnetpp/byte_converter.hpp"/>
+      <File Name="../../telnetpp/include/telnetpp/core.hpp"/>
+      <File Name="../../telnetpp/include/telnetpp/client_option.hpp"/>
+      <File Name="../../telnetpp/include/telnetpp/server_option.hpp"/>
+      <File Name="../../telnetpp/include/telnetpp/command.hpp"/>
+      <File Name="../../telnetpp/include/telnetpp/protocol.hpp"/>
+      <File Name="../../telnetpp/include/telnetpp/version.hpp"/>
+      <File Name="../../telnetpp/include/telnetpp/element.hpp"/>
+      <File Name="../../telnetpp/include/telnetpp/negotiation.hpp"/>
+      <File Name="../../telnetpp/include/telnetpp/telnetpp.hpp"/>
+      <File Name="../../telnetpp/include/telnetpp/session.hpp"/>
+      <File Name="../../telnetpp/include/telnetpp/subnegotiation.hpp"/>
+    </VirtualDirectory>
+  </VirtualDirectory>
+  <VirtualDirectory Name="src">
+    <VirtualDirectory Name="options">
+      <VirtualDirectory Name="mccp">
+        <VirtualDirectory Name="zlib">
+          <File Name="../../telnetpp/src/options/mccp/zlib/decompressor.cpp"/>
+          <File Name="../../telnetpp/src/options/mccp/zlib/compressor.cpp"/>
+        </VirtualDirectory>
+        <File Name="../../telnetpp/src/options/mccp/codec.cpp"/>
+        <File Name="../../telnetpp/src/options/mccp/decompressor.cpp"/>
+        <File Name="../../telnetpp/src/options/mccp/client.cpp"/>
+        <File Name="../../telnetpp/src/options/mccp/server.cpp"/>
+      </VirtualDirectory>
+      <VirtualDirectory Name="msdp">
+        <VirtualDirectory Name="detail">
+          <File Name="../../telnetpp/src/options/msdp/detail/decoder.cpp"/>
+          <File Name="../../telnetpp/src/options/msdp/detail/encoder.cpp"/>
+        </VirtualDirectory>
+        <File Name="../../telnetpp/src/options/msdp/variable.cpp"/>
+        <File Name="../../telnetpp/src/options/msdp/client.cpp"/>
+        <File Name="../../telnetpp/src/options/msdp/server.cpp"/>
+      </VirtualDirectory>
+      <VirtualDirectory Name="new_environ">
+        <VirtualDirectory Name="detail">
+          <File Name="../../telnetpp/src/options/new_environ/detail/response_parser.cpp"/>
+          <File Name="../../telnetpp/src/options/new_environ/detail/stream.cpp"/>
+          <File Name="../../telnetpp/src/options/new_environ/detail/request_parser.cpp"/>
+        </VirtualDirectory>
+        <File Name="../../telnetpp/src/options/new_environ/client.cpp"/>
+        <File Name="../../telnetpp/src/options/new_environ/server.cpp"/>
+      </VirtualDirectory>
+      <VirtualDirectory Name="naws">
+        <File Name="../../telnetpp/src/options/naws/client.cpp"/>
+        <File Name="../../telnetpp/src/options/naws/server.cpp"/>
+      </VirtualDirectory>
+      <VirtualDirectory Name="terminal_type">
+        <File Name="../../telnetpp/src/options/terminal_type/client.cpp"/>
+      </VirtualDirectory>
+    </VirtualDirectory>
+    <VirtualDirectory Name="detail">
+      <File Name="../../telnetpp/src/detail/registration.cpp"/>
+      <File Name="../../telnetpp/src/detail/routing_visitor.cpp"/>
+      <File Name="../../telnetpp/src/detail/generate_helper.cpp"/>
+      <File Name="../../telnetpp/src/detail/parse_helper.cpp"/>
+    </VirtualDirectory>
+    <File Name="../../telnetpp/src/server_option.cpp"/>
+    <File Name="../../telnetpp/src/negotiation.cpp"/>
+    <File Name="../../telnetpp/src/client_option.cpp"/>
+    <File Name="../../telnetpp/src/subnegotiation.cpp"/>
+    <File Name="../../telnetpp/src/command.cpp"/>
+    <File Name="../../telnetpp/src/session.cpp"/>
+    <File Name="../../telnetpp/src/byte_converter.cpp"/>
+  </VirtualDirectory>
+  <Description/>
+  <Dependencies/>
+  <Settings Type="Static Library">
+    <GlobalSettings>
+      <Compiler Options="" C_Options="" Assembler="">
+        <IncludePath Value="."/>
+      </Compiler>
+      <Linker Options="">
+        <LibraryPath Value="."/>
+      </Linker>
+      <ResourceCompiler Options=""/>
+    </GlobalSettings>
+    <Configuration Name="Debug" CompilerType="GCC" DebuggerType="GNU gdb debugger" Type="Static Library" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
+      <Compiler Options="-std=c++14" C_Options="-g;-O0;-Wall" Assembler="" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" PCHFlags="" PCHFlagsPolicy="0">
+        <IncludePath Value="."/>
+        <IncludePath Value="../../telnetpp/include/"/>
+        <IncludePath Value="../../telnetpp/src/"/>
+      </Compiler>
+      <Linker Options="" Required="yes"/>
+      <ResourceCompiler Options="" Required="no"/>
+      <General OutputFile="$(IntermediateDirectory)/lib$(ProjectName).a" IntermediateDirectory="./Debug" Command="./$(ProjectName)" CommandArguments="" UseSeparateDebugArgs="no" DebugArguments="" WorkingDirectory="$(IntermediateDirectory)" PauseExecWhenProcTerminates="yes" IsGUIProgram="no" IsEnabled="yes"/>
+      <BuildSystem Name="Default"/>
+      <Environment EnvVarSetName="&lt;Use Defaults&gt;" DbgSetName="&lt;Use Defaults&gt;">
+        <![CDATA[]]>
+      </Environment>
+      <Debugger IsRemote="no" RemoteHostName="" RemoteHostPort="" DebuggerPath="" IsExtended="yes">
+        <DebuggerSearchPaths/>
+        <PostConnectCommands/>
+        <StartupCommands/>
+      </Debugger>
+      <PreBuild/>
+      <PostBuild/>
+      <CustomBuild Enabled="no">
+        <RebuildCommand/>
+        <CleanCommand/>
+        <BuildCommand/>
+        <PreprocessFileCommand/>
+        <SingleFileCommand/>
+        <MakefileGenerationCommand/>
+        <ThirdPartyToolName>None</ThirdPartyToolName>
+        <WorkingDirectory/>
+      </CustomBuild>
+      <AdditionalRules>
+        <CustomPostBuild/>
+        <CustomPreBuild/>
+      </AdditionalRules>
+      <Completion EnableCpp11="no" EnableCpp14="no">
+        <ClangCmpFlagsC/>
+        <ClangCmpFlags/>
+        <ClangPP/>
+        <SearchPaths/>
+      </Completion>
+    </Configuration>
+    <Configuration Name="Release" CompilerType="GCC" DebuggerType="GNU gdb debugger" Type="Executable" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
+      <Compiler Options="-O2;-Wall" C_Options="-O2;-Wall" Assembler="" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" PCHFlags="" PCHFlagsPolicy="0">
+        <IncludePath Value="."/>
+        <Preprocessor Value="NDEBUG"/>
+      </Compiler>
+      <Linker Options="" Required="yes"/>
+      <ResourceCompiler Options="" Required="no"/>
+      <General OutputFile="$(IntermediateDirectory)/$(ProjectName)" IntermediateDirectory="./Release" Command="./$(ProjectName)" CommandArguments="" UseSeparateDebugArgs="no" DebugArguments="" WorkingDirectory="$(IntermediateDirectory)" PauseExecWhenProcTerminates="yes" IsGUIProgram="no" IsEnabled="yes"/>
+      <BuildSystem Name="Default"/>
+      <Environment EnvVarSetName="&lt;Use Defaults&gt;" DbgSetName="&lt;Use Defaults&gt;">
+        <![CDATA[]]>
+      </Environment>
+      <Debugger IsRemote="no" RemoteHostName="" RemoteHostPort="" DebuggerPath="" IsExtended="yes">
+        <DebuggerSearchPaths/>
+        <PostConnectCommands/>
+        <StartupCommands/>
+      </Debugger>
+      <PreBuild/>
+      <PostBuild/>
+      <CustomBuild Enabled="no">
+        <RebuildCommand/>
+        <CleanCommand/>
+        <BuildCommand/>
+        <PreprocessFileCommand/>
+        <SingleFileCommand/>
+        <MakefileGenerationCommand/>
+        <ThirdPartyToolName>None</ThirdPartyToolName>
+        <WorkingDirectory/>
+      </CustomBuild>
+      <AdditionalRules>
+        <CustomPostBuild/>
+        <CustomPreBuild/>
+      </AdditionalRules>
+      <Completion EnableCpp11="no" EnableCpp14="no">
+        <ClangCmpFlagsC/>
+        <ClangCmpFlags/>
+        <ClangPP/>
+        <SearchPaths/>
+      </Completion>
+    </Configuration>
+  </Settings>
+  <Dependencies Name="Debug"/>
+  <Dependencies Name="Release"/>
+</CodeLite_Project>

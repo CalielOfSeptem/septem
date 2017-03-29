@@ -1,0 +1,7 @@
+/home/ken/git-repos/Se7enMud/terminalpp/CMakeFiles/install.dir
+/home/ken/git-repos/Se7enMud/terminalpp/CMakeFiles/list_install_components.dir
+/home/ken/git-repos/Se7enMud/terminalpp/CMakeFiles/rebuild_cache.dir
+/home/ken/git-repos/Se7enMud/terminalpp/CMakeFiles/terminalpp.dir
+/home/ken/git-repos/Se7enMud/terminalpp/CMakeFiles/install/strip.dir
+/home/ken/git-repos/Se7enMud/terminalpp/CMakeFiles/install/local.dir
+/home/ken/git-repos/Se7enMud/terminalpp/CMakeFiles/edit_cache.dir

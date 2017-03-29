@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CodeLite_Project Name="ttvfs" Version="10.0.0" InternalType="Library">
+  <Description/>
+  <Dependencies/>
+  <Settings Type="Static Library">
+    <GlobalSettings>
+      <Compiler Options="" C_Options="" Assembler="">
+        <IncludePath Value="."/>
+      </Compiler>
+      <Linker Options="">
+        <LibraryPath Value="."/>
+      </Linker>
+      <ResourceCompiler Options=""/>
+    </GlobalSettings>
+    <Configuration Name="Debug" CompilerType="GCC" DebuggerType="GNU gdb debugger" Type="Static Library" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
+      <Compiler Options="-g" C_Options="-g" Assembler="" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" PCHFlags="" PCHFlagsPolicy="0">
+        <IncludePath Value="."/>
+      </Compiler>
+      <Linker Options="" Required="yes"/>
+      <ResourceCompiler Options="" Required="no"/>
+      <General OutputFile="$(IntermediateDirectory)/lib$(ProjectName).a" IntermediateDirectory="./Debug" Command="" CommandArguments="" UseSeparateDebugArgs="no" DebugArguments="" WorkingDirectory="$(IntermediateDirectory)" PauseExecWhenProcTerminates="yes" IsGUIProgram="no" IsEnabled="yes"/>
+      <BuildSystem Name="Default"/>
+      <Environment EnvVarSetName="&lt;Use Defaults&gt;" DbgSetName="&lt;Use Defaults&gt;">
+        <![CDATA[]]>
+      </Environment>
+      <Debugger IsRemote="no" RemoteHostName="" RemoteHostPort="" DebuggerPath="" IsExtended="yes">
+        <DebuggerSearchPaths/>
+        <PostConnectCommands/>
+        <StartupCommands/>
+      </Debugger>
+      <PreBuild/>
+      <PostBuild/>
+      <CustomBuild Enabled="no">
+        <RebuildCommand/>
+        <CleanCommand/>
+        <BuildCommand/>
+        <PreprocessFileCommand/>
+        <SingleFileCommand/>
+        <MakefileGenerationCommand/>
+        <ThirdPartyToolName/>
+        <WorkingDirectory/>
+      </CustomBuild>
+      <AdditionalRules>
+        <CustomPostBuild/>
+        <CustomPreBuild/>
+      </AdditionalRules>
+      <Completion EnableCpp11="no" EnableCpp14="no">
+        <ClangCmpFlagsC/>
+        <ClangCmpFlags/>
+        <ClangPP/>
+        <SearchPaths/>
+      </Completion>
+    </Configuration>
+    <Configuration Name="Release" CompilerType="GCC" DebuggerType="GNU gdb debugger" Type="Static Library" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
+      <Compiler Options="" C_Options="" Assembler="" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" PCHFlags="" PCHFlagsPolicy="0">
+        <IncludePath Value="."/>
+      </Compiler>
+      <Linker Options="" Required="yes"/>
+      <ResourceCompiler Options="" Required="no"/>
+      <General OutputFile="$(IntermediateDirectory)/lib$(ProjectName).a" IntermediateDirectory="./Release" Command="" CommandArguments="" UseSeparateDebugArgs="no" DebugArguments="" WorkingDirectory="$(IntermediateDirectory)" PauseExecWhenProcTerminates="yes" IsGUIProgram="no" IsEnabled="yes"/>
+      <BuildSystem Name="Default"/>
+      <Environment EnvVarSetName="&lt;Use Defaults&gt;" DbgSetName="&lt;Use Defaults&gt;">
+        <![CDATA[]]>
+      </Environment>
+      <Debugger IsRemote="no" RemoteHostName="" RemoteHostPort="" DebuggerPath="" IsExtended="no">
+        <DebuggerSearchPaths/>
+        <PostConnectCommands/>
+        <StartupCommands/>
+      </Debugger>
+      <PreBuild/>
+      <PostBuild/>
+      <CustomBuild Enabled="no">
+        <RebuildCommand/>
+        <CleanCommand/>
+        <BuildCommand/>
+        <PreprocessFileCommand/>
+        <SingleFileCommand/>
+        <MakefileGenerationCommand/>
+        <ThirdPartyToolName/>
+        <WorkingDirectory/>
+      </CustomBuild>
+      <AdditionalRules>
+        <CustomPostBuild/>
+        <CustomPreBuild/>
+      </AdditionalRules>
+      <Completion EnableCpp11="no" EnableCpp14="no">
+        <ClangCmpFlagsC/>
+        <ClangCmpFlags/>
+        <ClangPP/>
+        <SearchPaths/>
+      </Completion>
+    </Configuration>
+  </Settings>
+  <VirtualDirectory Name="src"/>
+  <VirtualDirectory Name="include"/>
+  <VirtualDirectory Name="ttvfs">
+    <File Name="../../ttvfs/ttvfs/VFSRefcounted.h"/>
+    <File Name="../../ttvfs/ttvfs/VFSRoot.cpp"/>
+    <File Name="../../ttvfs/ttvfs/VFSRoot.h"/>
+    <File Name="../../ttvfs/ttvfs/VFSDebug.cpp"/>
+    <File Name="../../ttvfs/ttvfs/ttvfs.h"/>
+    <File Name="../../ttvfs/ttvfs/VFSDirInternal.h"/>
+    <File Name="../../ttvfs/ttvfs/VFSInternal.h"/>
+    <File Name="../../ttvfs/ttvfs/VFSDir.cpp"/>
+    <File Name="../../ttvfs/ttvfs/VFSFile.h"/>
+    <File Name="../../ttvfs/ttvfs/VFSTools.h"/>
+    <File Name="../../ttvfs/ttvfs/VFSDebug.h"/>
+    <File Name="../../ttvfs/ttvfs/VFSBase.cpp"/>
+    <File Name="../../ttvfs/ttvfs/VFSDirInternal.cpp"/>
+    <File Name="../../ttvfs/ttvfs/VFSArchiveLoader.h"/>
+    <File Name="../../ttvfs/ttvfs/VFSTools.cpp"/>
+    <File Name="../../ttvfs/ttvfs/VFSSystemPaths.cpp"/>
+    <File Name="../../ttvfs/ttvfs/VFSSystemPaths.h"/>
+    <File Name="../../ttvfs/ttvfs/VFSFileFuncs.h"/>
+    <File Name="../../ttvfs/ttvfs/VFSDefines.h"/>
+    <File Name="../../ttvfs/ttvfs/VFSDir.h"/>
+    <File Name="../../ttvfs/ttvfs/VFSLoader.h"/>
+    <File Name="../../ttvfs/ttvfs/VFSDirView.h"/>
+    <File Name="../../ttvfs/ttvfs/VFSFileFuncs.cpp"/>
+    <File Name="../../ttvfs/ttvfs/VFSDirView.cpp"/>
+    <File Name="../../ttvfs/ttvfs/VFSLoader.cpp"/>
+    <File Name="../../ttvfs/ttvfs/VFSBase.h"/>
+    <File Name="../../ttvfs/ttvfs/VFSFile.cpp"/>
+  </VirtualDirectory>
+  <Dependencies Name="Debug"/>
+  <Dependencies Name="Release"/>
+</CodeLite_Project>

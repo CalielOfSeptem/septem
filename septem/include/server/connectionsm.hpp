@@ -1,0 +1,4 @@
+#ifndef CONNECTIONSM_HPP
+#define CONNECTIONSM_HPP
+#endif
+

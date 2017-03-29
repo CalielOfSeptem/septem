@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CodeLite_Project Name="terminalpp" Version="10.0.0" InternalType="Library">
+  <Plugins>
+    <Plugin Name="qmake">
+      <![CDATA[00010001N0005Debug000000000000]]>
+    </Plugin>
+  </Plugins>
+  <Description/>
+  <Dependencies/>
+  <VirtualDirectory Name="src">
+    <VirtualDirectory Name="ansi">
+      <File Name="../../terminalpp/src/ansi/control_sequence.cpp"/>
+      <File Name="../../terminalpp/src/ansi/charset.cpp"/>
+    </VirtualDirectory>
+    <VirtualDirectory Name="detail">
+      <File Name="../../terminalpp/src/detail/terminal_charset_control.cpp"/>
+      <File Name="../../terminalpp/src/detail/well_known_virtual_key.cpp"/>
+      <File Name="../../terminalpp/src/detail/terminal_cursor_control.cpp"/>
+      <File Name="../../terminalpp/src/detail/parser.cpp"/>
+      <File Name="../../terminalpp/src/detail/terminal_control.cpp"/>
+      <File Name="../../terminalpp/src/detail/element_difference.cpp"/>
+    </VirtualDirectory>
+    <File Name="../../terminalpp/src/canvas.cpp"/>
+    <File Name="../../terminalpp/src/terminal.cpp"/>
+    <File Name="../../terminalpp/src/canvas_view.cpp"/>
+    <File Name="../../terminalpp/src/string.cpp"/>
+    <File Name="../../terminalpp/src/screen.cpp"/>
+    <File Name="../../terminalpp/src/encoder.cpp"/>
+    <File Name="../../terminalpp/src/glyph.cpp"/>
+    <File Name="../../terminalpp/src/virtual_key.cpp"/>
+  </VirtualDirectory>
+  <VirtualDirectory Name="include">
+    <VirtualDirectory Name="terminalpp">
+      <VirtualDirectory Name="ansi">
+        <File Name="../../terminalpp/include/terminalpp/ansi/dec_private_mode.hpp"/>
+        <File Name="../../terminalpp/include/terminalpp/ansi/control_sequence.hpp"/>
+        <File Name="../../terminalpp/include/terminalpp/ansi/control_characters.hpp"/>
+        <File Name="../../terminalpp/include/terminalpp/ansi/charset.hpp"/>
+        <File Name="../../terminalpp/include/terminalpp/ansi/csi.hpp"/>
+        <File Name="../../terminalpp/include/terminalpp/ansi/graphics.hpp"/>
+        <File Name="../../terminalpp/include/terminalpp/ansi/ss3.hpp"/>
+        <File Name="../../terminalpp/include/terminalpp/ansi/protocol.hpp"/>
+        <File Name="../../terminalpp/include/terminalpp/ansi/osc.hpp"/>
+        <File Name="../../terminalpp/include/terminalpp/ansi/mouse.hpp"/>
+      </VirtualDirectory>
+      <VirtualDirectory Name="detail">
+        <File Name="../../terminalpp/include/terminalpp/detail/well_known_virtual_key.hpp"/>
+        <File Name="../../terminalpp/include/terminalpp/detail/terminal_charset_control.hpp"/>
+        <File Name="../../terminalpp/include/terminalpp/detail/element_difference.hpp"/>
+        <File Name="../../terminalpp/include/terminalpp/detail/terminal_control.hpp"/>
+        <File Name="../../terminalpp/include/terminalpp/detail/terminal_cursor_control.hpp"/>
+        <File Name="../../terminalpp/include/terminalpp/detail/parser.hpp"/>
+        <File Name="../../terminalpp/include/terminalpp/detail/lambda_visitor.hpp"/>
+        <File Name="../../terminalpp/include/terminalpp/detail/ascii.hpp"/>
+        <File Name="../../terminalpp/include/terminalpp/detail/export.hpp"/>
+      </VirtualDirectory>
+      <File Name="../../terminalpp/include/terminalpp/token.hpp"/>
+      <File Name="../../terminalpp/include/terminalpp/terminal.hpp"/>
+      <File Name="../../terminalpp/include/terminalpp/element.hpp"/>
+      <File Name="../../terminalpp/include/terminalpp/virtual_key.hpp"/>
+      <File Name="../../terminalpp/include/terminalpp/canvas.hpp"/>
+      <File Name="../../terminalpp/include/terminalpp/extent.hpp"/>
+      <File Name="../../terminalpp/include/terminalpp/core.hpp"/>
+      <File Name="../../terminalpp/include/terminalpp/terminalpp.hpp"/>
+      <File Name="../../terminalpp/include/terminalpp/screen.hpp"/>
+      <File Name="../../terminalpp/include/terminalpp/encoder.hpp"/>
+      <File Name="../../terminalpp/include/terminalpp/string.hpp"/>
+      <File Name="../../terminalpp/include/terminalpp/attribute.hpp"/>
+      <File Name="../../terminalpp/include/terminalpp/canvas_view.hpp"/>
+      <File Name="../../terminalpp/include/terminalpp/glyph.hpp"/>
+      <File Name="../../terminalpp/include/terminalpp/point.hpp"/>
+    </VirtualDirectory>
+  </VirtualDirectory>
+  <Settings Type="Static Library">
+    <GlobalSettings>
+      <Compiler Options="" C_Options="" Assembler="">
+        <IncludePath Value="."/>
+      </Compiler>
+      <Linker Options="">
+        <LibraryPath Value="."/>
+      </Linker>
+      <ResourceCompiler Options=""/>
+    </GlobalSettings>
+    <Configuration Name="Debug" CompilerType="GCC" DebuggerType="GNU gdb debugger" Type="Static Library" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
+      <Compiler Options="-std=c++14" C_Options="-g" Assembler="" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" PCHFlags="" PCHFlagsPolicy="0">
+        <IncludePath Value="."/>
+        <IncludePath Value="../../terminalpp/include/"/>
+        <IncludePath Value="../../terminalpp/src/"/>
+      </Compiler>
+      <Linker Options="" Required="yes"/>
+      <ResourceCompiler Options="" Required="no"/>
+      <General OutputFile="$(IntermediateDirectory)/lib$(ProjectName).a" IntermediateDirectory="./Debug" Command="" CommandArguments="" UseSeparateDebugArgs="no" DebugArguments="" WorkingDirectory="$(IntermediateDirectory)" PauseExecWhenProcTerminates="yes" IsGUIProgram="no" IsEnabled="yes"/>
+      <BuildSystem Name="Default"/>
+      <Environment EnvVarSetName="&lt;Use Defaults&gt;" DbgSetName="&lt;Use Defaults&gt;">
+        <![CDATA[]]>
+      </Environment>
+      <Debugger IsRemote="no" RemoteHostName="" RemoteHostPort="" DebuggerPath="" IsExtended="no">
+        <DebuggerSearchPaths/>
+        <PostConnectCommands/>
+        <StartupCommands/>
+      </Debugger>
+      <PreBuild/>
+      <PostBuild/>
+      <CustomBuild Enabled="no">
+        <RebuildCommand/>
+        <CleanCommand/>
+        <BuildCommand/>
+        <PreprocessFileCommand/>
+        <SingleFileCommand/>
+        <MakefileGenerationCommand/>
+        <ThirdPartyToolName/>
+        <WorkingDirectory/>
+      </CustomBuild>
+      <AdditionalRules>
+        <CustomPostBuild/>
+        <CustomPreBuild/>
+      </AdditionalRules>
+      <Completion EnableCpp11="no" EnableCpp14="no">
+        <ClangCmpFlagsC/>
+        <ClangCmpFlags/>
+        <ClangPP/>
+        <SearchPaths/>
+      </Completion>
+    </Configuration>
+    <Configuration Name="Release" CompilerType="GCC" DebuggerType="GNU gdb debugger" Type="Static Library" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
+      <Compiler Options="" C_Options="" Assembler="" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" PCHFlags="" PCHFlagsPolicy="0">
+        <IncludePath Value="."/>
+      </Compiler>
+      <Linker Options="" Required="yes"/>
+      <ResourceCompiler Options="" Required="no"/>
+      <General OutputFile="$(IntermediateDirectory)/lib$(ProjectName).a" IntermediateDirectory="./Release" Command="" CommandArguments="" UseSeparateDebugArgs="no" DebugArguments="" WorkingDirectory="$(IntermediateDirectory)" PauseExecWhenProcTerminates="yes" IsGUIProgram="no" IsEnabled="yes"/>
+      <BuildSystem Name="Default"/>
+      <Environment EnvVarSetName="&lt;Use Defaults&gt;" DbgSetName="&lt;Use Defaults&gt;">
+        <![CDATA[]]>
+      </Environment>
+      <Debugger IsRemote="no" RemoteHostName="" RemoteHostPort="" DebuggerPath="" IsExtended="yes">
+        <DebuggerSearchPaths/>
+        <PostConnectCommands/>
+        <StartupCommands/>
+      </Debugger>
+      <PreBuild/>
+      <PostBuild/>
+      <CustomBuild Enabled="no">
+        <RebuildCommand/>
+        <CleanCommand/>
+        <BuildCommand/>
+        <PreprocessFileCommand/>
+        <SingleFileCommand/>
+        <MakefileGenerationCommand/>
+        <ThirdPartyToolName/>
+        <WorkingDirectory/>
+      </CustomBuild>
+      <AdditionalRules>
+        <CustomPostBuild/>
+        <CustomPreBuild/>
+      </AdditionalRules>
+      <Completion EnableCpp11="no" EnableCpp14="no">
+        <ClangCmpFlagsC/>
+        <ClangCmpFlags/>
+        <ClangPP/>
+        <SearchPaths/>
+      </Completion>
+    </Configuration>
+  </Settings>
+  <Dependencies Name="Debug"/>
+  <Dependencies Name="Release"/>
+</CodeLite_Project>

@@ -1,0 +1,2 @@
+/usr/bin/ar qc libodin.a  CMakeFiles/odin.dir/src/net/server.cpp.o CMakeFiles/odin.dir/src/net/socket.cpp.o CMakeFiles/odin.dir/src/tokenise.cpp.o
+/usr/bin/ranlib libodin.a

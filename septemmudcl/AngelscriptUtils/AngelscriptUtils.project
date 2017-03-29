@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CodeLite_Project Name="AngelscriptUtils" Version="10.0.0" InternalType="Console">
+  <Plugins>
+    <Plugin Name="qmake">
+      <![CDATA[00010001N0005Debug000000000000]]>
+    </Plugin>
+  </Plugins>
+  <VirtualDirectory Name="src">
+    <VirtualDirectory Name="Angelscript">
+      <VirtualDirectory Name="ScriptAPI">
+        <VirtualDirectory Name="Reflection">
+          <File Name="../../AngelscriptUtils/src/Angelscript/ScriptAPI/Reflection/CASModuleReflectionGroup.h"/>
+          <File Name="../../AngelscriptUtils/src/Angelscript/ScriptAPI/Reflection/CASEngineReflectionGroup.cpp"/>
+          <File Name="../../AngelscriptUtils/src/Angelscript/ScriptAPI/Reflection/IASReflectionGroup.h"/>
+          <File Name="../../AngelscriptUtils/src/Angelscript/ScriptAPI/Reflection/CASEngineReflectionGroup.h"/>
+          <File Name="../../AngelscriptUtils/src/Angelscript/ScriptAPI/Reflection/CASModuleReflectionGroup.cpp"/>
+          <File Name="../../AngelscriptUtils/src/Angelscript/ScriptAPI/Reflection/ASReflection.cpp"/>
+          <File Name="../../AngelscriptUtils/src/Angelscript/ScriptAPI/Reflection/ASReflection.h"/>
+        </VirtualDirectory>
+        <File Name="../../AngelscriptUtils/src/Angelscript/ScriptAPI/CASScheduler.cpp"/>
+        <File Name="../../AngelscriptUtils/src/Angelscript/ScriptAPI/CASScheduler.h"/>
+      </VirtualDirectory>
+      <VirtualDirectory Name="util">
+        <File Name="../../AngelscriptUtils/src/Angelscript/util/IASLogger.cpp"/>
+        <File Name="../../AngelscriptUtils/src/Angelscript/util/ASUtil.cpp"/>
+        <File Name="../../AngelscriptUtils/src/Angelscript/util/ASLogging.cpp"/>
+        <File Name="../../AngelscriptUtils/src/Angelscript/util/CASBaseClass.cpp"/>
+        <File Name="../../AngelscriptUtils/src/Angelscript/util/CASExtendAdapter.h"/>
+        <File Name="../../AngelscriptUtils/src/Angelscript/util/ASUtil.h"/>
+        <File Name="../../AngelscriptUtils/src/Angelscript/util/CASRefPtr.h"/>
+        <File Name="../../AngelscriptUtils/src/Angelscript/util/CASObjPtr.h"/>
+        <File Name="../../AngelscriptUtils/src/Angelscript/util/ASExtendAdapter.h"/>
+        <File Name="../../AngelscriptUtils/src/Angelscript/util/ASLogging.h"/>
+        <File Name="../../AngelscriptUtils/src/Angelscript/util/ASPlatform.h"/>
+        <File Name="../../AngelscriptUtils/src/Angelscript/util/ContextUtils.h"/>
+        <File Name="../../AngelscriptUtils/src/Angelscript/util/ContextUtils.cpp"/>
+        <File Name="../../AngelscriptUtils/src/Angelscript/util/IASLogger.h"/>
+        <File Name="../../AngelscriptUtils/src/Angelscript/util/StringUtils.h"/>
+        <File Name="../../AngelscriptUtils/src/Angelscript/util/CASFileLogger.cpp"/>
+        <File Name="../../AngelscriptUtils/src/Angelscript/util/ASExtendAdapter.cpp"/>
+        <File Name="../../AngelscriptUtils/src/Angelscript/util/CASBaseClass.h"/>
+        <File Name="../../AngelscriptUtils/src/Angelscript/util/CASFileLogger.h"/>
+        <File Name="../../AngelscriptUtils/src/Angelscript/util/IASExtendAdapter.h"/>
+        <File Name="../../AngelscriptUtils/src/Angelscript/util/CASBaseLogger.h"/>
+      </VirtualDirectory>
+      <VirtualDirectory Name="add_on">
+        <File Name="../../AngelscriptUtils/src/Angelscript/add_on/contextmgr.h"/>
+        <File Name="../../AngelscriptUtils/src/Angelscript/add_on/contextmgr.cpp"/>
+        <File Name="../../AngelscriptUtils/src/Angelscript/add_on/scriptfile.h"/>
+        <File Name="../../AngelscriptUtils/src/Angelscript/add_on/scriptarray.cpp"/>
+        <File Name="../../AngelscriptUtils/src/Angelscript/add_on/datetime.cpp"/>
+        <File Name="../../AngelscriptUtils/src/Angelscript/add_on/scripthandle.h"/>
+        <File Name="../../AngelscriptUtils/src/Angelscript/add_on/scriptany.cpp"/>
+        <File Name="../../AngelscriptUtils/src/Angelscript/add_on/scriptstdstring.cpp"/>
+        <File Name="../../AngelscriptUtils/src/Angelscript/add_on/generateheader.cpp" ExcludeProjConfig="Debug"/>
+        <File Name="../../AngelscriptUtils/src/Angelscript/add_on/datetime.h"/>
+        <File Name="../../AngelscriptUtils/src/Angelscript/add_on/weakref.cpp"/>
+        <File Name="../../AngelscriptUtils/src/Angelscript/add_on/scripthandle.cpp"/>
+        <File Name="../../AngelscriptUtils/src/Angelscript/add_on/scriptdictionary.cpp"/>
+        <File Name="../../AngelscriptUtils/src/Angelscript/add_on/scriptmathcomplex.cpp"/>
+        <File Name="../../AngelscriptUtils/src/Angelscript/add_on/scripthelper.h"/>
+        <File Name="../../AngelscriptUtils/src/Angelscript/add_on/scriptgrid.h"/>
+        <File Name="../../AngelscriptUtils/src/Angelscript/add_on/scriptstdstring.h"/>
+        <File Name="../../AngelscriptUtils/src/Angelscript/add_on/weakref.h"/>
+        <File Name="../../AngelscriptUtils/src/Angelscript/add_on/scriptarray.h"/>
+        <File Name="../../AngelscriptUtils/src/Angelscript/add_on/scriptmathcomplex.h"/>
+        <File Name="../../AngelscriptUtils/src/Angelscript/add_on/scripthelper.cpp"/>
+        <File Name="../../AngelscriptUtils/src/Angelscript/add_on/scriptbuilder.h"/>
+        <File Name="../../AngelscriptUtils/src/Angelscript/add_on/scriptfilesystem.h"/>
+        <File Name="../../AngelscriptUtils/src/Angelscript/add_on/serializer.h"/>
+        <File Name="../../AngelscriptUtils/src/Angelscript/add_on/scriptdictionary.h"/>
+        <File Name="../../AngelscriptUtils/src/Angelscript/add_on/scriptmath.h"/>
+        <File Name="../../AngelscriptUtils/src/Angelscript/add_on/debugger.cpp"/>
+        <File Name="../../AngelscriptUtils/src/Angelscript/add_on/scriptstdstring_utils.cpp"/>
+        <File Name="../../AngelscriptUtils/src/Angelscript/add_on/debugger.h"/>
+        <File Name="../../AngelscriptUtils/src/Angelscript/add_on/scriptany.h"/>
+        <File Name="../../AngelscriptUtils/src/Angelscript/add_on/scriptbuilder.cpp"/>
+        <File Name="../../AngelscriptUtils/src/Angelscript/add_on/scriptmath.cpp"/>
+        <File Name="../../AngelscriptUtils/src/Angelscript/add_on/aswrappedcall.h"/>
+        <File Name="../../AngelscriptUtils/src/Angelscript/add_on/scriptfile.cpp"/>
+        <File Name="../../AngelscriptUtils/src/Angelscript/add_on/serializer.cpp"/>
+        <File Name="../../AngelscriptUtils/src/Angelscript/add_on/scriptgrid.cpp"/>
+        <File Name="../../AngelscriptUtils/src/Angelscript/add_on/scriptfilesystem.cpp"/>
+      </VirtualDirectory>
+      <VirtualDirectory Name="event">
+        <File Name="../../AngelscriptUtils/src/Angelscript/event/CASEventCaller.h"/>
+        <File Name="../../AngelscriptUtils/src/Angelscript/event/CASEventManager.h"/>
+        <File Name="../../AngelscriptUtils/src/Angelscript/event/CASBaseEventCaller.h"/>
+        <File Name="../../AngelscriptUtils/src/Angelscript/event/CASBaseEvent.cpp"/>
+        <File Name="../../AngelscriptUtils/src/Angelscript/event/CASBaseEvent.h"/>
+        <File Name="../../AngelscriptUtils/src/Angelscript/event/CASEventCaller.cpp"/>
+        <File Name="../../AngelscriptUtils/src/Angelscript/event/CASEvent.cpp"/>
+        <File Name="../../AngelscriptUtils/src/Angelscript/event/CASEvent.h"/>
+        <File Name="../../AngelscriptUtils/src/Angelscript/event/CASEventManager.cpp"/>
+      </VirtualDirectory>
+      <VirtualDirectory Name="wrapper">
+        <File Name="../../AngelscriptUtils/src/Angelscript/wrapper/CASArguments.cpp"/>
+        <File Name="../../AngelscriptUtils/src/Angelscript/wrapper/ASCallable.h"/>
+        <File Name="../../AngelscriptUtils/src/Angelscript/wrapper/ASCallableConst.h"/>
+        <File Name="../../AngelscriptUtils/src/Angelscript/wrapper/CASContext.cpp"/>
+        <File Name="../../AngelscriptUtils/src/Angelscript/wrapper/CASArguments.h"/>
+        <File Name="../../AngelscriptUtils/src/Angelscript/wrapper/CASContext.h"/>
+      </VirtualDirectory>
+      <File Name="../../AngelscriptUtils/src/Angelscript/CASModule.h"/>
+      <File Name="../../AngelscriptUtils/src/Angelscript/IASModuleBuilder.h"/>
+      <File Name="../../AngelscriptUtils/src/Angelscript/IASContextResultHandler.h"/>
+      <File Name="../../AngelscriptUtils/src/Angelscript/CASModuleDescriptor.h"/>
+      <File Name="../../AngelscriptUtils/src/Angelscript/CASLoggingContextResultHandler.cpp"/>
+      <File Name="../../AngelscriptUtils/src/Angelscript/CASLoggingContextResultHandler.h"/>
+      <File Name="../../AngelscriptUtils/src/Angelscript/CASManager.h"/>
+      <File Name="../../AngelscriptUtils/src/Angelscript/CASModule.cpp"/>
+      <File Name="../../AngelscriptUtils/src/Angelscript/CASModuleManager.cpp"/>
+      <File Name="../../AngelscriptUtils/src/Angelscript/CASManager.cpp"/>
+      <File Name="../../AngelscriptUtils/src/Angelscript/IASInitializer.h"/>
+      <File Name="../../AngelscriptUtils/src/Angelscript/CASModuleManager.h"/>
+      <File Name="../../AngelscriptUtils/src/Angelscript/CASModuleDescriptor.cpp"/>
+    </VirtualDirectory>
+    <VirtualDirectory Name="test">
+      <File Name="../../AngelscriptUtils/src/test/Main.cpp" ExcludeProjConfig="Debug"/>
+      <File Name="../../AngelscriptUtils/src/test/CScriptBaseEntity.h" ExcludeProjConfig="Debug"/>
+      <File Name="../../AngelscriptUtils/src/test/CBaseEntity.h" ExcludeProjConfig="Debug"/>
+      <File Name="../../AngelscriptUtils/src/test/ASCBaseEntity.h" ExcludeProjConfig="Debug"/>
+    </VirtualDirectory>
+  </VirtualDirectory>
+  <Description/>
+  <Dependencies/>
+  <Settings Type="Static Library">
+    <GlobalSettings>
+      <Compiler Options="" C_Options="" Assembler="">
+        <IncludePath Value="."/>
+      </Compiler>
+      <Linker Options="">
+        <LibraryPath Value="."/>
+      </Linker>
+      <ResourceCompiler Options=""/>
+    </GlobalSettings>
+    <Configuration Name="Debug" CompilerType="GCC" DebuggerType="GNU gdb debugger" Type="Static Library" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
+      <Compiler Options="-O3;-std=c++14;-Wall" C_Options="-g;-O0;-Wall" Assembler="" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" PCHFlags="" PCHFlagsPolicy="0">
+        <IncludePath Value="."/>
+        <IncludePath Value="../../../AngelscriptUtils/src"/>
+        <IncludePath Value="../../../AngelscriptUtils/external/Angelscript/include"/>
+        <IncludePath Value="../../angelscript/include"/>
+        <Preprocessor Value="AS_STRING_OBJNAME=\&quot;string\&quot;"/>
+        <Preprocessor Value="_CRT_SECURE_NO_WARNINGS"/>
+        <Preprocessor Value="AS_NO_EXCEPTIONS"/>
+      </Compiler>
+      <Linker Options="" Required="yes">
+        <LibraryPath Value="../angelscript/Debug"/>
+      </Linker>
+      <ResourceCompiler Options="" Required="no"/>
+      <General OutputFile="$(IntermediateDirectory)/lib$(ProjectName).a" IntermediateDirectory="./Debug" Command="./$(ProjectName)" CommandArguments="" UseSeparateDebugArgs="no" DebugArguments="" WorkingDirectory="$(IntermediateDirectory)" PauseExecWhenProcTerminates="yes" IsGUIProgram="no" IsEnabled="yes"/>
+      <BuildSystem Name="Default"/>
+      <Environment EnvVarSetName="&lt;Use Defaults&gt;" DbgSetName="&lt;Use Defaults&gt;">
+        <![CDATA[]]>
+      </Environment>
+      <Debugger IsRemote="no" RemoteHostName="" RemoteHostPort="" DebuggerPath="" IsExtended="no">
+        <DebuggerSearchPaths/>
+        <PostConnectCommands/>
+        <StartupCommands/>
+      </Debugger>
+      <PreBuild/>
+      <PostBuild/>
+      <CustomBuild Enabled="no">
+        <RebuildCommand/>
+        <CleanCommand/>
+        <BuildCommand/>
+        <PreprocessFileCommand/>
+        <SingleFileCommand/>
+        <MakefileGenerationCommand/>
+        <ThirdPartyToolName>None</ThirdPartyToolName>
+        <WorkingDirectory/>
+      </CustomBuild>
+      <AdditionalRules>
+        <CustomPostBuild/>
+        <CustomPreBuild/>
+      </AdditionalRules>
+      <Completion EnableCpp11="no" EnableCpp14="no">
+        <ClangCmpFlagsC/>
+        <ClangCmpFlags/>
+        <ClangPP/>
+        <SearchPaths/>
+      </Completion>
+    </Configuration>
+    <Configuration Name="Release" CompilerType="GCC" DebuggerType="GNU gdb debugger" Type="Executable" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
+      <Compiler Options="-O2;-Wall" C_Options="-O2;-Wall" Assembler="" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" PCHFlags="" PCHFlagsPolicy="0">
+        <IncludePath Value="."/>
+        <Preprocessor Value="NDEBUG"/>
+      </Compiler>
+      <Linker Options="" Required="yes"/>
+      <ResourceCompiler Options="" Required="no"/>
+      <General OutputFile="$(IntermediateDirectory)/$(ProjectName)" IntermediateDirectory="./Release" Command="./$(ProjectName)" CommandArguments="" UseSeparateDebugArgs="no" DebugArguments="" WorkingDirectory="$(IntermediateDirectory)" PauseExecWhenProcTerminates="yes" IsGUIProgram="no" IsEnabled="yes"/>
+      <BuildSystem Name="Default"/>
+      <Environment EnvVarSetName="&lt;Use Defaults&gt;" DbgSetName="&lt;Use Defaults&gt;">
+        <![CDATA[]]>
+      </Environment>
+      <Debugger IsRemote="no" RemoteHostName="" RemoteHostPort="" DebuggerPath="" IsExtended="no">
+        <DebuggerSearchPaths/>
+        <PostConnectCommands/>
+        <StartupCommands/>
+      </Debugger>
+      <PreBuild/>
+      <PostBuild/>
+      <CustomBuild Enabled="no">
+        <RebuildCommand/>
+        <CleanCommand/>
+        <BuildCommand/>
+        <PreprocessFileCommand/>
+        <SingleFileCommand/>
+        <MakefileGenerationCommand/>
+        <ThirdPartyToolName>None</ThirdPartyToolName>
+        <WorkingDirectory/>
+      </CustomBuild>
+      <AdditionalRules>
+        <CustomPostBuild/>
+        <CustomPreBuild/>
+      </AdditionalRules>
+      <Completion EnableCpp11="no" EnableCpp14="no">
+        <ClangCmpFlagsC/>
+        <ClangCmpFlags/>
+        <ClangPP/>
+        <SearchPaths/>
+      </Completion>
+    </Configuration>
+  </Settings>
+  <Dependencies Name="Debug"/>
+  <Dependencies Name="Release"/>
+</CodeLite_Project>

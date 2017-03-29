@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CodeLite_Workspace Name="septemmudcl" Database="" Version="10.0.0">
+  <Project Name="telnetpp" Path="telnetpp/telnetpp.project" Active="No"/>
+  <Project Name="odin" Path="odin/odin.project" Active="No"/>
+  <Project Name="terminalpp" Path="terminalpp/terminalpp.project" Active="No"/>
+  <Project Name="angelscript" Path="angelscript/angelscript.project" Active="No"/>
+  <Project Name="plog" Path="plog/plog.project" Active="No"/>
+  <Project Name="septem" Path="septem/se7en.project" Active="Yes"/>
+  <BuildMatrix>
+    <WorkspaceConfiguration Name="Debug" Selected="yes">
+      <Environment/>
+      <Project Name="septem" ConfigName="Debug"/>
+      <Project Name="telnetpp" ConfigName="Debug"/>
+      <Project Name="odin" ConfigName="Debug"/>
+      <Project Name="terminalpp" ConfigName="Debug"/>
+      <Project Name="angelscript" ConfigName="Debug"/>
+      <Project Name="plog" ConfigName="Debug"/>
+      <Project Name="septem" ConfigName="Debug"/>
+    </WorkspaceConfiguration>
+    <WorkspaceConfiguration Name="Release" Selected="yes">
+      <Environment/>
+      <Project Name="septem" ConfigName="Release"/>
+      <Project Name="telnetpp" ConfigName="Release"/>
+      <Project Name="odin" ConfigName="Release"/>
+      <Project Name="terminalpp" ConfigName="Release"/>
+      <Project Name="angelscript" ConfigName="Release"/>
+      <Project Name="plog" ConfigName="Release"/>
+      <Project Name="septem" ConfigName="Release"/>
+    </WorkspaceConfiguration>
+  </BuildMatrix>
+</CodeLite_Workspace>
