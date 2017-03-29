@@ -11,11 +11,15 @@
 
  struct container
  {
-     container() = default;
+     //container() = default;
      
-     virtual void AddEntityToInventory( const shared_ptr< entity_wrapper > & ew)=0;
+     virtual void AddEntityToInventory(const shared_ptr< entity_wrapper >& ew)
+     {
+         //weak_ptr< entity_wrapper> ewp = ew;
+         inventory.insert(ew);
+     }
 
-     
+     private:
      std::set< shared_ptr<entity_wrapper> > inventory;
  };
  #endif

@@ -2,16 +2,24 @@ inherit command
 c = command.new()
 c:SetVerb("look")
 
-function command:execute_command ( o, ... )
-	print( 'Type of o = ' .. type(o) )
+-- o is the base_entity from which the command originated.  Cmd is the command text.  Note that the verb
+-- which initiated the command will be the first element in cmd.  Ex/ > look, cmd="look", >look chest, cmd = "look chest"
+
+function command:execute_command ( o, cmd )
+	--print( 'Type of o = ' .. type(o) )  o will be of user_data
 	p = player_cast(o)
 	if p ~= nil then
-		p:SendToEntity('HELLO FROM COMMAND')
-	end
+		-- lets see what room the player/npc is in..
+		-- there are two ways, through GetEnvironment, or through GetRoom
+		-- GetEnvironment requires a cast as its generic to all game items/players.
+		-- GetRoom does not as its already a room object ptr
+		-- example: env = room_cast(p:GetEnvironment())
+		env = p:GetRoom()
 
-	printResult = ""
-	for i,v in ipairs(arg) do
-		printResult = printResult .. tostring(v) .. "\t"
+		if env ~= nil then
+			p:SendToEntity('[' .. env:GetTitle() .. ']')
+			p:SendToEntity('\r\n')
+			p:SendToEntity(env:GetDescription())
+		end	
 	end
-	printResult = printResult .. "\n"
 end

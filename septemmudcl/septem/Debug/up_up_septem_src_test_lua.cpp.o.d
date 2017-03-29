@@ -1,10 +1,4 @@
-Debug/up_up_septem_src_entity_manager.cpp.o: \
- ../../septem/src/entity_manager.cpp \
- ../../septem/include/entity_manager.h \
- ../../septem/include/scriptable_entities/room.hpp \
- ../../septem/include/scriptable_entities/base_entity.h \
- ../../septem/include/scriptable_entities/container.h \
- ../../septem/include/scriptable_entities/entity_wrapper.h \
+Debug/up_up_septem_src_test_lua.cpp.o: ../../septem/src/test_lua.cpp \
  ../../sol2/sol.hpp ../../sol2/sol/state.hpp \
  ../../sol2/sol/state_view.hpp ../../sol2/sol/error.hpp \
  ../../sol2/sol/table.hpp ../../sol2/sol/table_core.hpp \
@@ -52,49 +46,10 @@ Debug/up_up_septem_src_entity_manager.cpp.o: \
  ../../sol2/sol/object.hpp ../../sol2/sol/function.hpp \
  ../../sol2/sol/protected_function.hpp ../../sol2/sol/coroutine.hpp \
  ../../sol2/sol/thread.hpp ../../sol2/sol/variadic_args.hpp \
- ../../septem/include/scriptable_entities/player_entity.h \
- ../../septem/include/scriptable_entities/living_entity.h \
  ../../septem/include/scriptable_entities/room.hpp \
- ../../septem/include/server/client.hpp ../../septem/include/account.hpp \
- ../../../cereal/include/cereal/archives/xml.hpp \
- ../../../cereal/include/cereal/cereal.hpp \
- ../../../cereal/include/cereal/macros.hpp \
- ../../../cereal/include/cereal/details/traits.hpp \
- ../../../cereal/include/cereal/access.hpp \
- ../../../cereal/include/cereal/details/helpers.hpp \
- ../../../cereal/include/cereal/details/static_object.hpp \
- ../../../cereal/include/cereal/types/base_class.hpp \
- ../../../cereal/include/cereal/details/polymorphic_impl_fwd.hpp \
- ../../../cereal/include/cereal/types/common.hpp \
- ../../../cereal/include/cereal/details/util.hpp \
- ../../../cereal/include/cereal/external/rapidxml/rapidxml.hpp \
- ../../../cereal/include/cereal/external/rapidxml/rapidxml_print.hpp \
- ../../../cereal/include/cereal/external/rapidxml/rapidxml.hpp \
- ../../../cereal/include/cereal/external/base64.hpp \
- ../../../cereal/include/cereal/types/string.hpp \
- ../../../cereal/include/cereal/types/vector.hpp \
- ../../septem/include/scriptable_entities/command.h \
- ../../septem/include/utils/stringutils.hpp \
- ../../septem/include/heartbeat_manager.h ../../plog/include/plog/Log.h \
- ../../plog/include/plog/Record.h ../../plog/include/plog/Util.h \
- ../../plog/include/plog/Severity.h ../../plog/include/plog/Logger.h \
- ../../plog/include/plog/Appenders/IAppender.h \
- ../../plog/include/plog/Init.h \
- ../../plog/include/plog/Formatters/CsvFormatter.h \
- ../../plog/include/plog/Formatters/TxtFormatter.h \
- ../../plog/include/plog/Appenders/RollingFileAppender.h \
- ../../plog/include/plog/Converters/UTF8Converter.h \
- ../../septem/include/config.h
-
-../../septem/include/entity_manager.h:
-
-../../septem/include/scriptable_entities/room.hpp:
-
-../../septem/include/scriptable_entities/base_entity.h:
-
-../../septem/include/scriptable_entities/container.h:
-
-../../septem/include/scriptable_entities/entity_wrapper.h:
+ ../../septem/include/scriptable_entities/base_entity.h \
+ ../../septem/include/scriptable_entities/container.h \
+ ../../septem/include/scriptable_entities/entity_wrapper.h
 
 ../../sol2/sol.hpp:
 
@@ -252,76 +207,10 @@ Debug/up_up_septem_src_entity_manager.cpp.o: \
 
 ../../sol2/sol/variadic_args.hpp:
 
-../../septem/include/scriptable_entities/player_entity.h:
-
-../../septem/include/scriptable_entities/living_entity.h:
-
 ../../septem/include/scriptable_entities/room.hpp:
 
-../../septem/include/server/client.hpp:
+../../septem/include/scriptable_entities/base_entity.h:
 
-../../septem/include/account.hpp:
+../../septem/include/scriptable_entities/container.h:
 
-../../../cereal/include/cereal/archives/xml.hpp:
-
-../../../cereal/include/cereal/cereal.hpp:
-
-../../../cereal/include/cereal/macros.hpp:
-
-../../../cereal/include/cereal/details/traits.hpp:
-
-../../../cereal/include/cereal/access.hpp:
-
-../../../cereal/include/cereal/details/helpers.hpp:
-
-../../../cereal/include/cereal/details/static_object.hpp:
-
-../../../cereal/include/cereal/types/base_class.hpp:
-
-../../../cereal/include/cereal/details/polymorphic_impl_fwd.hpp:
-
-../../../cereal/include/cereal/types/common.hpp:
-
-../../../cereal/include/cereal/details/util.hpp:
-
-../../../cereal/include/cereal/external/rapidxml/rapidxml.hpp:
-
-../../../cereal/include/cereal/external/rapidxml/rapidxml_print.hpp:
-
-../../../cereal/include/cereal/external/rapidxml/rapidxml.hpp:
-
-../../../cereal/include/cereal/external/base64.hpp:
-
-../../../cereal/include/cereal/types/string.hpp:
-
-../../../cereal/include/cereal/types/vector.hpp:
-
-../../septem/include/scriptable_entities/command.h:
-
-../../septem/include/utils/stringutils.hpp:
-
-../../septem/include/heartbeat_manager.h:
-
-../../plog/include/plog/Log.h:
-
-../../plog/include/plog/Record.h:
-
-../../plog/include/plog/Util.h:
-
-../../plog/include/plog/Severity.h:
-
-../../plog/include/plog/Logger.h:
-
-../../plog/include/plog/Appenders/IAppender.h:
-
-../../plog/include/plog/Init.h:
-
-../../plog/include/plog/Formatters/CsvFormatter.h:
-
-../../plog/include/plog/Formatters/TxtFormatter.h:
-
-../../plog/include/plog/Appenders/RollingFileAppender.h:
-
-../../plog/include/plog/Converters/UTF8Converter.h:
-
-../../septem/include/config.h:
+../../septem/include/scriptable_entities/entity_wrapper.h:

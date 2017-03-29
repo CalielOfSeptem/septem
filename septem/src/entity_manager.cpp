@@ -284,7 +284,8 @@ bool entity_manager::move_entity(shared_ptr<entity_wrapper>& eorig, entity_wrapp
                     {
                         base_entity * be = &dest.script_obj.value();
                         room * re = dynamic_cast<room*>(be);
-                        re->inventory.insert(eorig);
+                        re->AddEntityToInventory(eorig);
+                        //re->inventory.insert(eorig);
                         shared_ptr<entity_wrapper> ew;
                         std::string l = "look";
                         if( get_command(l, ew) )
@@ -347,9 +348,73 @@ T* downcast ( base_entity* b ) {
 //}
 
 
+int test()
+{
+    struct base {
+        int a = 20;
+        void Test(int c)
+        {
+            a + c;
+        }
+    };
+    
+    //shared_ptr < fun_times > ft;
+    struct base_abstract {
+        virtual void foo() = 0;
+    };
+    struct player : base, base_abstract {
+        int b = 40;
+        void foo() const
+        {
+           
+        }
+    };
+
+    sol::state lua;
+    lua.new_usertype<base>("base",
+        "a", &base::a
+        );
+
+    lua.new_usertype<player>("player",
+        "b", &player::b,
+        "Test", &player::Test,
+        "Foo", &player::foo,
+        sol::base_classes, sol::bases<base, base_abstract>()
+    );
+
+
+   sol::load_result lr = lua.load(R"(
+    p1 = player.new()
+    p1:Foo()
+    )");
+    
+
+    if (!lr.valid()) {
+        sol::error err = lr;
+        std::string what = err.what();
+        std::cout << "call failed, sol::error::what() is " << what << std::endl;
+       // return 0;
+    }
+    else
+    {
+        sol::protected_function_result result1 = lr(); // lua.do_string("return 24"); // test to make sure it loaded correctly
+        if(!result1.valid()) {
+            sol::error err = result1;
+            std::string what = err.what();
+            std::cout << "call failed, sol::error::what() is " << what << std::endl;
+        }
+        else
+            std::cout << "OK" << std::endl;
+    }
+    return 0;
+
+}
+
 void entity_manager::_init_room_type(sol::state& lua)
 {
+    //test();
     lua.open_libraries(sol::lib::base, sol::lib::package, sol::lib::math, sol::lib::table);
+    //lua.new_usertype<base_entity>("base");
     lua.new_usertype<exitobj>("exitobj", "get_exit_noun", &exitobj::get_exit_noun);
     lua.new_usertype<room>("room",
                            "GetTitle", &room::GetTitle, 
@@ -363,8 +428,10 @@ void entity_manager::_init_room_type(sol::state& lua)
                             "GetEnvironment", &room::GetEnvironment,
                             "SetEnvironment", &room::SetEnvironment,
                            sol::base_classes,
-                           sol::bases<base_entity>());
+                           sol::bases<base_entity, container>());
 }
+
+
 
 void entity_manager::_init_player_type(sol::state& lua)
 {
@@ -375,6 +442,7 @@ void entity_manager::_init_player_type(sol::state& lua)
         "SendToEntity", &player_entity::SendToEntity, 
         "GetEnvironment", &player_entity::GetEnvironment,
         "SetEnvironment", &player_entity::SetEnvironment,
+        "GetRoom", &player_entity::GetRoom, 
         sol::base_classes, sol::bases<living_entity, base_entity>());
 }
 

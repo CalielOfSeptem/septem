@@ -49,7 +49,7 @@
     
 
     
-private:
+protected:
     base_entity* environment_; // the room the entity is in.
     EntityType entity_type = EntityType::UNKNOWN;
    // std::weak_ptr<entity_wrapper> entity_;

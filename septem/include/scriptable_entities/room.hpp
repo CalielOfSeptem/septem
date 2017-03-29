@@ -92,11 +92,12 @@ struct room : base_entity, container
         return short_description;
     }
     
-    void AddEntityToInventory( const shared_ptr< entity_wrapper >& ew) const
+    virtual void AddEntityToInventory(const shared_ptr< entity_wrapper >& ew)
     {
-        ew->script_obj.value().SetEnvironment((base_entity*)this);//dynamic_cast<base_entity*>(this));
-        inventory.insert(ew);fdfdsfdsf
+        ew->script_obj->SetEnvironment( (base_entity*)this);
+        container::AddEntityToInventory(ew);
     }
+
 
 protected:
     string title;

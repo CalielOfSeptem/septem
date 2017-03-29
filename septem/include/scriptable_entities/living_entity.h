@@ -4,7 +4,7 @@
 #include <string>
 #include <vector>
 #include "scriptable_entities/base_entity.h"
-
+#include "scriptable_entities/room.hpp"
 using namespace std;
 
 struct living_entity : base_entity
@@ -24,7 +24,10 @@ struct living_entity : base_entity
     {
     }
     
-
+    room* GetRoom()
+    {
+        return static_cast<room*>(environment_);
+    }
 
 };
 #endif

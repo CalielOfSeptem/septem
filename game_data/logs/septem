@@ -1,24 +1,56 @@
-﻿2017-03-28 21:28:10.492 INFO  [7436] [entity_manager::load_entities_from_fs@234] Void room identified: /home/ken/git-repos/septem/game_data/realms/void
-2017-03-28 21:28:10.493 INFO  [7436] [entity_manager::load_commands_from_fs@182] Loaded command: /home/ken/git-repos/septem/game_data/cmds/look
-2017-03-28 21:28:30.870 INFO  [7480] [main@85] Starting up..
-2017-03-28 21:28:30.871 ERROR [7480] [entity_manager::load_entities_from_fs@246] Unable to load /home/ken/git-repos/septem/game_data/realms/void: [string "p1 = room.new()..."]:2: attempt to call method 'Title' (a nil value)
-2017-03-28 21:28:30.872 INFO  [7480] [entity_manager::load_commands_from_fs@182] Loaded command: /home/ken/git-repos/septem/game_data/cmds/look
-2017-03-28 21:58:35.520 INFO  [8087] [main@85] Starting up..
-2017-03-28 21:58:35.521 INFO  [8087] [entity_manager::load_entities_from_fs@231] Loaded room: /home/ken/git-repos/septem/game_data/realms/void
-2017-03-28 21:58:35.521 INFO  [8087] [entity_manager::load_entities_from_fs@234] Void room identified: /home/ken/git-repos/septem/game_data/realms/void
-2017-03-28 21:58:35.521 ERROR [8087] [entity_manager::load_commands_from_fs@191] Unable to load /home/ken/git-repos/septem/game_data/cmds/look: [string "c = command.new()..."]:7: 'then' expected near '!'
-2017-03-28 21:58:57.286 INFO  [8132] [main@85] Starting up..
-2017-03-28 21:58:57.287 INFO  [8132] [entity_manager::load_entities_from_fs@231] Loaded room: /home/ken/git-repos/septem/game_data/realms/void
-2017-03-28 21:58:57.287 INFO  [8132] [entity_manager::load_entities_from_fs@234] Void room identified: /home/ken/git-repos/septem/game_data/realms/void
-2017-03-28 21:58:57.288 ERROR [8132] [entity_manager::load_commands_from_fs@191] Unable to load /home/ken/git-repos/septem/game_data/cmds/look: [string "c = command.new()..."]:7: 'then' expected near '!'
-2017-03-28 21:59:40.926 INFO  [8181] [main@85] Starting up..
-2017-03-28 21:59:40.928 INFO  [8181] [entity_manager::load_entities_from_fs@231] Loaded room: /home/ken/git-repos/septem/game_data/realms/void
-2017-03-28 21:59:40.928 INFO  [8181] [entity_manager::load_entities_from_fs@234] Void room identified: /home/ken/git-repos/septem/game_data/realms/void
-2017-03-28 21:59:40.929 ERROR [8181] [entity_manager::load_commands_from_fs@191] Unable to load /home/ken/git-repos/septem/game_data/cmds/look: [string "c = command.new()..."]:8: '=' expected near '-'
-2017-03-28 22:00:46.674 INFO  [8232] [main@85] Starting up..
-2017-03-28 22:00:46.675 INFO  [8232] [entity_manager::load_entities_from_fs@231] Loaded room: /home/ken/git-repos/septem/game_data/realms/void
-2017-03-28 22:00:46.675 INFO  [8232] [entity_manager::load_entities_from_fs@234] Void room identified: /home/ken/git-repos/septem/game_data/realms/void
-2017-03-28 22:00:46.676 INFO  [8232] [entity_manager::load_commands_from_fs@182] Loaded command: /home/ken/git-repos/septem/game_data/cmds/look
-2017-03-28 22:00:56.516 INFO  [8236] [account_manager::load_account@206] Trying to load acount from file: kenthompson1@gmail.com
-2017-03-28 22:00:56.516 INFO  [8236] [account_manager::load_account@231] Account file [/home/ken/git-repos/septem/game_data/accounts/k/kenthompson1@gmail.com.xml] deserialized and loaded successefully.
-2017-03-28 22:00:56.517 INFO  [8236] [entity_manager::load_player@133] Successfully loaded player: kenthompson1@gmail.com
+﻿2017-03-29 10:58:40.441 INFO  [15963] [entity_manager::load_commands_from_fs@182] Loaded command: /home/ken/git-repos/septem/game_data/cmds/look
+2017-03-29 10:58:52.955 INFO  [15967] [account_manager::load_account@206] Trying to load acount from file: kenthompson1@gmail.com
+2017-03-29 10:58:52.955 INFO  [15967] [account_manager::load_account@231] Account file [/home/ken/git-repos/septem/game_data/accounts/k/kenthompson1@gmail.com.xml] deserialized and loaded successefully.
+2017-03-29 10:58:52.956 INFO  [15967] [entity_manager::load_player@133] Successfully loaded player: kenthompson1@gmail.com
+2017-03-29 10:59:34.501 INFO  [16013] [main@85] Starting up..
+2017-03-29 10:59:34.502 INFO  [16013] [entity_manager::load_entities_from_fs@231] Loaded room: /home/ken/git-repos/septem/game_data/realms/void
+2017-03-29 10:59:34.502 INFO  [16013] [entity_manager::load_entities_from_fs@234] Void room identified: /home/ken/git-repos/septem/game_data/realms/void
+2017-03-29 10:59:34.504 INFO  [16013] [entity_manager::load_commands_from_fs@182] Loaded command: /home/ken/git-repos/septem/game_data/cmds/look
+2017-03-29 10:59:45.972 INFO  [16017] [account_manager::load_account@206] Trying to load acount from file: kenthompson1@gmail.com
+2017-03-29 10:59:45.972 INFO  [16017] [account_manager::load_account@231] Account file [/home/ken/git-repos/septem/game_data/accounts/k/kenthompson1@gmail.com.xml] deserialized and loaded successefully.
+2017-03-29 10:59:45.972 INFO  [16017] [entity_manager::load_player@133] Successfully loaded player: kenthompson1@gmail.com
+2017-03-29 11:12:28.157 INFO  [16196] [main@85] Starting up..
+2017-03-29 11:12:28.158 INFO  [16196] [entity_manager::load_entities_from_fs@231] Loaded room: /home/ken/git-repos/septem/game_data/realms/void
+2017-03-29 11:12:28.158 INFO  [16196] [entity_manager::load_entities_from_fs@234] Void room identified: /home/ken/git-repos/septem/game_data/realms/void
+2017-03-29 11:12:28.159 INFO  [16196] [entity_manager::load_commands_from_fs@182] Loaded command: /home/ken/git-repos/septem/game_data/cmds/look
+2017-03-29 11:14:16.269 INFO  [16255] [main@85] Starting up..
+2017-03-29 11:14:16.270 INFO  [16255] [entity_manager::load_entities_from_fs@231] Loaded room: /home/ken/git-repos/septem/game_data/realms/void
+2017-03-29 11:14:16.270 INFO  [16255] [entity_manager::load_entities_from_fs@234] Void room identified: /home/ken/git-repos/septem/game_data/realms/void
+2017-03-29 11:14:16.271 INFO  [16255] [entity_manager::load_commands_from_fs@182] Loaded command: /home/ken/git-repos/septem/game_data/cmds/look
+2017-03-29 11:14:32.720 INFO  [16259] [account_manager::load_account@206] Trying to load acount from file: kenthompson1@gmail.com
+2017-03-29 11:14:32.720 INFO  [16259] [account_manager::load_account@231] Account file [/home/ken/git-repos/septem/game_data/accounts/k/kenthompson1@gmail.com.xml] deserialized and loaded successefully.
+2017-03-29 11:14:35.265 INFO  [16259] [account_manager::load_account@206] Trying to load acount from file: kenthompson1@gmail.com
+2017-03-29 11:14:35.265 INFO  [16259] [account_manager::load_account@231] Account file [/home/ken/git-repos/septem/game_data/accounts/k/kenthompson1@gmail.com.xml] deserialized and loaded successefully.
+2017-03-29 11:14:35.266 INFO  [16259] [entity_manager::load_player@133] Successfully loaded player: kenthompson1@gmail.com
+2017-03-29 11:21:34.032 INFO  [16387] [main@85] Starting up..
+2017-03-29 11:21:34.034 INFO  [16387] [entity_manager::load_entities_from_fs@231] Loaded room: /home/ken/git-repos/septem/game_data/realms/void
+2017-03-29 11:21:34.034 INFO  [16387] [entity_manager::load_entities_from_fs@234] Void room identified: /home/ken/git-repos/septem/game_data/realms/void
+2017-03-29 11:21:34.035 INFO  [16387] [entity_manager::load_commands_from_fs@182] Loaded command: /home/ken/git-repos/septem/game_data/cmds/look
+2017-03-29 11:21:41.398 INFO  [16392] [account_manager::load_account@206] Trying to load acount from file: kenthompson1@gmail.com
+2017-03-29 11:21:41.398 INFO  [16392] [account_manager::load_account@231] Account file [/home/ken/git-repos/septem/game_data/accounts/k/kenthompson1@gmail.com.xml] deserialized and loaded successefully.
+2017-03-29 11:21:41.399 INFO  [16392] [entity_manager::load_player@133] Successfully loaded player: kenthompson1@gmail.com
+2017-03-29 11:25:18.954 INFO  [16462] [main@85] Starting up..
+2017-03-29 11:25:18.955 INFO  [16462] [entity_manager::load_entities_from_fs@231] Loaded room: /home/ken/git-repos/septem/game_data/realms/void
+2017-03-29 11:25:18.955 INFO  [16462] [entity_manager::load_entities_from_fs@234] Void room identified: /home/ken/git-repos/septem/game_data/realms/void
+2017-03-29 11:25:18.956 INFO  [16462] [entity_manager::load_commands_from_fs@182] Loaded command: /home/ken/git-repos/septem/game_data/cmds/look
+2017-03-29 11:25:57.123 INFO  [16510] [main@85] Starting up..
+2017-03-29 11:25:57.125 INFO  [16510] [entity_manager::load_entities_from_fs@231] Loaded room: /home/ken/git-repos/septem/game_data/realms/void
+2017-03-29 11:25:57.125 INFO  [16510] [entity_manager::load_entities_from_fs@234] Void room identified: /home/ken/git-repos/septem/game_data/realms/void
+2017-03-29 11:25:57.126 INFO  [16510] [entity_manager::load_commands_from_fs@182] Loaded command: /home/ken/git-repos/septem/game_data/cmds/look
+2017-03-29 11:26:02.329 INFO  [16514] [account_manager::load_account@206] Trying to load acount from file: kenthompson1@gmail.com
+2017-03-29 11:26:02.330 INFO  [16514] [account_manager::load_account@231] Account file [/home/ken/git-repos/septem/game_data/accounts/k/kenthompson1@gmail.com.xml] deserialized and loaded successefully.
+2017-03-29 11:26:02.330 INFO  [16514] [entity_manager::load_player@133] Successfully loaded player: kenthompson1@gmail.com
+2017-03-29 11:26:44.863 INFO  [16555] [main@85] Starting up..
+2017-03-29 11:26:44.865 INFO  [16555] [entity_manager::load_entities_from_fs@231] Loaded room: /home/ken/git-repos/septem/game_data/realms/void
+2017-03-29 11:26:44.865 INFO  [16555] [entity_manager::load_entities_from_fs@234] Void room identified: /home/ken/git-repos/septem/game_data/realms/void
+2017-03-29 11:26:44.865 INFO  [16555] [entity_manager::load_commands_from_fs@182] Loaded command: /home/ken/git-repos/septem/game_data/cmds/look
+2017-03-29 11:26:50.642 INFO  [16559] [account_manager::load_account@206] Trying to load acount from file: kenthompson1@gmail.com
+2017-03-29 11:26:50.642 INFO  [16559] [account_manager::load_account@231] Account file [/home/ken/git-repos/septem/game_data/accounts/k/kenthompson1@gmail.com.xml] deserialized and loaded successefully.
+2017-03-29 11:26:50.643 INFO  [16559] [entity_manager::load_player@133] Successfully loaded player: kenthompson1@gmail.com
+2017-03-29 11:28:08.299 INFO  [16606] [main@85] Starting up..
+2017-03-29 11:28:08.300 INFO  [16606] [entity_manager::load_entities_from_fs@231] Loaded room: /home/ken/git-repos/septem/game_data/realms/void
+2017-03-29 11:28:08.300 INFO  [16606] [entity_manager::load_entities_from_fs@234] Void room identified: /home/ken/git-repos/septem/game_data/realms/void
+2017-03-29 11:28:08.301 INFO  [16606] [entity_manager::load_commands_from_fs@182] Loaded command: /home/ken/git-repos/septem/game_data/cmds/look
+2017-03-29 11:28:32.068 INFO  [16610] [account_manager::load_account@206] Trying to load acount from file: kenthompson1@gmail.com
+2017-03-29 11:28:32.068 INFO  [16610] [account_manager::load_account@231] Account file [/home/ken/git-repos/septem/game_data/accounts/k/kenthompson1@gmail.com.xml] deserialized and loaded successefully.
+2017-03-29 11:28:32.069 INFO  [16610] [entity_manager::load_player@133] Successfully loaded player: kenthompson1@gmail.com

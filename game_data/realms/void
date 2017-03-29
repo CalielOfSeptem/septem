@@ -1,21 +1,21 @@
 inherit room
 p1 = room.new()
-p1:SetTitle('The Void1')
-p1:SetDescription('Void Room1')
+p1:SetTitle('The Void')
+p1:SetDescription('An endless void of nothingness.')
 p1:AddExit('test_noun', 'test/path')
 
-function room:heartbeat ()
+--function room:heartbeat ()
 	--print('p1:Room heartbeat' .. 1)
-end
+--end
 
-function heartbeat()
+--function heartbeat()
 	--print('Global Heartbeat')
-end
+--end
 
-x = register_heartbeat(p1.heartbeat)
---print('First heartbeat registered as ' .. x)
-y = register_heartbeat(p1.heartbeat)
---print('Second heartbeat registered as ' .. y)
+--x = register_heartbeat(p1.heartbeat)
+
+--y = register_heartbeat(p1.heartbeat)
+
 
 
 
