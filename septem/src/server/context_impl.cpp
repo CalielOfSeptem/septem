@@ -276,7 +276,7 @@ void context_impl::update_names()
 // GET_MONIKER
 // ==========================================================================
 /*
-std::string context_impl::get_moniker(std::shared_ptr<se7en::character> const &ch)
+std::string context_impl::get_moniker(std::shared_ptr<septem::character> const &ch)
 {
     std::string prefix = ch->get_prefix();
     std::string name   = ch->get_name();

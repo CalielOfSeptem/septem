@@ -320,7 +320,7 @@ void test_lua()
         init_room_utype((*lua));
         
         room r1;// = room();
-        if( load_room(*lua, "/home/ken/git-repos/Se7enMud/game_data/realms/void", r1 ))
+        if( load_room(*lua, "/home/ken/git-repos/septem/game_data/realms/void", r1 ))
         {
             
         }

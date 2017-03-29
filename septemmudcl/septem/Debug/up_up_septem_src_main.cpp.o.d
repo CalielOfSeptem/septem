@@ -1,5 +1,5 @@
 Debug/up_up_septem_src_main.cpp.o: ../../septem/src/main.cpp \
- ../../septem/include/se7en.hpp ../../septem/include/config.h \
+ ../../septem/include/septem.hpp ../../septem/include/config.h \
  ../../septem/include/account_manager.hpp \
  ../../septem/include/account.hpp \
  ../../../cereal/include/cereal/archives/xml.hpp \
@@ -89,7 +89,7 @@ Debug/up_up_septem_src_main.cpp.o: ../../septem/src/main.cpp \
  ../../septem/include/utils/stringutils.hpp \
  ../../septem/include/heartbeat_manager.h
 
-../../septem/include/se7en.hpp:
+../../septem/include/septem.hpp:
 
 ../../septem/include/config.h:
 

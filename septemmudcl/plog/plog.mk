@@ -5,15 +5,15 @@
 ## Debug
 ProjectName            :=plog
 ConfigurationName      :=Debug
-WorkspacePath          :=/home/ken/git-repos/Se7enMud/se7enmudcl
-ProjectPath            :=/home/ken/git-repos/Se7enMud/se7enmudcl/plog
+WorkspacePath          :=/home/ken/git-repos/septem/septemmudcl
+ProjectPath            :=/home/ken/git-repos/septem/septemmudcl/plog
 IntermediateDirectory  :=./Debug
 OutDir                 := $(IntermediateDirectory)
 CurrentFileName        :=
 CurrentFilePath        :=
 CurrentFileFullPath    :=
 User                   :=ken
-Date                   :=25/03/17
+Date                   :=28/03/17
 CodeLitePath           :=/home/ken/.codelite
 LinkerName             :=/usr/bin/g++
 SharedObjectLinkerName :=/usr/bin/g++ -shared -fPIC
@@ -74,8 +74,8 @@ $(OutputFile): $(Objects)
 	@$(MakeDirCommand) $(@D)
 	@echo "" > $(IntermediateDirectory)/.d
 	$(AR) $(ArchiveOutputSwitch)$(OutputFile) @$(ObjectsFileList) $(ArLibs)
-	@$(MakeDirCommand) "/home/ken/git-repos/Se7enMud/se7enmudcl/.build-debug"
-	@echo rebuilt > "/home/ken/git-repos/Se7enMud/se7enmudcl/.build-debug/plog"
+	@$(MakeDirCommand) "/home/ken/git-repos/septem/septemmudcl/.build-debug"
+	@echo rebuilt > "/home/ken/git-repos/septem/septemmudcl/.build-debug/plog"
 
 MakeIntermediateDirs:
 	@test -d ./Debug || $(MakeDirCommand) ./Debug

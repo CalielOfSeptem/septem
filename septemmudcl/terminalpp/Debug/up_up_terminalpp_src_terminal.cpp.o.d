@@ -3,7 +3,7 @@ Debug/up_up_terminalpp_src_terminal.cpp.o: \
  ../../terminalpp/include/terminalpp/terminal.hpp \
  ../../terminalpp/include/terminalpp/extent.hpp \
  ../../terminalpp/include/terminalpp/core.hpp \
- terminalpp/detail/export.hpp \
+ ../../terminalpp/include/terminalpp/detail/export.hpp \
  ../../terminalpp/include/terminalpp/point.hpp \
  ../../terminalpp/include/terminalpp/string.hpp \
  ../../terminalpp/include/terminalpp/element.hpp \
@@ -34,7 +34,7 @@ Debug/up_up_terminalpp_src_terminal.cpp.o: \
 
 ../../terminalpp/include/terminalpp/core.hpp:
 
-terminalpp/detail/export.hpp:
+../../terminalpp/include/terminalpp/detail/export.hpp:
 
 ../../terminalpp/include/terminalpp/point.hpp:
 

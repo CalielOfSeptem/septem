@@ -21,3 +21,10 @@
 2017-03-28 08:08:26.006 INFO  [6553] [account_manager::load_account@206] Trying to load acount from file: kenthompson1@gmail.com
 2017-03-28 08:08:26.006 INFO  [6553] [account_manager::load_account@231] Account file [/home/ken/git-repos/Se7enMud/game_data/accounts/k/kenthompson1@gmail.com.xml] deserialized and loaded successefully.
 2017-03-28 08:08:26.006 INFO  [6553] [entity_manager::load_player@133] Successfully loaded player: kenthompson1@gmail.com
+2017-03-28 20:54:01.087 INFO  [6192] [main@85] Starting up..
+2017-03-28 20:54:01.094 INFO  [6192] [entity_manager::load_entities_from_fs@230] Loaded room: /home/ken/git-repos/septem/game_data/realms/void
+2017-03-28 20:54:01.094 INFO  [6192] [entity_manager::load_entities_from_fs@233] Void room identified: /home/ken/git-repos/septem/game_data/realms/void
+2017-03-28 20:54:01.096 INFO  [6192] [entity_manager::load_commands_from_fs@181] Loaded command: /home/ken/git-repos/septem/game_data/cmds/look
+2017-03-28 20:54:22.736 INFO  [6196] [account_manager::load_account@206] Trying to load acount from file: kenthompson1@gmail.com
+2017-03-28 20:54:22.736 INFO  [6196] [account_manager::load_account@231] Account file [/home/ken/git-repos/septem/game_data/accounts/k/kenthompson1@gmail.com.xml] deserialized and loaded successefully.
+2017-03-28 20:54:22.737 INFO  [6196] [entity_manager::load_player@133] Successfully loaded player: kenthompson1@gmail.com

@@ -1,7 +1,7 @@
 #include <boost/asio/io_service.hpp>
 #include <boost/format.hpp>
 #include <boost/program_options.hpp>
-#include "se7en.hpp"
+#include "septem.hpp"
 #include <iostream>
 #include <string>
 #include <thread>
@@ -178,7 +178,7 @@ int main(int argc, char *argv[])
     boost::shared_ptr< boost::asio::io_service::strand > strand(
 		new boost::asio::io_service::strand( io_service )
 	);
-    se7en application(
+    septem application(
         io_service
       , std::make_shared<boost::asio::io_service::work>(std::ref(io_service))
       , port);

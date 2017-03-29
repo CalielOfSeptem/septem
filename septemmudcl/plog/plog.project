@@ -119,4 +119,6 @@
       <File Name="../../plog/include/plog/Init.h"/>
     </VirtualDirectory>
   </VirtualDirectory>
+  <Dependencies Name="Debug"/>
+  <Dependencies Name="Release"/>
 </CodeLite_Project>

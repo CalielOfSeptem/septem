@@ -1,5 +1,5 @@
-#ifndef se7en9_CONTEXT_IMPL_HPP_
-#define se7en9_CONTEXT_IMPL_HPP_
+#ifndef septem9_CONTEXT_IMPL_HPP_
+#define septem9_CONTEXT_IMPL_HPP_
 
 //#include "paradice/context.hpp"
 #include "odin/net/server.hpp"
@@ -38,7 +38,7 @@
 
 
 //* =========================================================================
-/// \brief Describes the context in which a se7en server runs.
+/// \brief Describes the context in which a septem server runs.
 //* =========================================================================
 class context_impl : public world_context
 {
@@ -58,19 +58,19 @@ public :
     
 	
     //* =====================================================================
-    /// \brief Retrieves a list of clients currently connected to se7en.
+    /// \brief Retrieves a list of clients currently connected to septem.
     //* =====================================================================
     virtual std::vector<std::shared_ptr<client>> get_clients();
 
     //* =====================================================================
     /// \brief Adds a client to the list of clients currently connected
-    /// to se7en.
+    /// to septem.
     //* =====================================================================
     virtual void add_client(std::shared_ptr<client> const &cli);
 
     //* =====================================================================
     /// \brief Removes a client from the list of clients currently
-    /// connected to se7en.
+    /// connected to septem.
     //* =====================================================================
     virtual void remove_client(std::shared_ptr<client> const &cli);
     
@@ -84,7 +84,7 @@ public :
     /// and suffix.
     //* =====================================================================
   //  virtual std::string get_moniker(
-  //      std::shared_ptr<se7en::character> const &ch);
+  //      std::shared_ptr<septem::character> const &ch);
 
     //* =====================================================================
     /// \brief Loads an account from a specific account name and returns it.
@@ -110,7 +110,7 @@ public :
     //* =====================================================================
     /// \brief Saves a character.
     //* =====================================================================
-   // virtual void save_character(std::shared_ptr<se7en::character> const &ch);
+   // virtual void save_character(std::shared_ptr<septem::character> const &ch);
    
     
     //* =====================================================================
@@ -121,13 +121,13 @@ public :
     //* =====================================================================
     /// \brief Gets the currently active encounter
     //* =====================================================================
-   // virtual std::shared_ptr<se7en::active_encounter> get_active_encounter();
+   // virtual std::shared_ptr<septem::active_encounter> get_active_encounter();
 
     //* =====================================================================
     /// \brief Sets the currently active encounter
     //* =====================================================================
    // virtual void set_active_encounter(
-    //    std::shared_ptr<se7en::active_encounter> const &enc);
+    //    std::shared_ptr<septem::active_encounter> const &enc);
 
     //* =====================================================================
     /// \brief Gets the visibility of the encounter.

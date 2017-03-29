@@ -39,8 +39,8 @@ LinkOptions            :=  -lz
 IncludePath            :=  $(IncludeSwitch). $(IncludeSwitch). $(IncludeSwitch)../../telnetpp/include $(IncludeSwitch)../../terminalpp/include $(IncludeSwitch)../../ttvfs/ttvfs $(IncludeSwitch)../../odin/include $(IncludeSwitch)../../septem/include $(IncludeSwitch)../../septem/include/script $(IncludeSwitch)../../septem/include/scriptable_entities $(IncludeSwitch)../../../cereal/include $(IncludeSwitch)../../AngelscriptUtils/src $(IncludeSwitch)../../sol2 $(IncludeSwitch)../lua/src $(IncludeSwitch)../../plog/include 
 IncludePCH             := 
 RcIncludePath          := 
-Libs                   := $(LibrarySwitch)pthread $(LibrarySwitch)boost_system $(LibrarySwitch)boost_program_options $(LibrarySwitch)boost_filesystem $(LibrarySwitch)odin $(LibrarySwitch)telnetpp $(LibrarySwitch)terminalpp $(LibrarySwitch)cryptopp $(LibrarySwitch)ttvfs $(LibrarySwitch)angelscript $(LibrarySwitch)AngelscriptUtils $(LibrarySwitch)lua 
-ArLibs                 :=  "pthread" "boost_system" "boost_program_options" "boost_filesystem" "odin" "telnetpp" "terminalpp" "cryptopp" "ttvfs" "angelscript" "AngelscriptUtils" "lua" 
+Libs                   := $(LibrarySwitch)pthread $(LibrarySwitch)boost_system $(LibrarySwitch)boost_program_options $(LibrarySwitch)boost_filesystem $(LibrarySwitch)odin $(LibrarySwitch)telnetpp $(LibrarySwitch)terminalpp $(LibrarySwitch)cryptopp $(LibrarySwitch)ttvfs $(LibrarySwitch)lua 
+ArLibs                 :=  "pthread" "boost_system" "boost_program_options" "boost_filesystem" "odin" "telnetpp" "terminalpp" "cryptopp" "ttvfs" "lua" 
 LibPath                := $(LibraryPathSwitch). $(LibraryPathSwitch)/usr/lib/x86_64-linux-gnu/ $(LibraryPathSwitch)../odin/Debug $(LibraryPathSwitch)../telnetpp/Debug $(LibraryPathSwitch)../terminalpp/Debug $(LibraryPathSwitch)../ttvfs/Debug $(LibraryPathSwitch)../angelscript/Debug $(LibraryPathSwitch)../AngelscriptUtils/Debug $(LibraryPathSwitch)../lua/build $(LibraryPathSwitch)/usr/local/bin/ 
 
 ##
@@ -60,7 +60,7 @@ AS       := /usr/bin/as
 ## User defined environment variables
 ##
 CodeLiteDir:=/usr/share/codelite
-Objects0=$(IntermediateDirectory)/up_up_septem_src_communication.cpp$(ObjectSuffix) $(IntermediateDirectory)/up_up_septem_src_test_lua.cpp$(ObjectSuffix) $(IntermediateDirectory)/up_up_septem_src_entity_manager.cpp$(ObjectSuffix) $(IntermediateDirectory)/up_up_septem_src_account_manager.cpp$(ObjectSuffix) $(IntermediateDirectory)/up_up_septem_src_main.cpp$(ObjectSuffix) $(IntermediateDirectory)/up_up_septem_src_account.cpp$(ObjectSuffix) $(IntermediateDirectory)/up_up_septem_src_se7en.cpp$(ObjectSuffix) $(IntermediateDirectory)/up_up_septem_src_vfs_filesystem_manager.cpp$(ObjectSuffix) $(IntermediateDirectory)/up_up_septem_src_server_context_impl.cpp$(ObjectSuffix) $(IntermediateDirectory)/up_up_septem_src_server_connection.cpp$(ObjectSuffix) \
+Objects0=$(IntermediateDirectory)/up_up_septem_src_communication.cpp$(ObjectSuffix) $(IntermediateDirectory)/up_up_septem_src_test_lua.cpp$(ObjectSuffix) $(IntermediateDirectory)/up_up_septem_src_entity_manager.cpp$(ObjectSuffix) $(IntermediateDirectory)/up_up_septem_src_account_manager.cpp$(ObjectSuffix) $(IntermediateDirectory)/up_up_septem_src_main.cpp$(ObjectSuffix) $(IntermediateDirectory)/up_up_septem_src_account.cpp$(ObjectSuffix) $(IntermediateDirectory)/up_up_septem_src_septem.cpp$(ObjectSuffix) $(IntermediateDirectory)/up_up_septem_src_vfs_filesystem_manager.cpp$(ObjectSuffix) $(IntermediateDirectory)/up_up_septem_src_server_context_impl.cpp$(ObjectSuffix) $(IntermediateDirectory)/up_up_septem_src_server_connection.cpp$(ObjectSuffix) \
 	$(IntermediateDirectory)/up_up_septem_src_server_client.cpp$(ObjectSuffix) $(IntermediateDirectory)/up_up_septem_src_env_room.cpp$(ObjectSuffix) 
 
 
@@ -73,11 +73,28 @@ Objects=$(Objects0)
 .PHONY: all clean PreBuild PrePreBuild PostBuild MakeIntermediateDirs
 all: $(OutputFile)
 
-$(OutputFile): $(IntermediateDirectory)/.d $(Objects) 
+$(OutputFile): $(IntermediateDirectory)/.d "../.build-debug/odin" "../.build-debug/telnetpp" "../.build-debug/terminalpp" $(Objects) 
 	@$(MakeDirCommand) $(@D)
 	@echo "" > $(IntermediateDirectory)/.d
 	@echo $(Objects0)  > $(ObjectsFileList)
 	$(LinkerName) $(OutputSwitch)$(OutputFile) @$(ObjectsFileList) $(LibPath) $(Libs) $(LinkOptions)
+
+"../.build-debug/odin":
+	@$(MakeDirCommand) "../.build-debug"
+	@echo stam > "../.build-debug/odin"
+
+
+"../.build-debug/telnetpp":
+	@$(MakeDirCommand) "../.build-debug"
+	@echo stam > "../.build-debug/telnetpp"
+
+
+"../.build-debug/terminalpp":
+	@$(MakeDirCommand) "../.build-debug"
+	@echo stam > "../.build-debug/terminalpp"
+
+
+
 
 MakeIntermediateDirs:
 	@test -d ./Debug || $(MakeDirCommand) ./Debug
@@ -140,13 +157,13 @@ $(IntermediateDirectory)/up_up_septem_src_account.cpp$(DependSuffix): ../../sept
 $(IntermediateDirectory)/up_up_septem_src_account.cpp$(PreprocessSuffix): ../../septem/src/account.cpp
 	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/up_up_septem_src_account.cpp$(PreprocessSuffix) ../../septem/src/account.cpp
 
-$(IntermediateDirectory)/up_up_septem_src_se7en.cpp$(ObjectSuffix): ../../septem/src/se7en.cpp $(IntermediateDirectory)/up_up_septem_src_se7en.cpp$(DependSuffix)
-	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/ken/git-repos/septem/septem/src/se7en.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/up_up_septem_src_se7en.cpp$(ObjectSuffix) $(IncludePath)
-$(IntermediateDirectory)/up_up_septem_src_se7en.cpp$(DependSuffix): ../../septem/src/se7en.cpp
-	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/up_up_septem_src_se7en.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/up_up_septem_src_se7en.cpp$(DependSuffix) -MM ../../septem/src/se7en.cpp
+$(IntermediateDirectory)/up_up_septem_src_septem.cpp$(ObjectSuffix): ../../septem/src/septem.cpp $(IntermediateDirectory)/up_up_septem_src_septem.cpp$(DependSuffix)
+	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/ken/git-repos/septem/septem/src/septem.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/up_up_septem_src_septem.cpp$(ObjectSuffix) $(IncludePath)
+$(IntermediateDirectory)/up_up_septem_src_septem.cpp$(DependSuffix): ../../septem/src/septem.cpp
+	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/up_up_septem_src_septem.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/up_up_septem_src_septem.cpp$(DependSuffix) -MM ../../septem/src/septem.cpp
 
-$(IntermediateDirectory)/up_up_septem_src_se7en.cpp$(PreprocessSuffix): ../../septem/src/se7en.cpp
-	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/up_up_septem_src_se7en.cpp$(PreprocessSuffix) ../../septem/src/se7en.cpp
+$(IntermediateDirectory)/up_up_septem_src_septem.cpp$(PreprocessSuffix): ../../septem/src/septem.cpp
+	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/up_up_septem_src_septem.cpp$(PreprocessSuffix) ../../septem/src/septem.cpp
 
 $(IntermediateDirectory)/up_up_septem_src_vfs_filesystem_manager.cpp$(ObjectSuffix): ../../septem/src/vfs/filesystem_manager.cpp $(IntermediateDirectory)/up_up_septem_src_vfs_filesystem_manager.cpp$(DependSuffix)
 	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/ken/git-repos/septem/septem/src/vfs/filesystem_manager.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/up_up_septem_src_vfs_filesystem_manager.cpp$(ObjectSuffix) $(IncludePath)

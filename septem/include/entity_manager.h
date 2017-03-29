@@ -221,7 +221,7 @@ private:
     
     
     std::map < std::string, bool > entity_map = { 
-        {"/home/ken/git-repos/Se7enMud/game_data/realms/void", false}
+        {"/home/ken/git-repos/septem/game_data/realms/void", false}
         }; 
     
 

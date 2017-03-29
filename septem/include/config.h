@@ -21,7 +21,7 @@
 */
 #define LISTEN_BACKLOG 5
 
-#define DEFAULT_GAME_DATA_PATH "/home/ken/git-repos/Se7enMud/game_data/"
+#define DEFAULT_GAME_DATA_PATH "/home/ken/git-repos/septem/game_data/"
 
 #define DEFAULT_ENTITIES_PATH DEFAULT_GAME_DATA_PATH "entities/"
 

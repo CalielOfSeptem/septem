@@ -6,7 +6,7 @@ Debug/up_up_terminalpp_src_encoder.cpp.o: \
  ../../terminalpp/include/terminalpp/attribute.hpp \
  ../../terminalpp/include/terminalpp/ansi/protocol.hpp \
  ../../terminalpp/include/terminalpp/core.hpp \
- terminalpp/detail/export.hpp \
+ ../../terminalpp/include/terminalpp/detail/export.hpp \
  ../../terminalpp/include/terminalpp/ansi/control_characters.hpp \
  ../../terminalpp/include/terminalpp/detail/ascii.hpp \
  ../../terminalpp/include/terminalpp/ansi/charset.hpp \
@@ -29,7 +29,7 @@ Debug/up_up_terminalpp_src_encoder.cpp.o: \
 
 ../../terminalpp/include/terminalpp/core.hpp:
 
-terminalpp/detail/export.hpp:
+../../terminalpp/include/terminalpp/detail/export.hpp:
 
 ../../terminalpp/include/terminalpp/ansi/control_characters.hpp:
 

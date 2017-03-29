@@ -5,15 +5,15 @@
 ## Debug
 ProjectName            :=odin
 ConfigurationName      :=Debug
-WorkspacePath          :=/home/ken/git-repos/Se7enMud/se7enmudcl
-ProjectPath            :=/home/ken/git-repos/Se7enMud/se7enmudcl/odin
+WorkspacePath          :=/home/ken/git-repos/septem/septemmudcl
+ProjectPath            :=/home/ken/git-repos/septem/septemmudcl/odin
 IntermediateDirectory  :=./Debug
 OutDir                 := $(IntermediateDirectory)
 CurrentFileName        :=
 CurrentFilePath        :=
 CurrentFileFullPath    :=
 User                   :=ken
-Date                   :=20/03/17
+Date                   :=28/03/17
 CodeLitePath           :=/home/ken/.codelite
 LinkerName             :=/usr/bin/g++
 SharedObjectLinkerName :=/usr/bin/g++ -shared -fPIC
@@ -77,8 +77,8 @@ $(OutputFile): $(Objects)
 	@echo "" > $(IntermediateDirectory)/.d
 	@echo $(Objects0)  > $(ObjectsFileList)
 	$(AR) $(ArchiveOutputSwitch)$(OutputFile) @$(ObjectsFileList) $(ArLibs)
-	@$(MakeDirCommand) "/home/ken/git-repos/Se7enMud/se7enmudcl/.build-debug"
-	@echo rebuilt > "/home/ken/git-repos/Se7enMud/se7enmudcl/.build-debug/odin"
+	@$(MakeDirCommand) "/home/ken/git-repos/septem/septemmudcl/.build-debug"
+	@echo rebuilt > "/home/ken/git-repos/septem/septemmudcl/.build-debug/odin"
 
 MakeIntermediateDirs:
 	@test -d ./Debug || $(MakeDirCommand) ./Debug
@@ -94,7 +94,7 @@ PreBuild:
 ## Objects
 ##
 $(IntermediateDirectory)/up_up_odin_src_tokenise.cpp$(ObjectSuffix): ../../odin/src/tokenise.cpp $(IntermediateDirectory)/up_up_odin_src_tokenise.cpp$(DependSuffix)
-	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/ken/git-repos/Se7enMud/odin/src/tokenise.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/up_up_odin_src_tokenise.cpp$(ObjectSuffix) $(IncludePath)
+	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/ken/git-repos/septem/odin/src/tokenise.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/up_up_odin_src_tokenise.cpp$(ObjectSuffix) $(IncludePath)
 $(IntermediateDirectory)/up_up_odin_src_tokenise.cpp$(DependSuffix): ../../odin/src/tokenise.cpp
 	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/up_up_odin_src_tokenise.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/up_up_odin_src_tokenise.cpp$(DependSuffix) -MM ../../odin/src/tokenise.cpp
 
@@ -102,7 +102,7 @@ $(IntermediateDirectory)/up_up_odin_src_tokenise.cpp$(PreprocessSuffix): ../../o
 	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/up_up_odin_src_tokenise.cpp$(PreprocessSuffix) ../../odin/src/tokenise.cpp
 
 $(IntermediateDirectory)/up_up_odin_src_net_server.cpp$(ObjectSuffix): ../../odin/src/net/server.cpp $(IntermediateDirectory)/up_up_odin_src_net_server.cpp$(DependSuffix)
-	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/ken/git-repos/Se7enMud/odin/src/net/server.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/up_up_odin_src_net_server.cpp$(ObjectSuffix) $(IncludePath)
+	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/ken/git-repos/septem/odin/src/net/server.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/up_up_odin_src_net_server.cpp$(ObjectSuffix) $(IncludePath)
 $(IntermediateDirectory)/up_up_odin_src_net_server.cpp$(DependSuffix): ../../odin/src/net/server.cpp
 	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/up_up_odin_src_net_server.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/up_up_odin_src_net_server.cpp$(DependSuffix) -MM ../../odin/src/net/server.cpp
 
@@ -110,7 +110,7 @@ $(IntermediateDirectory)/up_up_odin_src_net_server.cpp$(PreprocessSuffix): ../..
 	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/up_up_odin_src_net_server.cpp$(PreprocessSuffix) ../../odin/src/net/server.cpp
 
 $(IntermediateDirectory)/up_up_odin_src_net_socket.cpp$(ObjectSuffix): ../../odin/src/net/socket.cpp $(IntermediateDirectory)/up_up_odin_src_net_socket.cpp$(DependSuffix)
-	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/ken/git-repos/Se7enMud/odin/src/net/socket.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/up_up_odin_src_net_socket.cpp$(ObjectSuffix) $(IncludePath)
+	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/ken/git-repos/septem/odin/src/net/socket.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/up_up_odin_src_net_socket.cpp$(ObjectSuffix) $(IncludePath)
 $(IntermediateDirectory)/up_up_odin_src_net_socket.cpp$(DependSuffix): ../../odin/src/net/socket.cpp
 	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/up_up_odin_src_net_socket.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/up_up_odin_src_net_socket.cpp$(DependSuffix) -MM ../../odin/src/net/socket.cpp
 

@@ -50,7 +50,7 @@ namespace odin { namespace net {
 //    class connectionsm;
 //}
 
-//namespace se7en {
+//namespace septem {
 
 //* =========================================================================
 /// \brief An connection to a socket that abstracts away details about the

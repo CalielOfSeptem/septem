@@ -1,5 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CodeLite_Project Name="septem" InternalType="Console" Version="10.0.0">
+  <Plugins>
+    <Plugin Name="qmake">
+      <![CDATA[00010001N0005Debug000000000000]]>
+    </Plugin>
+    <Plugin Name="CMakePlugin">
+      <![CDATA[[{
+  "name": "Debug",
+  "enabled": false,
+  "buildDirectory": "build",
+  "sourceDirectory": "$(ProjectPath)",
+  "generator": "",
+  "buildType": "",
+  "arguments": [],
+  "parentProject": ""
+ }]]]>
+    </Plugin>
+  </Plugins>
   <VirtualDirectory Name="src">
     <VirtualDirectory Name="vfs">
       <File Name="../../septem/src/vfs/filesystem_manager.cpp"/>
@@ -18,7 +35,7 @@
     <File Name="../../septem/src/account_manager.cpp"/>
     <File Name="../../septem/src/main.cpp"/>
     <File Name="../../septem/src/account.cpp"/>
-    <File Name="../../septem/src/se7en.cpp"/>
+    <File Name="../../septem/src/septem.cpp"/>
   </VirtualDirectory>
   <VirtualDirectory Name="include">
     <VirtualDirectory Name="vfs">
@@ -54,30 +71,12 @@
     <File Name="../../septem/include/config.h"/>
     <File Name="../../septem/include/entity_manager.h"/>
     <File Name="../../septem/include/test_lua.h"/>
-    <File Name="../../septem/include/se7en.hpp"/>
     <File Name="../../septem/include/communication.hpp"/>
     <File Name="../../septem/include/account.hpp"/>
+    <File Name="../../septem/include/septem.hpp"/>
   </VirtualDirectory>
-  <Plugins>
-    <Plugin Name="qmake">
-      <![CDATA[00010001N0005Debug000000000000]]>
-    </Plugin>
-    <Plugin Name="CMakePlugin">
-      <![CDATA[[{
-  "name": "Debug",
-  "enabled": false,
-  "buildDirectory": "build",
-  "sourceDirectory": "$(ProjectPath)",
-  "generator": "",
-  "buildType": "",
-  "arguments": [],
-  "parentProject": ""
- }]]]>
-    </Plugin>
-  </Plugins>
   <Description/>
   <Dependencies/>
-  <Dependencies Name="Debug"/>
   <Dependencies Name="Release"/>
   <Settings Type="Executable">
     <GlobalSettings>
@@ -128,8 +127,6 @@
         <Library Value="terminalpp"/>
         <Library Value="cryptopp"/>
         <Library Value="ttvfs"/>
-        <Library Value="angelscript"/>
-        <Library Value="AngelscriptUtils"/>
         <Library Value="lua"/>
       </Linker>
       <ResourceCompiler Options="" Required="no"/>
@@ -207,4 +204,9 @@
       </Completion>
     </Configuration>
   </Settings>
+  <Dependencies Name="Debug">
+    <Project Name="odin"/>
+    <Project Name="telnetpp"/>
+    <Project Name="terminalpp"/>
+  </Dependencies>
 </CodeLite_Project>

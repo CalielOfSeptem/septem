@@ -32,7 +32,7 @@
      
      std::string get_object_uid()
      {
-         // example: /home/ken/git-repos/Se7enMud/game_data/realms/void:obj=room1:id=0
+         // example: /home/ken/git-repos/septem/game_data/realms/void:obj=room1:id=0
          return script_path + ":obj=" + script_obj_name + ":id=" + std::to_string(instance_id);
      }
      

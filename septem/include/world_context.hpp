@@ -19,7 +19,7 @@ public :
     virtual ~world_context() {}
 
     //* =====================================================================
-    /// \brief Retrieves a list of clients currently connected to Se7enMud.
+    /// \brief Retrieves a list of clients currently connected to septem.
     //* =====================================================================
     virtual std::vector<std::shared_ptr<client>> get_clients() = 0;
 
