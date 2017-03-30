@@ -1,7 +1,6 @@
 inherit command
 c = command.new()
 c:SetVerb("look")
-
 -- o is the base_entity from which the command originated.  Cmd is the command text.  Note that the verb
 -- which initiated the command will be the first element in cmd.  Ex/ > look, cmd="look", >look chest, cmd = "look chest"
 
