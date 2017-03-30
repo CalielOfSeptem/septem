@@ -17,9 +17,47 @@ function command:execute_command ( o, cmd )
 		env = p:GetRoom()
 
 		if env ~= nil then
-			p:SendToEntity('[' .. env:GetTitle() .. ']')
-			p:SendToEntity('\r\n')
-			p:SendToEntity(env:GetDescription())
+			s = FormatRoom(env)
+			--p:SendToEntity('[' .. env:GetTitle() .. ']')
+			--p:SendToEntity('\r\n')
+			p:SendToEntity(s .. '\r\n')
 		end	
 	end
+end
+
+function string:split( inSplitPattern, outResults )
+  if not outResults then
+    outResults = { }
+  end
+  local theStart = 1
+  local theSplitStart, theSplitEnd = string.find( self, inSplitPattern, theStart )
+  while theSplitStart do
+    table.insert( outResults, string.sub( self, theStart, theSplitStart-1 ) )
+    theStart = theSplitEnd + 1
+    theSplitStart, theSplitEnd = string.find( self, inSplitPattern, theStart )
+  end
+  table.insert( outResults, string.sub( self, theStart ) )
+  return outResults
+end
+
+function FormatRoom(r)
+	s = "[" .. r:GetTitle() .. "]\r\n"
+	s = s .. r:GetDescription() .. "\r\n"
+	s = s .. "Obvious paths: "
+	exits = r:GetExits()
+	for i = 1, #exits do
+		local myTable = exits[i]:GetExit():split("|")
+		str = myTable[1]
+		str = str:lower()
+		if i ~= #exits then
+			str = str .. ', '
+
+		else
+			str = str .. '.' 
+		end
+		s = s .. str
+	end
+	
+	return s
+
 end

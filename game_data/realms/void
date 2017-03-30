@@ -2,15 +2,21 @@ inherit room
 p1 = room.new()
 p1:SetTitle('The Void')
 p1:SetDescription('An endless void of nothingness.')
-p1:AddExit('test_noun', 'test/path')
 
---function room:heartbeat ()
+p1:AddExit( 'north|n', 'test/path', true)
+p1:AddExit( 'south|s', 'test/path', true)
+p1:AddExit( 'east|e', 'test/path', true)
+p1:AddExit( 'west|w', 'test/path', true)
+
+
+
+function room:heartbeat ()
 	--print('p1:Room heartbeat' .. 1)
---end
+end
 
---function heartbeat()
+function heartbeat()
 	--print('Global Heartbeat')
---end
+end
 
 --x = register_heartbeat(p1.heartbeat)
 

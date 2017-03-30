@@ -26,7 +26,7 @@ struct living_entity : base_entity
     
     room* GetRoom()
     {
-        return static_cast<room*>(environment_);
+        return dynamic_cast<room*>(GetEnvironment());
     }
 
 };

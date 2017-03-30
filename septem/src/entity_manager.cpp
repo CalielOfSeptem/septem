@@ -218,9 +218,6 @@ bool entity_manager::load_entities_from_fs(const fs::path& dir_path)
 
                         for(auto& ent : entities) {
 
-                            // if(*it % 2 == 1)
-                            //{
-                            //  it = entities.erase(it);
                             switch(ent->entity_type) {
                             case EntityType::ROOM: {
                                 //   std::make_shared((*it));
@@ -364,7 +361,7 @@ int test()
     };
     struct player : base, base_abstract {
         int b = 40;
-        void foo() const
+        void foo() override
         {
            
         }
@@ -412,10 +409,9 @@ int test()
 
 void entity_manager::_init_room_type(sol::state& lua)
 {
-    //test();
-    lua.open_libraries(sol::lib::base, sol::lib::package, sol::lib::math, sol::lib::table);
+    lua.open_libraries(sol::lib::base, sol::lib::string, sol::lib::package, sol::lib::math, sol::lib::table);
     //lua.new_usertype<base_entity>("base");
-    lua.new_usertype<exitobj>("exitobj", "get_exit_noun", &exitobj::get_exit_noun);
+    lua.new_usertype<exitobj>("exitobj", "GetExit", &exitobj::GetExit);
     lua.new_usertype<room>("room",
                            "GetTitle", &room::GetTitle, 
                            "SetTitle", &room::SetTitle, 
@@ -435,7 +431,7 @@ void entity_manager::_init_room_type(sol::state& lua)
 
 void entity_manager::_init_player_type(sol::state& lua)
 {
-    lua.open_libraries(sol::lib::base, sol::lib::package, sol::lib::math, sol::lib::table);
+    lua.open_libraries(sol::lib::base, sol::lib::string, sol::lib::package, sol::lib::math, sol::lib::table);
     lua.new_usertype<player_entity>(
         "player", 
         "player_name", &player_entity::player_name, 
@@ -448,7 +444,7 @@ void entity_manager::_init_player_type(sol::state& lua)
 
 void entity_manager::_init_command_type(sol::state& lua)
 {
-    lua.open_libraries(sol::lib::base, sol::lib::package, sol::lib::math, sol::lib::table);
+    lua.open_libraries(sol::lib::base, sol::lib::string, sol::lib::package, sol::lib::math, sol::lib::table);
     lua.new_usertype<command>(
         "command", 
         "GetVerb", &command::GetVerb,

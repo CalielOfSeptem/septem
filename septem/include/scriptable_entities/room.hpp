@@ -3,6 +3,7 @@
 
 #include <string>
 #include <vector>
+#include <map>
 #include "scriptable_entities/base_entity.h"
 #include "scriptable_entities/container.h"
 //#include <scriptable_entities/script_manager.h>
@@ -11,20 +12,30 @@ using namespace std;
 
 struct exitobj
 {
-    exitobj() = default;
-    exitobj(const std::string& exit_noun, const std::string& exit_path)
-        : exit_noun(exit_noun)
+    exitobj()
+    {
+        
+    }
+    exitobj(const std::string& exit, const std::string& exit_path, bool bobvious)
+        : exit(exit)
         , exit_path(exit_path)
     {
+        this->bobvious = true;
     }
-    const std::string& get_exit_noun()
+    const std::string& GetExit()
     {
-        return exit_noun;
-    };
+        return exit;
+    }
+    
+    const std::string& GetExitPath()
+    {
+        return exit_path;
+    }
 
 private:
-    std::string exit_noun;
-    std::string exit_path;
+    std::string exit_path; // path the script the exit is linked to
+    std::string bobvious; // whether the exit is shown by default
+    std::string exit;
 };
 
 struct room : base_entity, container
@@ -53,10 +64,10 @@ struct room : base_entity, container
     {
     }
 
-    bool AddExit(const string& exit_noun, const string& exit_path)
+    bool AddExit(const std::string& exit, const string& exit_path, bool obvious)
     {
         // TODO: add in validation code
-        obvious_exits.push_back(exitobj(exit_noun, exit_path));
+        obvious_exits.push_back(exitobj(exit, exit_path, obvious));
         return true;
     }
 
@@ -94,8 +105,13 @@ struct room : base_entity, container
     
     virtual void AddEntityToInventory(const shared_ptr< entity_wrapper >& ew)
     {
-        ew->script_obj->SetEnvironment( (base_entity*)this);
+        ew->script_obj->SetEnvironment( (base_entity*)this );//ew->script_obj );
         container::AddEntityToInventory(ew);
+    }
+    
+    virtual bool RemoveEntityFromInventory(const std::string& id)
+    {
+        return container::RemoveEntityFromInventory(id);
     }
 
 

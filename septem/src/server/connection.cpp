@@ -796,15 +796,6 @@ struct connection::impl
     // ======================================================================
     void on_data(std::vector<odin::u8> const &data)
     {
-		//puts("on_data");
-       // write(data);
-        //write("h");
-        //std::string s = "h";
-       // write(telnet_session_.send({
-       // data.begin(), data.end()
-       // }));
-    
-        //write(telnet_session_.send({telnetpp::element(data)}));
         write(telnet_session_.send(
             telnet_session_.receive({data.begin(), data.end()})));
             

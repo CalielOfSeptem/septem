@@ -18,7 +18,12 @@
          //weak_ptr< entity_wrapper> ewp = ew;
          inventory.insert(ew);
      }
-
+     
+     virtual bool RemoveEntityFromInventory( const std::string& id  )
+     {
+         // TODO: implement this and be sure to nuke a removed items environment_ pointer..
+         return true;
+     }
      private:
      std::set< shared_ptr<entity_wrapper> > inventory;
  };
