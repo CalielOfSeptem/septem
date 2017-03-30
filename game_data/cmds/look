@@ -6,7 +6,6 @@ c:SetVerb("look")
 -- which initiated the command will be the first element in cmd.  Ex/ > look, cmd="look", >look chest, cmd = "look chest"
 
 function command:execute_command ( o, cmd )
-	--print( 'Type of o = ' .. type(o) )  o will be of user_data
 	p = player_cast(o)
 	if p ~= nil then
 		-- lets see what room the player/npc is in..
