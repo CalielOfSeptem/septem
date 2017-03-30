@@ -1354,7 +1354,7 @@ print(test.ref_global2)
 	REQUIRE(through_variable == 35);
 }
 
-TEST_CASE("usertypes/var-and-property", "make sure const vars are readonly and properties can handle lambdas") {
+TEST_CASE("usertype/var-and-property", "make sure const vars are readonly and properties can handle lambdas") {
 	const static int arf = 20;
 
 	struct test {
@@ -1620,5 +1620,71 @@ end
 		lua.script("val = t:runtime_func(2)");
 		val = lua["val"];
 		REQUIRE(val == 3);
+	}
+}
+
+TEST_CASE("usertype/meta-key-retrievals", "allow for special meta keys (__index, __newindex) to trigger methods even if overwritten directly") {
+	SECTION("dynamically") {
+		static int writes = 0;
+		static std::string keys[4] = {};
+		static int values[4] = {};
+		struct d_sample {
+			void foo(std::string k, int v) {
+				keys[writes] = k;
+				values[writes] = v;
+				++writes;
+			}
+		};
+
+		sol::state lua;
+		lua.new_usertype<d_sample>("sample");
+		sol::table s = lua["sample"]["new"]();
+		s[sol::metatable_key][sol::meta_function::new_index] = &d_sample::foo;
+		lua["var"] = s;
+
+
+		lua.script("var = sample.new()");
+		lua.script("var.key = 2");
+		lua.script("var.__newindex = 4");
+		lua.script("var.__index = 3");
+		lua.script("var.__call = 1");
+		REQUIRE(values[0] == 2);
+		REQUIRE(values[1] == 4);
+		REQUIRE(values[2] == 3);
+		REQUIRE(values[3] == 1);
+		REQUIRE(keys[0] == "key");
+		REQUIRE(keys[1] == "__newindex");
+		REQUIRE(keys[2] == "__index");
+		REQUIRE(keys[3] == "__call");
+	}
+
+	SECTION("statically") {
+		static int writes = 0;
+		static std::string keys[4] = {};
+		static int values[4] = {};
+		struct sample {
+			void foo(std::string k, int v) {
+				keys[writes] = k;
+				values[writes] = v;
+				++writes;
+			}
+		};
+
+		sol::state lua;
+		lua.new_usertype<sample>("sample", sol::meta_function::new_index, &sample::foo);
+
+		lua.script("var = sample.new()");
+		lua.script("var.key = 2");
+		lua.script("var.__newindex = 4");
+		lua.script("var.__index = 3");
+		lua.script("var.__call = 1");
+		REQUIRE(values[0] == 2);
+		REQUIRE(values[1] == 4);
+		REQUIRE(values[2] == 3);
+		REQUIRE(values[3] == 1);
+		REQUIRE(keys[0] == "key");
+		REQUIRE(keys[1] == "__newindex");
+		REQUIRE(keys[2] == "__index");
+		REQUIRE(keys[3] == "__call");
 	}
 }
