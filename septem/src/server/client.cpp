@@ -642,11 +642,9 @@ private :
     void on_auth()
     {
         //For now, lets go ahead and cheat and just add a player entity to the entity manager representing this new connection.
-       // std::shared_ptr< player_entity > pe = std::shared_ptr< player_entity >(new player_entity());
-        //pe->client_obj = self_.get_weak_ptr();//td::weak_ptr<client>(self_);//shared_from_this();
-       // account ac-
-        
-        entity_manager::Instance().load_player(self_.get_shared_ptr());//.get_weak_ptr());
+        //std::string test;
+        my_uid = entity_manager::Instance().load_player(self_.get_shared_ptr());//.get_weak_ptr());
+        //LOG_DEBUG << test;
     }
     
         // ======================================================================
@@ -657,6 +655,14 @@ private :
         puts(input.c_str());
         std::string cmd = input;//to_lower_copy(input);
         trim(cmd);
+        
+        /*
+         * Pass the command to the daemon that handles input..
+         */
+         
+        entity_manager::Instance().process_player_cmd( my_uid, cmd );
+        
+        
         if( startsWith(cmd, "ls")  )
         {
             std::string s = filesystem_manager_.ls_current_directory();
@@ -704,6 +710,7 @@ private :
     int                                     password_try_count;
     enum state                              current_state;//   = ST_ACCOUNT_LOGIN;
     filesystem_manager                      filesystem_manager_;
+    std::string                             my_uid; /* UID within the lua script engine */
 
 private :
     // ======================================================================

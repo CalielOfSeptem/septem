@@ -1,6 +1,8 @@
 #include "entity_manager.h"
 
-bool entity_manager::compile_script(std::string& script_path, unordered_set<shared_ptr<entity_wrapper>>& entities, std::string& reason)
+bool entity_manager::compile_script(std::string& script_path,
+                                    unordered_set<shared_ptr<entity_wrapper> >& entities,
+                                    std::string& reason)
 {
     fs::path p(script_path);
     if(!fs::exists(p)) {
@@ -21,9 +23,10 @@ bool entity_manager::compile_script(std::string& script_path, unordered_set<shar
     shared_ptr<sol::state> lua(new sol::state);
 
     switch(etype) {
-        case EntityType::DAEMON: {
-        
-        _init_daemon_type(*lua); // may need to have all commands in the same state to reduce overhead... but that could get messy
+    case EntityType::DAEMON: {
+
+        _init_daemon_type(
+            *lua); // may need to have all commands in the same state to reduce overhead... but that could get messy
 
         (*lua)["internal_entity_script_path"] = script_path;
         std::vector<string> daemon_obj_name;
@@ -40,13 +43,14 @@ bool entity_manager::compile_script(std::string& script_path, unordered_set<shar
             new_se->script_state = lua; // shared_ptr<sol::state>(lua);
             new_se->script_path = script_path;
             new_se->entity_type = EntityType::DAEMON;
-            new_se->instance_id = 0;//command_uid_count++;
+            new_se->instance_id = 0; // command_uid_count++;
             entities.insert(new_se);
         }
     } break;
-        case EntityType::COMMAND: {
-        
-        _init_command_type(*lua); // may need to have all commands in the same state to reduce overhead... but that could get messy
+    case EntityType::COMMAND: {
+
+        _init_command_type(
+            *lua); // may need to have all commands in the same state to reduce overhead... but that could get messy
 
         (*lua)["internal_entity_script_path"] = script_path;
         std::vector<string> command_obj_name;
@@ -136,45 +140,45 @@ bool entity_manager::compile_script(std::string& script_path, unordered_set<shar
     return true;
 }
 
-bool entity_manager::load_player(shared_ptr<client> c)
+std::string entity_manager::load_player(shared_ptr<client> c)
 {
     std::unordered_set<shared_ptr<entity_wrapper> > entities;
     std::string reason;
     std::string fpath = DEFAULT_PLAYER_ENTITY_SCRIPT; // Base script for all players
+    std::string ret;
     if(compile_script(fpath, entities, reason)) {
 
         for(auto ent : entities) {
 
             switch(ent->entity_type) {
             case EntityType::PLAYER: {
-                if( ent->script_obj )
-                {
-                   base_entity * be = &ent->script_obj.value();
-                   player_entity * pe = dynamic_cast<player_entity*>(be);
-                   pe->client_obj = c;
-                   pe->player_name = c->get_account()->username;
-                   LOG_INFO << "Successfully loaded player: " << pe->player_name;
+                if(ent->script_obj) {
+                    base_entity* be = &ent->script_obj.value();
+                    player_entity* pe = dynamic_cast<player_entity*>(be);
+                    pe->client_obj = c;
+                    pe->player_name = c->get_account()->username;
+                    LOG_INFO << "Successfully loaded player: " << pe->player_name;
+                } else {
+                    LOG_ERROR << "Unable to cast player object into player_entity.";
                 }
-                else
-                {
-                   LOG_ERROR << "Unable to cast player object into player_entity.";
-                }
-               
-                player_objs.insert({ ent->get_object_uid(), ent }); 
-                
-                entity_wrapper & ew = *void_room;
+
+                player_objs.insert({ ent->get_object_uid(), ent });
+
+                entity_wrapper& ew = *void_room;
                 move_entity(ent, ew);
+                ret = ent->get_object_uid();
             } break;
             default:
                 break;
             }
         }
 
-        return true;
+        
     } else {
         LOG_DEBUG << "Error. Unable to load player: " << reason;
-        return false;
+       // return "";
     }
+    return ret;
 }
 
 bool entity_manager::load_commands_from_fs(const fs::path& dir_path)
@@ -186,9 +190,7 @@ bool entity_manager::load_commands_from_fs(const fs::path& dir_path)
         if(fs::is_directory(itr->status())) {
             if(load_entities_from_fs(itr->path()))
                 return true;
-        } 
-        else
-        {
+        } else {
             std::unordered_set<shared_ptr<entity_wrapper> > entities;
             std::string reason;
             std::string fpath = itr->path().string();
@@ -197,11 +199,10 @@ bool entity_manager::load_commands_from_fs(const fs::path& dir_path)
                 for(auto ent : entities) {
                     switch(ent->entity_type) {
                     case EntityType::COMMAND: {
-                        base_entity * be = &ent->script_obj.value();
-                        command * ce = dynamic_cast<command*>(be);
-                        command_objs.insert({ boost::to_lower_copy(ce->GetVerb()),
-                                           ent });
-                        
+                        base_entity* be = &ent->script_obj.value();
+                        command* ce = dynamic_cast<command*>(be);
+                        command_objs.insert({ boost::to_lower_copy(ce->GetName()), ent });
+
                         LOG_INFO << "Loaded command: " << fpath;
                     } break;
                     default:
@@ -209,8 +210,7 @@ bool entity_manager::load_commands_from_fs(const fs::path& dir_path)
                         break;
                     }
                 }
-            }
-            else{
+            } else {
                 LOG_ERROR << "Unable to load " << fpath << ": " << reason;
             }
         }
@@ -227,9 +227,7 @@ bool entity_manager::load_daemon_from_fs(const fs::path& dir_path)
         if(fs::is_directory(itr->status())) {
             if(load_daemon_from_fs(itr->path()))
                 return true;
-        } 
-        else
-        {
+        } else {
             std::unordered_set<shared_ptr<entity_wrapper> > entities;
             std::string reason;
             std::string fpath = itr->path().string();
@@ -238,11 +236,10 @@ bool entity_manager::load_daemon_from_fs(const fs::path& dir_path)
                 for(auto ent : entities) {
                     switch(ent->entity_type) {
                     case EntityType::DAEMON: {
-                        base_entity * be = &ent->script_obj.value();
-                        daemonobj * ce = dynamic_cast<daemonobj*>(be);
-                        daemon_objs.insert({ boost::to_lower_copy(ce->GetName()),
-                                           ent });
-                        
+                        base_entity* be = &ent->script_obj.value();
+                        daemonobj* ce = dynamic_cast<daemonobj*>(be);
+                        daemon_objs.insert({ boost::to_lower_copy(ce->GetName()), ent });
+
                         LOG_INFO << "Loaded daemon: " << fpath;
                     } break;
                     default:
@@ -250,15 +247,13 @@ bool entity_manager::load_daemon_from_fs(const fs::path& dir_path)
                         break;
                     }
                 }
-            }
-            else{
+            } else {
                 LOG_ERROR << "Unable to load " << fpath << ": " << reason;
             }
         }
     }
     return true;
 }
-
 
 bool entity_manager::load_entities_from_fs(const fs::path& dir_path)
 {
@@ -302,8 +297,7 @@ bool entity_manager::load_entities_from_fs(const fs::path& dir_path)
                                 break;
                             }
                         }
-                    }
-                    else{
+                    } else {
                         LOG_ERROR << "Unable to load " << fpath << ": " << reason;
                     }
                     kv.second = true;
@@ -320,8 +314,29 @@ bool entity_manager::get_command(std::string& verb, shared_ptr<entity_wrapper>& 
     if(search != command_objs.end()) {
         cmd = search->second;
         return true;
+    } else {
+        return false;
     }
-    else {
+}
+
+bool entity_manager::get_daemon(std::string& daemon, shared_ptr<entity_wrapper>& cmd)
+{
+    auto search = daemon_objs.find(boost::to_lower_copy(daemon));
+    if(search != daemon_objs.end()) {
+        cmd = search->second;
+        return true;
+    } else {
+        return false;
+    }
+}
+
+bool entity_manager::get_player(const std::string& player_uid, shared_ptr<entity_wrapper>& cmd)
+{
+    auto search = player_objs.find(player_uid);
+    if(search != player_objs.end()) {
+        cmd = search->second;
+        return true;
+    } else {
         return false;
     }
 }
@@ -333,63 +348,49 @@ bool entity_manager::move_entity(shared_ptr<entity_wrapper>& eorig, entity_wrapp
     EntityType eorig_et = eorig->script_obj.value().GetType();
     EntityType dest_et = dest.script_obj.value().GetType();
 
-    switch( dest_et )
-    {
-        case EntityType::ROOM:
-        {
-            switch( eorig_et )
-            {
-                case EntityType::PLAYER:
-                {
-                    if( dest.script_obj )
-                    {
-                        base_entity * be = &dest.script_obj.value();
-                        room * re = dynamic_cast<room*>(be);
-                        re->AddEntityToInventory(eorig);
-                        //re->inventory.insert(eorig);
-                        shared_ptr<entity_wrapper> ew;
-                        std::string l = "look";
-                        if( get_command(l, ew) )
-                        {
-                            sol::table self = (*ew->script_state)[ew->script_obj_name];
-                            sol::optional<base_entity&> bep = eorig->script_obj;
-                            //player_entity * pe = dynamic_cast<player_entity*>(bep);
-                        
-                            self["execute_command"](self, bep.value(), "");
-                           // lua["print_some_val"]();
-                           // ew->script_state[ew->script_obj_name][]
-                           // base_entity * bec = &ew->script_obj.value();
-                           // command * ce = dynamic_cast<command*>(bec);
-                            
-                        }
-                        // Now that the player is here, lets 'look' for them..
-                        
-                        
-                        
-                    }
-                    break;
-                }
-                break;
-                default:
-                break;
-            }
+    switch(dest_et) {
+    case EntityType::ROOM: {
+        switch(eorig_et) {
+        case EntityType::PLAYER: {
+            if(dest.script_obj) {
+                base_entity* be = &dest.script_obj.value();
+                room* re = dynamic_cast<room*>(be);
+                re->AddEntityToInventory(eorig);
+                // re->inventory.insert(eorig);
+                shared_ptr<entity_wrapper> ew;
+                std::string l = "look";
+                if(get_command(l, ew)) {
+                    sol::table self = (*ew->script_state)[ew->script_obj_name];
+                    sol::optional<base_entity&> bep = eorig->script_obj;
+                    // player_entity * pe = dynamic_cast<player_entity*>(bep);
 
-        }
-        break;
+                    self["execute_command"](self, bep.value(), "");
+                    // lua["print_some_val"]();
+                    // ew->script_state[ew->script_obj_name][]
+                    // base_entity * bec = &ew->script_obj.value();
+                    // command * ce = dynamic_cast<command*>(bec);
+                }
+                // Now that the player is here, lets 'look' for them..
+            }
+            break;
+        } break;
         default:
+            break;
+        }
+
+    } break;
+    default:
         break;
     }
 
+    // if (dynamic_cast<player_entity*>(&etarget) != NULL)
+    //  {
+    //       LOG_DEBUG << "Target is of type player_entity";
+    //     targ_et =
+    //  }
+    // std::string s = typeid(etarget).name();
 
-   // if (dynamic_cast<player_entity*>(&etarget) != NULL)
-  //  {
- //       LOG_DEBUG << "Target is of type player_entity";
-   //     targ_et =
-  //  }
-           //std::string s = typeid(etarget).name();
-        
     return true;
-     
 }
 
 bool entity_manager::get_void_room(shared_ptr<entity_wrapper>& r)
@@ -398,63 +399,62 @@ bool entity_manager::get_void_room(shared_ptr<entity_wrapper>& r)
     return true;
 }
 
-template <typename T>
-T* downcast ( base_entity* b ) {
-     return dynamic_cast<T*>(b);
+template <typename T> T* downcast(base_entity* b)
+{
+    return dynamic_cast<T*>(b);
 }
 
-//sol::optional<room&> entity_manager::get_environment(base_entity& r)
+// sol::optional<room&> entity_manager::get_environment(base_entity& r)
 //{
-    
-//}
 
+//}
 
 int test()
 {
-    struct base {
-        int a = 20;
-        void Test(int c)
+    struct a
+    {
+        
+    };
+    struct b
+    {
+        b()
         {
-            a + c;
+            m.insert( { "test", shared_ptr<a>(new a()) } );
         }
-    };
-    
-    //shared_ptr < fun_times > ft;
-    struct base_abstract {
-        virtual void foo() = 0;
-    };
-    struct player : base, base_abstract {
-        int b = 40;
-        void foo() override
+        //sol::as_table_t<std::vector<a*>> GetCommands()
+        std::vector<a*> GetCommands()
         {
-           
+                std::vector<a*> ret;
+                ret.reserve(m.size());
+                for( auto& kvp : this->m )
+                {
+                    a * be = kvp.second.get();
+                    ret.push_back(be);
+                }
+               // sol::as_table_t<std::vector<a*>>  t = sol::as_table(ret);
+                return ret;
         }
+        std::map<string, shared_ptr<a>> m;
     };
-
+    b test_obj;
     sol::state lua;
-    lua.new_usertype<base>("base",
-        "a", &base::a
-        );
-
-    lua.new_usertype<player>("player",
-        "b", &player::b,
-        "Test", &player::Test,
-        "Foo", &player::foo,
-        sol::base_classes, sol::bases<base, base_abstract>()
-    );
-
-
-   sol::load_result lr = lua.load(R"(
-    p1 = player.new()
-    p1:Foo()
-    )");
-    
-
-    if (!lr.valid()) {
+    lua.new_usertype<a>("a");
+    lua.new_usertype<b>("b",
+                        "GetCommands",
+                        &b::GetCommands);
+   // lua.set_function("GetCommands", &downcast<command>);
+                        
+    lua.script(R"(
+            p1 = b.new () 
+            cmds = p1:GetCommands()
+        )");
+    /*
+    if(!lr.valid())
+    {
         sol::error err = lr;
         std::string what = err.what();
         std::cout << "call failed, sol::error::what() is " << what << std::endl;
-       // return 0;
+        // return 0;
     }
     else
     {
@@ -463,70 +463,160 @@ int test()
             sol::error err = result1;
             std::string what = err.what();
             std::cout << "call failed, sol::error::what() is " << what << std::endl;
-        }
-        else
+        } else
             std::cout << "OK" << std::endl;
     }
-    return 0;
+  */
+    /*
+    struct base
+    {
+        int a = 20;
+        void Test(int c)
+        {
+            a + c;
+        }
+    };
 
+    // shared_ptr < fun_times > ft;
+    struct base_abstract
+    {
+        virtual void foo() = 0;
+    };
+    struct player : base, base_abstract
+    {
+        int b = 40;
+        void foo() override
+        {
+        }
+    };
+
+    sol::state lua;
+    lua.new_usertype<base>("base", "a", &base::a);
+
+    lua.new_usertype<player>("player",
+                             "b",
+                             &player::b,
+                             "Test",
+                             &player::Test,
+                             "Foo",
+                             &player::foo,
+                             sol::base_classes,
+                             sol::bases<base, base_abstract>());
+
+    sol::load_result lr = lua.load(R "(
+                                   p1 = player.new () p1
+                                   : Foo()) ");
+
+    if(!lr.valid())
+    {
+        sol::error err = lr;
+        std::string what = err.what();
+        std::cout << "call failed, sol::error::what() is " << what << std::endl;
+        // return 0;
+    }
+    else
+    {
+        sol::protected_function_result result1 =
+            lr(); // lua.do_string("return 24"); // test to make sure it loaded correctly
+        if(!result1.valid()) {
+            sol::error err = result1;
+            std::string what = err.what();
+            std::cout << "call failed, sol::error::what() is " << what << std::endl;
+        } else
+            std::cout << "OK" << std::endl;
+    }
+    */
+    return 0;
 }
 
 void entity_manager::_init_room_type(sol::state& lua)
 {
+   // test();
+   // test();
     lua.open_libraries(sol::lib::base, sol::lib::string, sol::lib::package, sol::lib::math, sol::lib::table);
-    //lua.new_usertype<base_entity>("base");
-    lua.new_usertype<exitobj>("exitobj", 
-            "GetExitPath", &exitobj::GetExitPath,
-            "SetExit", &exitobj::SetExit,
-            "SetExitDesc", &exitobj::SetExitDesc,
-            "SetExitPath", &exitobj::SetExitPath,
-            "SetObvious", &exitobj::SetObvious,
-            "GetExit", &exitobj::GetExit);
-            
+    // lua.new_usertype<base_entity>("base");
+    lua.new_usertype<exitobj>("exitobj",
+                              "GetExitPath",
+                              &exitobj::GetExitPath,
+                              "SetExit",
+                              &exitobj::SetExit,
+                              "SetExitDesc",
+                              &exitobj::SetExitDesc,
+                              "SetExitPath",
+                              &exitobj::SetExitPath,
+                              "SetObvious",
+                              &exitobj::SetObvious,
+                              "GetExit",
+                              &exitobj::GetExit);
+
     lua.new_usertype<room>("room",
-                           "GetTitle", &room::GetTitle, 
-                           "SetTitle", &room::SetTitle, 
-                           "GetDescription", &room::GetDescription, 
-                           "SetDescription", &room::SetDescription, 
-                           "GetShortDescription", &room::GetShortDescription, 
-                           "SetShortDescription", &room::SetShortDescription, 
-                           "GetExits", &room::GetExits,
-                            "AddExit", &room::AddExit,
-                            "AddExits", &room::AddExits,
-                            "GetEnvironment", &room::GetEnvironment,
-                            "SetEnvironment", &room::SetEnvironment,
+                           "GetTitle",
+                           &room::GetTitle,
+                           "SetTitle",
+                           &room::SetTitle,
+                           "GetDescription",
+                           &room::GetDescription,
+                           "SetDescription",
+                           &room::SetDescription,
+                           "GetShortDescription",
+                           &room::GetShortDescription,
+                           "SetShortDescription",
+                           &room::SetShortDescription,
+                           "GetExits",
+                           &room::GetExits,
+                           "AddExit",
+                           &room::AddExit,
+                           "AddExits",
+                           &room::AddExits,
+                           "GetEnvironment",
+                           &room::GetEnvironment,
+                           "SetEnvironment",
+                           &room::SetEnvironment,
                            sol::base_classes,
                            sol::bases<base_entity, container>());
 }
 
-
-
 void entity_manager::_init_player_type(sol::state& lua)
 {
     lua.open_libraries(sol::lib::base, sol::lib::string, sol::lib::package, sol::lib::math, sol::lib::table);
-    lua.new_usertype<player_entity>(
-        "player", 
-        "player_name", &player_entity::player_name, 
-        "SendToEntity", &player_entity::SendToEntity, 
-        "GetEnvironment", &player_entity::GetEnvironment,
-        "SetEnvironment", &player_entity::SetEnvironment,
-        "GetRoom", &player_entity::GetRoom, 
-        sol::base_classes, sol::bases<living_entity, base_entity>());
+
+    lua.new_usertype<player_entity>("player",
+                                    "player_name",
+                                    &player_entity::player_name,
+                                    "SendToEntity",
+                                    &player_entity::SendToEntity,
+                                    "GetEnvironment",
+                                    &player_entity::GetEnvironment,
+                                    "SetEnvironment",
+                                    &player_entity::SetEnvironment,
+                                    "GetRoom",
+                                    &player_entity::GetRoom,
+                                    "GetType", &base_entity::GetEntityTypeString,
+                                    sol::base_classes,
+                                    sol::bases<living_entity, base_entity>());
 }
 
 void entity_manager::_init_command_type(sol::state& lua)
 {
+    
     lua.open_libraries(sol::lib::base, sol::lib::string, sol::lib::package, sol::lib::math, sol::lib::table);
-    lua.new_usertype<command>(
-        "command", 
-        "GetVerb", &command::GetVerb,
-        "SetVerb", &command::SetVerb,
-        sol::base_classes, 
-        sol::bases<base_entity>());
-    lua.set_function( "command_cast", &downcast<command> );
-    lua.set_function( "room_cast", &downcast<room> );
-    lua.set_function( "player_cast", &downcast<player_entity> );
-    //lua.set_function( "exit_obj_cast", &downcast<exit_obj> );
+    lua.new_usertype<command>("command",
+                            sol::constructors<command(), command(std::string)>(),
+                              "GetName",
+                              &command::GetName,
+                              "SetName",
+                              &command::SetName,
+                              "GetSynonyms",
+                              &command::GetSynonyms,
+                              "SetSynonyms",
+                              &command::SetSynonyms,
+                              sol::base_classes,
+                              sol::bases<base_entity>());
+    lua.set_function("command_cast", &downcast<command>);
+    lua.set_function("room_cast", &downcast<room>);
+    lua.set_function("player_cast", &downcast<player_entity>);
+    
+    // lua.set_function( "exit_obj_cast", &downcast<exit_obj> );
     _init_player_type(lua);
     _init_room_type(lua);
 }
@@ -534,18 +624,25 @@ void entity_manager::_init_command_type(sol::state& lua)
 void entity_manager::_init_daemon_type(sol::state& lua)
 {
     lua.open_libraries(sol::lib::base, sol::lib::string, sol::lib::package, sol::lib::math, sol::lib::table);
-    lua.new_usertype<daemonobj>("daemon", 
-        sol::constructors<daemonobj(), daemonobj(std::string)>(),
-        "GetName", &daemonobj::GetName,
-        "SetName", &daemonobj::SetName,
-        sol::base_classes, 
-        sol::bases<base_entity>());
-    lua.set_function( "command_cast", &downcast<command> );
-    lua.set_function( "room_cast", &downcast<room> );
-    lua.set_function( "player_cast", &downcast<player_entity> );
-    //lua.set_function( "exit_obj_cast", &downcast<exit_obj> );
+    lua.new_usertype<base_entity>("base_entity",
+                                    "GetType", &base_entity::GetEntityTypeString
+                                    );
+    lua.new_usertype<daemonobj>("daemon",
+                                sol::constructors<daemonobj(), daemonobj(std::string)>(),
+                                "GetName",
+                                &daemonobj::GetName,
+                                "SetName",
+                                &daemonobj::SetName,
+                                sol::base_classes,
+                                sol::bases<base_entity>());
+    lua.set_function("command_cast", &downcast<command>);
+    lua.set_function("room_cast", &downcast<room>);
+    lua.set_function("player_cast", &downcast<player_entity>);
+    lua.set_function("GetCommands", &entity_manager::GetCommands, this);
+    // lua.set_function( "exit_obj_cast", &downcast<exit_obj> );
     _init_player_type(lua);
     _init_room_type(lua);
+    _init_command_type(lua);
 }
 
 bool entity_manager::load_script_text(std::string& script_path,
@@ -570,8 +667,7 @@ bool entity_manager::load_script_text(std::string& script_path,
             }
             obj_type = EntityType::DAEMON;
             bFoundType = true;
-        }
-        else if(token.compare("inherit room") == 0) {
+        } else if(token.compare("inherit room") == 0) {
             if(bFoundType) // bad. only one type per script
             {
                 reason = "Multiple inherit directives detected. Only one entity type is allowed per script.";
@@ -579,8 +675,7 @@ bool entity_manager::load_script_text(std::string& script_path,
             }
             obj_type = EntityType::ROOM;
             bFoundType = true;
-        }
-        else if(token.compare("inherit player") == 0) {
+        } else if(token.compare("inherit player") == 0) {
             if(bFoundType) // bad. only one type per script
             {
                 reason = "Multiple inherit directives detected. Only one entity type is allowed per script.";
@@ -604,8 +699,7 @@ bool entity_manager::load_script_text(std::string& script_path,
             }
             obj_type = EntityType::NPC;
             bFoundType = true;
-        }
-        else if(token.compare("inherit command") == 0) {
+        } else if(token.compare("inherit command") == 0) {
             if(bFoundType) // bad. only one type per script
             {
                 reason = "Multiple inherit directives detected. Only one entity type is allowed per script.";
@@ -762,4 +856,47 @@ bool entity_manager::load_entities_from_script(sol::state& lua,
         }
         return true;
     }
+}
+
+bool entity_manager::process_player_cmd(const std::string& playerid, const std::string& args)
+{
+    
+    shared_ptr<entity_wrapper> ew;
+    if( !this->get_player(playerid, ew) )
+    {
+        LOG_ERROR << "Unable to locate player: " << playerid;
+        return false;
+    }
+
+    base_entity* be = &ew->script_obj.value();
+    
+    shared_ptr<entity_wrapper> ew_daemon;
+    std::string l = "command_proc";
+    if(get_daemon(l, ew_daemon)) {
+        sol::table self = (*ew_daemon->script_state)[ew_daemon->script_obj_name];
+        sol::optional<base_entity&> bep = ew_daemon->script_obj;
+
+        sol::protected_function exec = self["process_command"];
+        auto result = exec(self, be, args);
+        if ( !result.valid() ) {
+            sol::error err = result;
+            LOG_DEBUG << err.what();
+        }
+    }
+    else
+    {
+        LOG_DEBUG << "Unable to call process_command function in command_proc daemon.";
+    }
+    return true;
+}
+std::vector<command*> entity_manager::GetCommands()
+{
+    std::vector<command*> ret;
+    ret.reserve(command_objs.size());
+    for( auto& kvp : this->command_objs )
+    {
+        command * be = static_cast<command*>(&kvp.second->script_obj.value());
+        ret.push_back(be);
+    }
+    return ret;
 }

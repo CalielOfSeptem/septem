@@ -1,2 +1,9 @@
-﻿2017-03-30 23:07:18.570 INFO  [3055] [entity_manager::load_commands_from_fs@205] Loaded command: /home/ken/git-repos/septem/game_data/cmds/move
-2017-03-30 23:07:18.572 INFO  [3055] [entity_manager::load_commands_from_fs@205] Loaded command: /home/ken/git-repos/septem/game_data/cmds/look
+﻿2017-03-31 11:19:51.898 ERROR [11123] [entity_manager::load_daemon_from_fs@251] Unable to load /home/ken/git-repos/septem/game_data/daemon/movement: No recognized objects instantiated in script.
+2017-03-31 11:19:51.903 INFO  [11123] [entity_manager::load_daemon_from_fs@243] Loaded daemon: /home/ken/git-repos/septem/game_data/daemon/command_proc
+2017-03-31 11:19:51.904 INFO  [11123] [entity_manager::load_entities_from_fs@287] Loaded room: /home/ken/git-repos/septem/game_data/realms/void
+2017-03-31 11:19:51.904 INFO  [11123] [entity_manager::load_entities_from_fs@290] Void room identified: /home/ken/git-repos/septem/game_data/realms/void
+2017-03-31 11:19:51.905 ERROR [11123] [entity_manager::load_commands_from_fs@214] Unable to load /home/ken/git-repos/septem/game_data/cmds/move: [string "c = command.new()..."]:2: attempt to call method 'SetVerb' (a nil value)
+2017-03-31 11:19:51.907 INFO  [11123] [entity_manager::load_commands_from_fs@206] Loaded command: /home/ken/git-repos/septem/game_data/cmds/look
+2017-03-31 11:20:09.641 INFO  [11127] [account_manager::load_account@206] Trying to load acount from file: kenthompson1@gmail.com
+2017-03-31 11:20:09.641 INFO  [11127] [account_manager::load_account@231] Account file [/home/ken/git-repos/septem/game_data/accounts/k/kenthompson1@gmail.com.xml] deserialized and loaded successefully.
+2017-03-31 11:20:09.641 INFO  [11127] [entity_manager::load_player@160] Successfully loaded player: kenthompson1@gmail.com

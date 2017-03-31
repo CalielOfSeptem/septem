@@ -119,6 +119,7 @@ Debug/up_up_septem_src_server_client.cpp.o: \
  ../../septem/include/scriptable_entities/living_entity.h \
  ../../septem/include/scriptable_entities/room.hpp \
  ../../septem/include/scriptable_entities/command.h \
+ ../../septem/include/scriptable_entities/daemonobj.h \
  ../../septem/include/utils/stringutils.hpp \
  ../../septem/include/heartbeat_manager.h ../../plog/include/plog/Log.h \
  ../../plog/include/plog/Record.h ../../plog/include/plog/Util.h \
@@ -437,6 +438,8 @@ Debug/up_up_septem_src_server_client.cpp.o: \
 ../../septem/include/scriptable_entities/room.hpp:
 
 ../../septem/include/scriptable_entities/command.h:
+
+../../septem/include/scriptable_entities/daemonobj.h:
 
 ../../septem/include/utils/stringutils.hpp:
 

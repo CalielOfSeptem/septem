@@ -80,13 +80,17 @@ public:
     bool compile_script(std::string& script_path, unordered_set<shared_ptr<entity_wrapper>>& entities, std::string& reason);
     
     
-    bool load_player( shared_ptr<client> c );
+    std::string load_player( shared_ptr<client> c );
+    
+    
     
     bool load_entities_from_fs( const fs::path & dir_path );
     
     bool load_commands_from_fs( const fs::path & dir_path );
     
     bool load_daemon_from_fs( const fs::path & dir_path );
+    
+    std::vector<command*> GetCommands();
     
     void invoke_heartbeat()
     {
@@ -177,6 +181,8 @@ public:
     
     bool get_void_room(shared_ptr<entity_wrapper>& r);
     
+    bool process_player_cmd(const std::string& playerid, const std::string& args);
+    
 
 protected:
     entity_manager()
@@ -228,6 +234,9 @@ private:
     bool get_command(std::string& verb, shared_ptr<entity_wrapper>& cmd);
     
     bool get_daemon(std::string& verb, shared_ptr<entity_wrapper>& cmd);
+    
+    bool get_player(const std::string& player_uid, shared_ptr<entity_wrapper>& cmd);
+
     
     
     std::map < std::string, bool > entity_map = { 
