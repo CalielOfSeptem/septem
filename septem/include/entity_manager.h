@@ -3,11 +3,13 @@
 #define SOL_CHECK_ARGUMENTS
 #include "scriptable_entities/room.hpp"
 
+
 //#include "env/base_object.h"
 #include <unordered_map>
 #include <unordered_set>
 #include "scriptable_entities/player_entity.h"
 #include "scriptable_entities/command.h"
+#include "scriptable_entities/daemonobj.h"
 //#include <boost/shared_ptr.hpp>
 #include <boost/signals2.hpp>
 #include "sol.hpp"
@@ -83,6 +85,8 @@ public:
     bool load_entities_from_fs( const fs::path & dir_path );
     
     bool load_commands_from_fs( const fs::path & dir_path );
+    
+    bool load_daemon_from_fs( const fs::path & dir_path );
     
     void invoke_heartbeat()
     {
@@ -200,6 +204,8 @@ private:
     
     std::unordered_map< string, shared_ptr<entity_wrapper>> command_objs;
     
+    std::unordered_map< string, shared_ptr<entity_wrapper>> daemon_objs;
+    
     heartbeat_manager heartbeatManager;
     
     unsigned int player_uid_count = 0; // hack to make sure we give each player an instance ID that is non-conflicting
@@ -210,6 +216,8 @@ private:
     void _init_player_type(sol::state& lua);
     
     void _init_command_type(sol::state& lua);
+    
+    void _init_daemon_type(sol::state& lua);
   //  std::vector< boost::shared_ptr<script_entity> > objs; /// test
     
     bool load_script_text(std::string& script_path, std::string& script_text, EntityType& obj_type, string& reason);
@@ -219,11 +227,15 @@ private:
         
     bool get_command(std::string& verb, shared_ptr<entity_wrapper>& cmd);
     
+    bool get_daemon(std::string& verb, shared_ptr<entity_wrapper>& cmd);
+    
     
     std::map < std::string, bool > entity_map = { 
         {"/home/ken/git-repos/septem/game_data/realms/void", false}
         }; 
-    
+    std::map < std::string, bool > daemon_map = { 
+        {"/home/ken/git-repos/septem/game_data/daemon/command_proc", false}
+        }; 
 
      
 };

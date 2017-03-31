@@ -57,6 +57,7 @@
       <File Name="../../septem/include/scriptable_entities/base_entity.h"/>
       <File Name="../../septem/include/scriptable_entities/living_entity.h"/>
       <File Name="../../septem/include/scriptable_entities/base_item.hpp"/>
+      <File Name="../../septem/include/scriptable_entities/daemonobj.h"/>
     </VirtualDirectory>
     <VirtualDirectory Name="utils">
       <File Name="../../septem/include/utils/tinyxml2.h"/>

@@ -8,7 +8,7 @@
 
 using namespace std;
 
-enum class EntityType { UNKNOWN, ROOM, ITEM, NPC, PLAYER, COMMAND };
+enum class EntityType { UNKNOWN, ROOM, ITEM, NPC, PLAYER, COMMAND, DAEMON };
 
 struct base_entity
 {

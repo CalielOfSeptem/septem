@@ -44,6 +44,7 @@ public :
         
         std::string reason;
         std::string path_to_script = "/home/ken/git-repos/septem/game_data/realms/void";
+         entity_manager::Instance().load_daemon_from_fs(DEFAULT_DAEMON_PATH);
         entity_manager::Instance().load_entities_from_fs( DEFAULT_REALMS_PATH ); ///"/home/ken/git-repos/septem/game_data/realms/" );
         entity_manager::Instance().load_commands_from_fs(DEFAULT_COMMANDS_PATH);
     }

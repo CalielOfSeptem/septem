@@ -31,8 +31,6 @@ Debug/up_up_septem_src_septem.cpp.o: ../../septem/src/septem.cpp \
  ../../septem/include/entity_manager.h \
  ../../septem/include/scriptable_entities/room.hpp \
  ../../septem/include/scriptable_entities/base_entity.h \
- ../../septem/include/scriptable_entities/container.h \
- ../../septem/include/scriptable_entities/entity_wrapper.h \
  ../../sol2/sol.hpp ../../sol2/sol/state.hpp \
  ../../sol2/sol/state_view.hpp ../../sol2/sol/error.hpp \
  ../../sol2/sol/table.hpp ../../sol2/sol/table_core.hpp \
@@ -80,9 +78,13 @@ Debug/up_up_septem_src_septem.cpp.o: ../../septem/src/septem.cpp \
  ../../sol2/sol/object.hpp ../../sol2/sol/function.hpp \
  ../../sol2/sol/protected_function.hpp ../../sol2/sol/coroutine.hpp \
  ../../sol2/sol/thread.hpp ../../sol2/sol/variadic_args.hpp \
+ ../../septem/include/scriptable_entities/container.h \
+ ../../septem/include/scriptable_entities/entity_wrapper.h \
  ../../septem/include/scriptable_entities/player_entity.h \
  ../../septem/include/scriptable_entities/living_entity.h \
+ ../../septem/include/scriptable_entities/room.hpp \
  ../../septem/include/scriptable_entities/command.h \
+ ../../septem/include/scriptable_entities/daemonobj.h \
  ../../septem/include/utils/stringutils.hpp \
  ../../septem/include/heartbeat_manager.h ../../plog/include/plog/Log.h \
  ../../plog/include/plog/Record.h ../../plog/include/plog/Util.h \
@@ -162,10 +164,6 @@ Debug/up_up_septem_src_septem.cpp.o: ../../septem/src/septem.cpp \
 ../../septem/include/scriptable_entities/room.hpp:
 
 ../../septem/include/scriptable_entities/base_entity.h:
-
-../../septem/include/scriptable_entities/container.h:
-
-../../septem/include/scriptable_entities/entity_wrapper.h:
 
 ../../sol2/sol.hpp:
 
@@ -323,11 +321,19 @@ Debug/up_up_septem_src_septem.cpp.o: ../../septem/src/septem.cpp \
 
 ../../sol2/sol/variadic_args.hpp:
 
+../../septem/include/scriptable_entities/container.h:
+
+../../septem/include/scriptable_entities/entity_wrapper.h:
+
 ../../septem/include/scriptable_entities/player_entity.h:
 
 ../../septem/include/scriptable_entities/living_entity.h:
 
+../../septem/include/scriptable_entities/room.hpp:
+
 ../../septem/include/scriptable_entities/command.h:
+
+../../septem/include/scriptable_entities/daemonobj.h:
 
 ../../septem/include/utils/stringutils.hpp:
 

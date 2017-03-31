@@ -21,6 +21,29 @@ bool entity_manager::compile_script(std::string& script_path, unordered_set<shar
     shared_ptr<sol::state> lua(new sol::state);
 
     switch(etype) {
+        case EntityType::DAEMON: {
+        
+        _init_daemon_type(*lua); // may need to have all commands in the same state to reduce overhead... but that could get messy
+
+        (*lua)["internal_entity_script_path"] = script_path;
+        std::vector<string> daemon_obj_name;
+        if(!load_entities_from_script((*lua.get()), script_text, daemon_obj_name, EntityType::DAEMON, error_str)) {
+            reason = error_str;
+            return false;
+        }
+        for(string r_name : daemon_obj_name) {
+            shared_ptr<entity_wrapper> new_se(new entity_wrapper());
+            sol::optional<base_entity&> so = ((*lua)[r_name]);
+
+            new_se->script_obj = so;
+            new_se->script_obj_name = r_name;
+            new_se->script_state = lua; // shared_ptr<sol::state>(lua);
+            new_se->script_path = script_path;
+            new_se->entity_type = EntityType::DAEMON;
+            new_se->instance_id = 0;//command_uid_count++;
+            entities.insert(new_se);
+        }
+    } break;
         case EntityType::COMMAND: {
         
         _init_command_type(*lua); // may need to have all commands in the same state to reduce overhead... but that could get messy
@@ -192,7 +215,48 @@ bool entity_manager::load_commands_from_fs(const fs::path& dir_path)
             }
         }
     }
-    return false;
+    return true;
+}
+
+bool entity_manager::load_daemon_from_fs(const fs::path& dir_path)
+{
+    if(!fs::exists(dir_path))
+        return false;
+    fs::directory_iterator end_itr; // default construction yields past-the-end
+    for(fs::directory_iterator itr(dir_path); itr != end_itr; ++itr) {
+        if(fs::is_directory(itr->status())) {
+            if(load_daemon_from_fs(itr->path()))
+                return true;
+        } 
+        else
+        {
+            std::unordered_set<shared_ptr<entity_wrapper> > entities;
+            std::string reason;
+            std::string fpath = itr->path().string();
+            if(compile_script(fpath, entities, reason)) {
+
+                for(auto ent : entities) {
+                    switch(ent->entity_type) {
+                    case EntityType::DAEMON: {
+                        base_entity * be = &ent->script_obj.value();
+                        daemonobj * ce = dynamic_cast<daemonobj*>(be);
+                        daemon_objs.insert({ boost::to_lower_copy(ce->GetName()),
+                                           ent });
+                        
+                        LOG_INFO << "Loaded daemon: " << fpath;
+                    } break;
+                    default:
+                        LOG_DEBUG << "A non-daemon entity was detected when loading commands... strange.. " << fpath;
+                        break;
+                    }
+                }
+            }
+            else{
+                LOG_ERROR << "Unable to load " << fpath << ": " << reason;
+            }
+        }
+    }
+    return true;
 }
 
 
@@ -411,7 +475,14 @@ void entity_manager::_init_room_type(sol::state& lua)
 {
     lua.open_libraries(sol::lib::base, sol::lib::string, sol::lib::package, sol::lib::math, sol::lib::table);
     //lua.new_usertype<base_entity>("base");
-    lua.new_usertype<exitobj>("exitobj", "GetExit", &exitobj::GetExit);
+    lua.new_usertype<exitobj>("exitobj", 
+            "GetExitPath", &exitobj::GetExitPath,
+            "SetExit", &exitobj::SetExit,
+            "SetExitDesc", &exitobj::SetExitDesc,
+            "SetExitPath", &exitobj::SetExitPath,
+            "SetObvious", &exitobj::SetObvious,
+            "GetExit", &exitobj::GetExit);
+            
     lua.new_usertype<room>("room",
                            "GetTitle", &room::GetTitle, 
                            "SetTitle", &room::SetTitle, 
@@ -421,6 +492,7 @@ void entity_manager::_init_room_type(sol::state& lua)
                            "SetShortDescription", &room::SetShortDescription, 
                            "GetExits", &room::GetExits,
                             "AddExit", &room::AddExit,
+                            "AddExits", &room::AddExits,
                             "GetEnvironment", &room::GetEnvironment,
                             "SetEnvironment", &room::SetEnvironment,
                            sol::base_classes,
@@ -459,6 +531,23 @@ void entity_manager::_init_command_type(sol::state& lua)
     _init_room_type(lua);
 }
 
+void entity_manager::_init_daemon_type(sol::state& lua)
+{
+    lua.open_libraries(sol::lib::base, sol::lib::string, sol::lib::package, sol::lib::math, sol::lib::table);
+    lua.new_usertype<daemonobj>("daemon", 
+        sol::constructors<daemonobj(), daemonobj(std::string)>(),
+        "GetName", &daemonobj::GetName,
+        "SetName", &daemonobj::SetName,
+        sol::base_classes, 
+        sol::bases<base_entity>());
+    lua.set_function( "command_cast", &downcast<command> );
+    lua.set_function( "room_cast", &downcast<room> );
+    lua.set_function( "player_cast", &downcast<player_entity> );
+    //lua.set_function( "exit_obj_cast", &downcast<exit_obj> );
+    _init_player_type(lua);
+    _init_room_type(lua);
+}
+
 bool entity_manager::load_script_text(std::string& script_path,
                                       std::string& script_text,
                                       EntityType& obj_type,
@@ -473,7 +562,16 @@ bool entity_manager::load_script_text(std::string& script_path,
     bool bFoundType = false;
     while(std::getline(buffer, token, '\n')) {
         trim(token);
-        if(token.compare("inherit room") == 0) {
+        if(token.compare("inherit daemon") == 0) {
+            if(bFoundType) // bad. only one type per script
+            {
+                reason = "Multiple inherit directives detected. Only one entity type is allowed per script.";
+                return false;
+            }
+            obj_type = EntityType::DAEMON;
+            bFoundType = true;
+        }
+        else if(token.compare("inherit room") == 0) {
             if(bFoundType) // bad. only one type per script
             {
                 reason = "Multiple inherit directives detected. Only one entity type is allowed per script.";
@@ -625,18 +723,28 @@ bool entity_manager::load_entities_from_script(sol::state& lua,
                         entity_type = EntityType::ROOM;
                         bFindObject = true;
                         obj_names.push_back(key.as<std::string>());
+                        break;
                     }
                     sol::optional<command&> maybe_command = value.as<sol::optional<command&> >();
                     if(maybe_command) {
                         entity_type = EntityType::COMMAND;
                         bFindObject = true;
                         obj_names.push_back(key.as<std::string>());
+                        break;
                     }
                     sol::optional<player_entity&> maybe_player = value.as<sol::optional<player_entity&> >();
                     if(maybe_player) {
                         entity_type = EntityType::PLAYER;
                         bFindObject = true;
                         obj_names.push_back(key.as<std::string>());
+                        break;
+                    }
+                    sol::optional<daemonobj&> maybe_daemon = value.as<sol::optional<daemonobj&> >();
+                    if(maybe_daemon) {
+                        entity_type = EntityType::DAEMON;
+                        bFindObject = true;
+                        obj_names.push_back(key.as<std::string>());
+                        break;
                     }
 
                 } break;

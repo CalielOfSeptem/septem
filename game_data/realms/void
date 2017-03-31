@@ -3,10 +3,15 @@ p1 = room.new()
 p1:SetTitle('The Void')
 p1:SetDescription('An endless void of nothingness.')
 
-p1:AddExit( 'north|n', 'test/path', true)
-p1:AddExit( 'south|s', 'test/path', true)
-p1:AddExit( 'east|e', 'test/path', true)
-p1:AddExit( 'west|w', 'test/path', true)
+p1:AddExit( {'north', 'n'}, 'test/path', true)
+p1:AddExit( {'south'}, 'test/path', true)
+p1:AddExit( {'east'}, 'test/path', true)
+p1:AddExit( {'west'}, 'test/path', true)
+
+--p1:AddExits({ 
+--	{'northwest', 'nw'}, {'test/path', true},
+--	{'southeast', 'se'}, {'test/path', true}
+--})
 
 
 

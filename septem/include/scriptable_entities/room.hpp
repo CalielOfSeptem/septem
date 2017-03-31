@@ -6,6 +6,7 @@
 #include <map>
 #include "scriptable_entities/base_entity.h"
 #include "scriptable_entities/container.h"
+#include "sol.hpp"
 //#include <scriptable_entities/script_manager.h>
 
 using namespace std;
@@ -16,13 +17,27 @@ struct exitobj
     {
         
     }
-    exitobj(const std::string& exit, const std::string& exit_path, bool bobvious)
-        : exit(exit)
-        , exit_path(exit_path)
+    exitobj(sol::as_table_t<std::vector<std::string>>& exit, const std::string& exit_path, bool bobvious)
+        : exit_path(exit_path)
     {
         this->bobvious = true;
+        const auto& vex = exit.source;
+        for( auto ex : vex )
+        {
+            this->exit.push_back(ex);
+        }
     }
-    const std::string& GetExit()
+    
+    void SetExit( const sol::as_table_t<std::vector<string>>& v, const std::string& exit_path, bool bobvious)
+    {
+        this->bobvious = bobvious;
+        const auto& vex = v.source;
+        for( auto ex : vex )
+        {
+            this->exit.push_back(ex);
+        }
+    }
+    const std::vector<std::string>& GetExit()
     {
         return exit;
     }
@@ -31,11 +46,31 @@ struct exitobj
     {
         return exit_path;
     }
+    
+    void SetObvious(const bool b)
+    {
+        bobvious = b;
+    }
+    
+    void SetExitPath( const std::string& exit_path )
+    {
+        this->exit_path = exit_path;
+    }
+    
+    void SetExitDesc( const sol::as_table_t<std::vector<string>>& v )
+    {
+        this->exit_path = exit_path;
+        const auto& vex = v.source;
+        for( auto ex : vex )
+        {
+            this->exit.push_back(ex);
+        }
+    }
 
 private:
     std::string exit_path; // path the script the exit is linked to
     std::string bobvious; // whether the exit is shown by default
-    std::string exit;
+    std::vector<std::string> exit;
 };
 
 struct room : base_entity, container
@@ -64,10 +99,36 @@ struct room : base_entity, container
     {
     }
 
-    bool AddExit(const std::string& exit, const string& exit_path, bool obvious)
+    bool AddExit(sol::as_table_t<std::vector<std::string>> exit, const string& exit_path, bool obvious)
     {
         // TODO: add in validation code
         obvious_exits.push_back(exitobj(exit, exit_path, obvious));
+        return true;
+    }
+    
+    
+    bool AddExits( sol::nested<std::map<std::vector< std::string >, std::map<string, bool>>> src )///sol::as_table_t<std::vector<std::string>> exit, const string& exit_path, bool obvious)
+    {
+        
+        const auto& listmap = src.source;
+            
+        for (const auto& kvp : listmap) {
+            exitobj obj;
+            //const std::vector<std::string>& strings = kvp.first;  // exit names and abbreviations
+           // sol::as_table(strings);
+            //obj.SetExitDesc(  >(strings));
+            
+            const std::map<string, bool>& exit_details = kvp.second;
+            
+            if( exit_details.size() != 1 ) // should only have one key and one value, the path and the bovious
+                return false;
+                
+            for (const auto& kvpd : exit_details) {
+                obj.SetExitPath(kvpd.first);
+                obj.SetObvious(kvpd.second);
+            }
+            obvious_exits.push_back(obj);
+        }
         return true;
     }
 

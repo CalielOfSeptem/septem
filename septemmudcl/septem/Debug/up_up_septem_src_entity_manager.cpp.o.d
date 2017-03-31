@@ -74,6 +74,7 @@ Debug/up_up_septem_src_entity_manager.cpp.o: \
  ../../../cereal/include/cereal/types/string.hpp \
  ../../../cereal/include/cereal/types/vector.hpp \
  ../../septem/include/scriptable_entities/command.h \
+ ../../septem/include/scriptable_entities/daemonobj.h \
  ../../septem/include/utils/stringutils.hpp \
  ../../septem/include/heartbeat_manager.h ../../plog/include/plog/Log.h \
  ../../plog/include/plog/Record.h ../../plog/include/plog/Util.h \
@@ -297,6 +298,8 @@ Debug/up_up_septem_src_entity_manager.cpp.o: \
 ../../../cereal/include/cereal/types/vector.hpp:
 
 ../../septem/include/scriptable_entities/command.h:
+
+../../septem/include/scriptable_entities/daemonobj.h:
 
 ../../septem/include/utils/stringutils.hpp:
 
