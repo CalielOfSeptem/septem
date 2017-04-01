@@ -40,6 +40,11 @@ Debug/up_up_septem_src_septem.cpp.o: ../../septem/src/septem.cpp \
  ../../sol2/sol/types.hpp ../../sol2/sol/optional.hpp \
  ../../sol2/sol/compatibility.hpp \
  ../../sol2/sol/compatibility/version.hpp \
+ /home/ken/git-repos/lua-5.3.4/src/lua.hpp \
+ /home/ken/git-repos/lua-5.3.4/src/lua.h \
+ /home/ken/git-repos/lua-5.3.4/src/luaconf.h \
+ /home/ken/git-repos/lua-5.3.4/src/lualib.h \
+ /home/ken/git-repos/lua-5.3.4/src/lauxlib.h \
  ../../sol2/sol/compatibility/5.1.0.h \
  ../../sol2/sol/compatibility/version.hpp \
  ../../sol2/sol/compatibility/5.0.0.h \
@@ -196,6 +201,16 @@ Debug/up_up_septem_src_septem.cpp.o: ../../septem/src/septem.cpp \
 ../../sol2/sol/compatibility.hpp:
 
 ../../sol2/sol/compatibility/version.hpp:
+
+/home/ken/git-repos/lua-5.3.4/src/lua.hpp:
+
+/home/ken/git-repos/lua-5.3.4/src/lua.h:
+
+/home/ken/git-repos/lua-5.3.4/src/luaconf.h:
+
+/home/ken/git-repos/lua-5.3.4/src/lualib.h:
+
+/home/ken/git-repos/lua-5.3.4/src/lauxlib.h:
 
 ../../sol2/sol/compatibility/5.1.0.h:
 

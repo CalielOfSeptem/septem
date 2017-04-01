@@ -1,36 +1,23 @@
-function get_all_factors(number)
-	--[[--
-	Gets all of the factors of a given number
-	
-	@Parameter: number
-		The number to find the factors of
+print('Initializing SOL/LUA..')
 
-	@Returns: A table of factors of the number
-	--]]--
-	local factors = {}
-	for possible_factor=1, math.sqrt(number), 1 do
-		local remainder = number%possible_factor
-		
-		if remainder == 0 then
-			local factor, factor_pair = possible_factor, number/possible_factor
-			table.insert(factors, factor)
-			
-			if factor ~= factor_pair then
-				table.insert(factors, factor_pair)
-			end
-		end
-	end
-	
-	table.sort(factors)
-	return factors
-end
+base = {}--_G = _G}
+print('Creating base environment')
+setmetatable(base, {__index = _G})
+print('Done initializing SOL/LUA.')
 
---The Meaning of the Universe is 42. Let's find all of the factors driving the Universe.
+-- Lets do some tests
+_ENV = base -- change the environment. without the local, this would change the environment for the entire chunk
+-- create a test room..
+r1 = room.new()
+r1:SetTitle('Test Title')
 
-the_universe = 42
-factors_of_the_universe = get_all_factors(the_universe)
+-- leave this environment..
+_ENV = _G
+r2 = base.room.new()
+r2:SetTitle('Test Title2')
 
---Print out each factor
+print( r1:GetTitle() )
+print( r2:GetTitle() )
 
-print("Count",	"The Factors of Life, the Universe, and Everything")
-table.foreach(factors_of_the_universe, print)
+--local _ENV = _G
+

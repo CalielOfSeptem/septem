@@ -13,7 +13,7 @@ CurrentFileName        :=
 CurrentFilePath        :=
 CurrentFileFullPath    :=
 User                   :=ken
-Date                   :=31/03/17
+Date                   :=01/04/17
 CodeLitePath           :=/home/ken/.codelite
 LinkerName             :=/usr/bin/g++
 SharedObjectLinkerName :=/usr/bin/g++ -shared -fPIC
@@ -35,13 +35,13 @@ PreprocessOnlySwitch   :=-E
 ObjectsFileList        :="septem.txt"
 PCHCompileFlags        :=
 MakeDirCommand         :=mkdir -p
-LinkOptions            :=  -lz
-IncludePath            :=  $(IncludeSwitch). $(IncludeSwitch). $(IncludeSwitch)../../telnetpp/include $(IncludeSwitch)../../terminalpp/include $(IncludeSwitch)../../ttvfs/ttvfs $(IncludeSwitch)../../odin/include $(IncludeSwitch)../../septem/include $(IncludeSwitch)../../septem/include/script $(IncludeSwitch)../../septem/include/scriptable_entities $(IncludeSwitch)../../../cereal/include $(IncludeSwitch)../../AngelscriptUtils/src $(IncludeSwitch)../../sol2 $(IncludeSwitch)../lua/src $(IncludeSwitch)../../plog/include 
+LinkOptions            :=  -lz -ldl
+IncludePath            :=  $(IncludeSwitch). $(IncludeSwitch). $(IncludeSwitch)../../telnetpp/include $(IncludeSwitch)../../terminalpp/include $(IncludeSwitch)../../ttvfs/ttvfs $(IncludeSwitch)../../odin/include $(IncludeSwitch)../../septem/include $(IncludeSwitch)../../septem/include/script $(IncludeSwitch)../../septem/include/scriptable_entities $(IncludeSwitch)../../../cereal/include $(IncludeSwitch)../../AngelscriptUtils/src $(IncludeSwitch)../../sol2 $(IncludeSwitch)/home/ken/git-repos/lua-5.3.4/src $(IncludeSwitch)../../plog/include 
 IncludePCH             := 
 RcIncludePath          := 
 Libs                   := $(LibrarySwitch)pthread $(LibrarySwitch)boost_system $(LibrarySwitch)boost_program_options $(LibrarySwitch)boost_filesystem $(LibrarySwitch)odin $(LibrarySwitch)telnetpp $(LibrarySwitch)terminalpp $(LibrarySwitch)cryptopp $(LibrarySwitch)ttvfs $(LibrarySwitch)lua 
 ArLibs                 :=  "pthread" "boost_system" "boost_program_options" "boost_filesystem" "odin" "telnetpp" "terminalpp" "cryptopp" "ttvfs" "lua" 
-LibPath                := $(LibraryPathSwitch). $(LibraryPathSwitch)/usr/lib/x86_64-linux-gnu/ $(LibraryPathSwitch)../odin/Debug $(LibraryPathSwitch)../telnetpp/Debug $(LibraryPathSwitch)../terminalpp/Debug $(LibraryPathSwitch)../ttvfs/Debug $(LibraryPathSwitch)../angelscript/Debug $(LibraryPathSwitch)../AngelscriptUtils/Debug $(LibraryPathSwitch)../lua/build $(LibraryPathSwitch)/usr/local/bin/ 
+LibPath                := $(LibraryPathSwitch). $(LibraryPathSwitch)/usr/lib/x86_64-linux-gnu/ $(LibraryPathSwitch)../odin/Debug $(LibraryPathSwitch)../telnetpp/Debug $(LibraryPathSwitch)../terminalpp/Debug $(LibraryPathSwitch)../ttvfs/Debug $(LibraryPathSwitch)../angelscript/Debug $(LibraryPathSwitch)../AngelscriptUtils/Debug $(LibraryPathSwitch)/home/ken/git-repos/lua-5.3.4/src $(LibraryPathSwitch)/usr/local/bin/ 
 
 ##
 ## Common variables
@@ -50,7 +50,7 @@ LibPath                := $(LibraryPathSwitch). $(LibraryPathSwitch)/usr/lib/x86
 AR       := /usr/bin/ar rcu
 CXX      := /usr/bin/g++
 CC       := /usr/bin/gcc
-CXXFLAGS :=  -g -O0 -std=c++14 -Wall $(Preprocessors)
+CXXFLAGS :=  -g -O0 -std=c++14 -Wall -Wl,--no-as-needed -ldl $(Preprocessors)
 CFLAGS   :=  -g -O0 -Wall $(Preprocessors)
 ASFLAGS  := 
 AS       := /usr/bin/as

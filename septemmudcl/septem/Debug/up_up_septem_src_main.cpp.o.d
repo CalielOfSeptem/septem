@@ -33,8 +33,6 @@ Debug/up_up_septem_src_main.cpp.o: ../../septem/src/main.cpp \
  ../../septem/include/entity_manager.h \
  ../../septem/include/scriptable_entities/room.hpp \
  ../../septem/include/scriptable_entities/base_entity.h \
- ../../septem/include/scriptable_entities/container.h \
- ../../septem/include/scriptable_entities/entity_wrapper.h \
  ../../sol2/sol.hpp ../../sol2/sol/state.hpp \
  ../../sol2/sol/state_view.hpp ../../sol2/sol/error.hpp \
  ../../sol2/sol/table.hpp ../../sol2/sol/table_core.hpp \
@@ -44,6 +42,11 @@ Debug/up_up_septem_src_main.cpp.o: ../../septem/src/main.cpp \
  ../../sol2/sol/types.hpp ../../sol2/sol/optional.hpp \
  ../../sol2/sol/compatibility.hpp \
  ../../sol2/sol/compatibility/version.hpp \
+ /home/ken/git-repos/lua-5.3.4/src/lua.hpp \
+ /home/ken/git-repos/lua-5.3.4/src/lua.h \
+ /home/ken/git-repos/lua-5.3.4/src/luaconf.h \
+ /home/ken/git-repos/lua-5.3.4/src/lualib.h \
+ /home/ken/git-repos/lua-5.3.4/src/lauxlib.h \
  ../../sol2/sol/compatibility/5.1.0.h \
  ../../sol2/sol/compatibility/version.hpp \
  ../../sol2/sol/compatibility/5.0.0.h \
@@ -82,10 +85,14 @@ Debug/up_up_septem_src_main.cpp.o: ../../septem/src/main.cpp \
  ../../sol2/sol/object.hpp ../../sol2/sol/function.hpp \
  ../../sol2/sol/protected_function.hpp ../../sol2/sol/coroutine.hpp \
  ../../sol2/sol/thread.hpp ../../sol2/sol/variadic_args.hpp \
+ ../../septem/include/scriptable_entities/container.h \
+ ../../septem/include/scriptable_entities/entity_wrapper.h \
  ../../septem/include/scriptable_entities/player_entity.h \
  ../../septem/include/scriptable_entities/living_entity.h \
+ ../../septem/include/scriptable_entities/room.hpp \
  ../../septem/include/server/client.hpp ../../septem/include/account.hpp \
  ../../septem/include/scriptable_entities/command.h \
+ ../../septem/include/scriptable_entities/daemonobj.h \
  ../../septem/include/utils/stringutils.hpp \
  ../../septem/include/heartbeat_manager.h
 
@@ -163,10 +170,6 @@ Debug/up_up_septem_src_main.cpp.o: ../../septem/src/main.cpp \
 
 ../../septem/include/scriptable_entities/base_entity.h:
 
-../../septem/include/scriptable_entities/container.h:
-
-../../septem/include/scriptable_entities/entity_wrapper.h:
-
 ../../sol2/sol.hpp:
 
 ../../sol2/sol/state.hpp:
@@ -198,6 +201,16 @@ Debug/up_up_septem_src_main.cpp.o: ../../septem/src/main.cpp \
 ../../sol2/sol/compatibility.hpp:
 
 ../../sol2/sol/compatibility/version.hpp:
+
+/home/ken/git-repos/lua-5.3.4/src/lua.hpp:
+
+/home/ken/git-repos/lua-5.3.4/src/lua.h:
+
+/home/ken/git-repos/lua-5.3.4/src/luaconf.h:
+
+/home/ken/git-repos/lua-5.3.4/src/lualib.h:
+
+/home/ken/git-repos/lua-5.3.4/src/lauxlib.h:
 
 ../../sol2/sol/compatibility/5.1.0.h:
 
@@ -323,15 +336,23 @@ Debug/up_up_septem_src_main.cpp.o: ../../septem/src/main.cpp \
 
 ../../sol2/sol/variadic_args.hpp:
 
+../../septem/include/scriptable_entities/container.h:
+
+../../septem/include/scriptable_entities/entity_wrapper.h:
+
 ../../septem/include/scriptable_entities/player_entity.h:
 
 ../../septem/include/scriptable_entities/living_entity.h:
+
+../../septem/include/scriptable_entities/room.hpp:
 
 ../../septem/include/server/client.hpp:
 
 ../../septem/include/account.hpp:
 
 ../../septem/include/scriptable_entities/command.h:
+
+../../septem/include/scriptable_entities/daemonobj.h:
 
 ../../septem/include/utils/stringutils.hpp:
 

@@ -1,1 +1,0 @@
-/usr/bin/cc     CMakeFiles/lua.dir/src/lua.c.o  -o lua -Wl,-rpath,/home/ken/git-repos/Se7enMud/lua/build: -rdynamic liblua.so -lm -ldl 

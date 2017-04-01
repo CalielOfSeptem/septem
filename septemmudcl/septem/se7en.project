@@ -79,6 +79,7 @@
   <Description/>
   <Dependencies/>
   <Dependencies Name="Release"/>
+  <Dependencies Name="Debug"/>
   <Settings Type="Executable">
     <GlobalSettings>
       <Compiler Options="" C_Options="" Assembler="">
@@ -90,7 +91,7 @@
       <ResourceCompiler Options=""/>
     </GlobalSettings>
     <Configuration Name="Debug" CompilerType="GCC" DebuggerType="GNU gdb debugger" Type="Executable" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
-      <Compiler Options="-g;-O0;-std=c++14;-Wall" C_Options="-g;-O0;-Wall" Assembler="" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" PCHFlags="" PCHFlagsPolicy="0">
+      <Compiler Options="-g;-O0;-std=c++14;-Wall;-Wl,--no-as-needed -ldl" C_Options="-g;-O0;-Wall" Assembler="" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" PCHFlags="" PCHFlagsPolicy="0">
         <IncludePath Value="."/>
         <IncludePath Value="../../telnetpp/include"/>
         <IncludePath Value="../../terminalpp/include"/>
@@ -102,10 +103,10 @@
         <IncludePath Value="../../../cereal/include"/>
         <IncludePath Value="../../AngelscriptUtils/src"/>
         <IncludePath Value="../../sol2"/>
-        <IncludePath Value="../lua/src"/>
+        <IncludePath Value="/home/ken/git-repos/lua-5.3.4/src"/>
         <IncludePath Value="../../plog/include"/>
       </Compiler>
-      <Linker Options="-lz" Required="yes">
+      <Linker Options="-lz;-ldl" Required="yes">
         <LibraryPath Value="/usr/lib/x86_64-linux-gnu/"/>
         <LibraryPath Value="../odin/Debug"/>
         <LibraryPath Value="../telnetpp/Debug"/>
@@ -113,7 +114,7 @@
         <LibraryPath Value="../ttvfs/Debug"/>
         <LibraryPath Value="../angelscript/Debug"/>
         <LibraryPath Value="../AngelscriptUtils/Debug"/>
-        <LibraryPath Value="../lua/build"/>
+        <LibraryPath Value="/home/ken/git-repos/lua-5.3.4/src"/>
         <LibraryPath Value="/usr/local/bin/"/>
         <Library Value="pthread"/>
         <Library Value="boost_system"/>
@@ -201,5 +202,4 @@
       </Completion>
     </Configuration>
   </Settings>
-  <Dependencies Name="Debug"/>
 </CodeLite_Project>

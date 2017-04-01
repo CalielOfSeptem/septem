@@ -217,6 +217,15 @@ private:
     unsigned int player_uid_count = 0; // hack to make sure we give each player an instance ID that is non-conflicting
     unsigned int command_uid_count = 0; // hack to make sure we give each command an instance ID that is non-conflicting
     
+    
+    bool _init_sol_(sol::state& lua);
+    
+    void _init_libs(sol::state& lua);
+    
+    void _init_types(sol::state& lua);
+
+    void _init_base_entity_type(sol::state& lua);
+
     void _init_room_type(sol::state& lua);
     
     void _init_player_type(sol::state& lua);
@@ -237,7 +246,7 @@ private:
     
     bool get_player(const std::string& player_uid, shared_ptr<entity_wrapper>& cmd);
 
-    
+    shared_ptr<sol::state> lua_primary;
     
     std::map < std::string, bool > entity_map = { 
         {"/home/ken/git-repos/septem/game_data/realms/void", false}
@@ -246,7 +255,11 @@ private:
         {"/home/ken/git-repos/septem/game_data/daemon/command_proc", false}
         }; 
 
+     bool lua_safe_script(std::string& script, sol::state& lua);
      
+     bool _init_env_(EntityType& etype, std::string& script_path, sol::state& lua);
+     
+     bool _lua_set_env_(EntityType& etype, std::string& script_path, sol::state& lua);
 };
 
 

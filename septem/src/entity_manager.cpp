@@ -1,5 +1,137 @@
 #include "entity_manager.h"
+#include <algorithm>
+#include <string>
+#include <unordered_map>
+#include <boost/format.hpp>
+//using namespace std;
+//using boost::format;
+//using boost::io::group;
+//hash<string> hasher;
 
+//string s = "heyho";
+
+//size_t hash = hasher(s);
+
+void hash_path(std::string& path)
+{
+    std::hash<std::string> hash_fn;
+ 
+    size_t hash = hash_fn(path);
+    
+    std::stringstream ss;
+    ss << hash;
+    path = ss.str();
+ 
+    //std::cout << hash << '\n';
+}
+void strip_path(std::string& path)
+{
+    //path.erase(std::remove_if(path.begin(), path.end(),  std::not1(std::ptr_fun( (int(*)(int))std::isalnum ), path.end());
+   
+    //path.erase(remove_if(path.begin(), path.end(), [](char c) { return !isalpha(c); } ), path.end());
+    std::replace_if(path.begin() , path.end() ,  
+            [] (const char& c) { return !isalpha(c); ;},'_');
+    //path.erase(std::remove_if(path.begin(), path.end(), my_predicate), path.end());
+    cout << "Output String: " << path;    
+}
+
+bool entity_manager::lua_safe_script(std::string& script, sol::state& lua)
+{
+        auto simple_handler = [](lua_State*, sol::protected_function_result result) {
+            // You can just pass it through to let the call-site handle it
+            return result;
+        };
+        auto result = lua.script(script, simple_handler);
+        if (result.valid()) {
+            //std::cout << "the code worked, and a double-hello statement should appear above this one!" << std::endl;
+           // int value = result;
+           // assert(value == 24);
+           return true;
+        }
+        else {
+            sol::error err = result;
+            LOG_DEBUG << err.what();
+            //std::cout << "error: " << err.what() << std::endl;
+        }
+        return false;
+}
+
+std::string get_env_str( EntityType& etype )
+{
+    std::string entitys;
+    switch(etype) {
+    case EntityType::DAEMON: {
+        entitys = "_daemon_env";
+    }break;
+    case EntityType::COMMAND: {
+        entitys = "_command_env";
+    }break;
+    case EntityType::ITEM: {
+        entitys = "_item_env";
+    }break;
+    case EntityType::NPC: {
+        entitys = "_npc_env";
+    }break;
+    case EntityType::PLAYER: {
+        entitys = "_player_env";
+    }break;
+    case EntityType::ROOM: {
+        entitys = "_room_env";
+    }break;
+    default:
+    break;
+    }
+    
+    return entitys;
+}
+
+bool replace(std::string& str, const std::string& from, const std::string& to) {
+    size_t start_pos = str.find(from);
+    if(start_pos == std::string::npos)
+        return false;
+    str.replace(start_pos, from.length(), to);
+    return true;
+}
+
+bool entity_manager::_init_env_(EntityType& etype, std::string& script_path, sol::state& lua)
+{
+    
+    std::string sid = script_path; sadsds
+    sid = replace(sid, DEFAULT_GAME_DATA_PATH, " ");
+    strip_path(sid);
+    std::string entitys = get_env_str(etype);
+    
+    std::string s = R"(
+                _ENV = _G
+                _ENV = %1%
+                %2% = {_G = _G.base}
+                _ENV = %2%
+                internal_entity_script_path = '%3%'
+                )";
+    std::stringstream ss;
+    ss << boost::format(s) % entitys % sid % script_path; // 'simple' style.
+    std::string sc = ss.str();
+    std::cerr << sc << std::endl;
+    return lua_safe_script(sc, lua);
+}
+    
+
+bool entity_manager::_lua_set_env_(EntityType& etype, std::string& script_path, sol::state& lua)
+{
+    std::string sid = script_path;
+    strip_path(sid);
+    std::string entitys = get_env_str(etype);
+    std::string s = R"(
+                _ENV = _G
+                _ENV = %1%.%2%
+                )";
+    std::stringstream ss;
+    ss << boost::format(s) % entitys % sid; // 'simple' style.
+    std::string sc = ss.str();
+    std::cerr << sc << std::endl;
+    return lua_safe_script(sc, lua);
+}
+        
 bool entity_manager::compile_script(std::string& script_path,
                                     unordered_set<shared_ptr<entity_wrapper> >& entities,
                                     std::string& reason)
@@ -17,20 +149,35 @@ bool entity_manager::compile_script(std::string& script_path,
         reason = error_str;
         return false;
     }
+    if( !lua_primary )
+    {
+        lua_primary = shared_ptr<sol::state>(new sol::state);
+        _init_sol_(*lua_primary);
+    }
 
     // cout << script_text;
 
-    shared_ptr<sol::state> lua(new sol::state);
+    shared_ptr<sol::state> lua = lua_primary;
+    
+    //_init_sol_(*lua);
 
     switch(etype) {
     case EntityType::DAEMON: {
+        if (!_init_env_(etype, script_path, *lua))
+        {
+            LOG_ERROR << "Unable to load daemon: " << script_path;
+        }
+        else
+        {
+            LOG_DEBUG << "Loading daemon: " << script_path << "..";
+        }
+        
+       // _init_daemon_type(
+            //*lua); // may need to have all commands in the same state to reduce overhead... but that could get messy
 
-        _init_daemon_type(
-            *lua); // may need to have all commands in the same state to reduce overhead... but that could get messy
-
-        (*lua)["internal_entity_script_path"] = script_path;
+        
         std::vector<string> daemon_obj_name;
-        if(!load_entities_from_script((*lua.get()), script_text, daemon_obj_name, EntityType::DAEMON, error_str)) {
+        if(!load_entities_from_script((*lua), script_text, daemon_obj_name, EntityType::DAEMON, error_str)) {
             reason = error_str;
             return false;
         }
@@ -49,8 +196,8 @@ bool entity_manager::compile_script(std::string& script_path,
     } break;
     case EntityType::COMMAND: {
 
-        _init_command_type(
-            *lua); // may need to have all commands in the same state to reduce overhead... but that could get messy
+        //_init_command_type(
+        //    *lua); // may need to have all commands in the same state to reduce overhead... but that could get messy
 
         (*lua)["internal_entity_script_path"] = script_path;
         std::vector<string> command_obj_name;
@@ -72,7 +219,7 @@ bool entity_manager::compile_script(std::string& script_path,
         }
     } break;
     case EntityType::PLAYER: {
-        _init_player_type(*lua); // load up the functions for this script type
+       // _init_player_type(*lua); // load up the functions for this script type
 
         (*lua)["internal_entity_script_path"] = script_path;
         std::vector<string> player_obj_name;
@@ -98,7 +245,7 @@ bool entity_manager::compile_script(std::string& script_path,
         }
     } break;
     case EntityType::ROOM: {
-        _init_room_type(*lua);
+        //_init_room_type(*lua);
         /**
          * Elements needed for heartbeat registration
          */
@@ -443,8 +590,35 @@ int test()
     lua.new_usertype<b>("b",
                         "GetCommands",
                         &b::GetCommands);
-   // lua.set_function("GetCommands", &downcast<command>);
                         
+        
+       // auto result1 = lua.script("/home/ken/git-repos/septem/game_data/test.lua", &sol::default_on_error);
+        
+
+        // call lua code, and check to make sure it has loaded and run properly:
+       // auto handler = &sol::default_on_error;
+       // lua.script_file("/home/ken/git-repos/septem/game_data/test.lua", handler);
+
+        // Use a custom error handler if you need it
+        // This gets called when the result is bad
+        auto simple_handler = [](lua_State*, sol::protected_function_result result) {
+            // You can just pass it through to let the call-site handle it
+            return result;
+        };
+        auto result = lua.script_file("/home/ken/git-repos/septem/game_data/test.lua", simple_handler);
+        if (result.valid()) {
+            std::cout << "the code worked, and a double-hello statement should appear above this one!" << std::endl;
+           // int value = result;
+           // assert(value == 24);
+        }
+        else {
+            sol::error err = result;
+            std::cout << "error: " << err.what() << std::endl;
+        }
+
+        return 0;
+   // lua.set_function("GetCommands", &downcast<command>);
+       /*                 
     lua.script(R"(
             
             a = 1
@@ -485,6 +659,7 @@ int test()
             newgt2.p1:FooExtendEx()
             newgt.p1:FooExtend()
         )");
+         */
     /*
     if(!lr.valid())
     {
@@ -563,15 +738,53 @@ int test()
             std::cout << "OK" << std::endl;
     }
     */
-    return 0;
+
+}
+
+bool entity_manager::_init_sol_(sol::state& lua)
+{
+    _init_libs(lua);
+    _init_types(lua);
+    
+    auto simple_handler = [](lua_State*, sol::protected_function_result result) {
+        // You can just pass it through to let the call-site handle it
+        return result;
+    };
+    auto result = lua.script_file(DEFAULT_SOL_INIT_PATH, simple_handler);
+    if (result.valid()) {
+        //std::cout << "the code worked, and a double-hello statement should appear above this one!" << std::endl;
+       // int value = result;
+       // assert(value == 24);
+       return true;
+    }
+    else {
+        sol::error err = result;
+        LOG_ERROR << "Error: " << err.what();
+        return false;
+    }
+}
+void entity_manager::_init_libs(sol::state& lua)
+{
+    lua.open_libraries(sol::lib::base, sol::lib::string, sol::lib::package, sol::lib::math, sol::lib::table);
+}
+
+void entity_manager::_init_types(sol::state& lua)
+{
+    _init_base_entity_type(lua);
+    _init_daemon_type(lua);
+    _init_room_type(lua);
+    _init_player_type(lua);
+}
+
+void entity_manager::_init_base_entity_type(sol::state& lua)
+{
+       lua.new_usertype<base_entity>("base_entity",
+                                    "GetType", &base_entity::GetEntityTypeString
+                                    );
 }
 
 void entity_manager::_init_room_type(sol::state& lua)
 {
-    test();
-   // test();
-    lua.open_libraries(sol::lib::base, sol::lib::string, sol::lib::package, sol::lib::math, sol::lib::table);
-    // lua.new_usertype<base_entity>("base");
     lua.new_usertype<exitobj>("exitobj",
                               "GetExitPath",
                               &exitobj::GetExitPath,
@@ -615,7 +828,6 @@ void entity_manager::_init_room_type(sol::state& lua)
 
 void entity_manager::_init_player_type(sol::state& lua)
 {
-    lua.open_libraries(sol::lib::base, sol::lib::string, sol::lib::package, sol::lib::math, sol::lib::table);
 
     lua.new_usertype<player_entity>("player",
                                     "player_name",
@@ -635,8 +847,7 @@ void entity_manager::_init_player_type(sol::state& lua)
 
 void entity_manager::_init_command_type(sol::state& lua)
 {
-    
-    lua.open_libraries(sol::lib::base, sol::lib::string, sol::lib::package, sol::lib::math, sol::lib::table);
+
     lua.new_usertype<command>("command",
                             sol::constructors<command(), command(std::string), daemonobj(std::string, int)>(),
                               "GetName", &command::GetName,
@@ -651,17 +862,11 @@ void entity_manager::_init_command_type(sol::state& lua)
     lua.set_function("room_cast", &downcast<room>);
     lua.set_function("player_cast", &downcast<player_entity>);
     
-    // lua.set_function( "exit_obj_cast", &downcast<exit_obj> );
-    _init_player_type(lua);
-    _init_room_type(lua);
 }
 
 void entity_manager::_init_daemon_type(sol::state& lua)
 {
-    lua.open_libraries(sol::lib::base, sol::lib::string, sol::lib::package, sol::lib::math, sol::lib::table);
-    lua.new_usertype<base_entity>("base_entity",
-                                    "GetType", &base_entity::GetEntityTypeString
-                                    );
+ 
     lua.new_usertype<daemonobj>("daemon",
                                 sol::constructors<daemonobj(), daemonobj(std::string)>(),
                                 "GetName",
@@ -674,10 +879,7 @@ void entity_manager::_init_daemon_type(sol::state& lua)
     lua.set_function("room_cast", &downcast<room>);
     lua.set_function("player_cast", &downcast<player_entity>);
     lua.set_function("GetCommands", &entity_manager::GetCommands, this);
-    // lua.set_function( "exit_obj_cast", &downcast<exit_obj> );
-    _init_player_type(lua);
-    _init_room_type(lua);
-    _init_command_type(lua);
+
 }
 
 bool entity_manager::load_script_text(std::string& script_path,
