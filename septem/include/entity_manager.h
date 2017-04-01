@@ -237,7 +237,7 @@ private:
     
     bool load_script_text(std::string& script_path, std::string& script_text, EntityType& obj_type, string& reason);
     
-    bool load_entities_from_script(sol::state& lua, const std::string& script_text, 
+    bool load_entities_from_script(sol::state& lua, const std::string& script_text, const std::vector<std::string>& env_path,
         std::vector<string>& obj_names, EntityType entity_type, string& reason);
         
     bool get_command(std::string& verb, shared_ptr<entity_wrapper>& cmd);
@@ -257,7 +257,7 @@ private:
 
      bool lua_safe_script(std::string& script, sol::state& lua);
      
-     bool _init_env_(EntityType& etype, std::string& script_path, sol::state& lua);
+     bool _init_env_(EntityType& etype, std::string& script_path, sol::state& lua, std::vector<std::string>& env_path);
      
      bool _lua_set_env_(EntityType& etype, std::string& script_path, sol::state& lua);
 };

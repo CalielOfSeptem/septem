@@ -1,78 +1,21 @@
-﻿2017-03-31 18:54:34.212 ERROR [12978] [entity_manager::load_daemon_from_fs@251] Unable to load /home/ken/git-repos/septem/game_data/daemon/movement: No recognized objects instantiated in script.
-2017-03-31 18:57:45.789 INFO  [13039] [main@85] Starting up..
-2017-03-31 19:04:09.126 INFO  [13124] [main@85] Starting up..
-2017-03-31 19:05:18.469 INFO  [13188] [main@85] Starting up..
-2017-03-31 19:13:23.052 INFO  [13259] [main@85] Starting up..
-2017-03-31 19:15:08.303 ERROR [13259] [entity_manager::load_daemon_from_fs@251] Unable to load /home/ken/git-repos/septem/game_data/daemon/movement: No recognized objects instantiated in script.
-2017-03-31 19:16:10.419 INFO  [13313] [main@85] Starting up..
-2017-03-31 19:16:31.758 INFO  [13353] [main@85] Starting up..
-2017-03-31 19:43:20.185 INFO  [13507] [main@85] Starting up..
-2017-03-31 19:47:43.121 INFO  [13603] [main@85] Starting up..
-2017-03-31 19:49:42.207 INFO  [13686] [main@85] Starting up..
-2017-03-31 19:51:26.658 INFO  [13755] [main@85] Starting up..
-2017-03-31 19:52:25.434 INFO  [13817] [main@85] Starting up..
-2017-03-31 19:54:56.404 INFO  [13891] [main@85] Starting up..
-2017-03-31 20:05:01.380 INFO  [14015] [main@85] Starting up..
-2017-03-31 21:07:30.361 INFO  [14517] [main@85] Starting up..
-2017-03-31 21:08:04.274 INFO  [14564] [main@85] Starting up..
-2017-03-31 21:09:13.544 INFO  [14627] [main@85] Starting up..
-2017-03-31 21:12:14.295 INFO  [14704] [main@85] Starting up..
-2017-03-31 21:16:55.099 INFO  [14819] [main@85] Starting up..
-2017-03-31 21:18:43.379 INFO  [14903] [main@85] Starting up..
-2017-03-31 21:18:55.962 INFO  [14944] [main@85] Starting up..
-2017-03-31 21:19:08.216 INFO  [14991] [main@85] Starting up..
-2017-03-31 21:21:20.147 INFO  [15059] [main@85] Starting up..
-2017-03-31 21:24:14.358 INFO  [15126] [main@85] Starting up..
-2017-03-31 21:35:00.783 INFO  [15257] [main@85] Starting up..
-2017-03-31 21:36:16.361 INFO  [15299] [main@85] Starting up..
-2017-03-31 21:37:46.755 INFO  [15347] [main@85] Starting up..
-2017-03-31 21:38:54.653 INFO  [15391] [main@85] Starting up..
-2017-03-31 21:39:55.720 INFO  [15435] [main@85] Starting up..
-2017-03-31 21:40:50.811 INFO  [15477] [main@85] Starting up..
-2017-03-31 21:41:23.878 INFO  [15521] [main@85] Starting up..
-2017-03-31 21:41:59.655 INFO  [15565] [main@85] Starting up..
-2017-03-31 21:42:58.824 INFO  [15609] [main@85] Starting up..
-2017-03-31 21:44:24.236 INFO  [15652] [main@85] Starting up..
-2017-03-31 21:47:25.596 INFO  [22101] [main@85] Starting up..
-2017-03-31 21:56:31.937 INFO  [22369] [main@85] Starting up..
-2017-03-31 22:09:14.235 INFO  [22971] [main@85] Starting up..
-2017-03-31 22:10:21.298 INFO  [23013] [main@85] Starting up..
-2017-03-31 22:11:11.103 INFO  [23061] [main@85] Starting up..
-2017-03-31 22:11:38.852 INFO  [23101] [main@85] Starting up..
-2017-03-31 22:12:45.500 INFO  [23145] [main@85] Starting up..
-2017-03-31 22:13:45.425 INFO  [23188] [main@85] Starting up..
-2017-03-31 22:37:04.004 INFO  [23623] [main@85] Starting up..
-2017-03-31 22:39:01.799 INFO  [23682] [main@85] Starting up..
-2017-03-31 22:39:40.852 INFO  [23726] [main@85] Starting up..
-2017-03-31 22:40:34.586 INFO  [23770] [main@85] Starting up..
-2017-03-31 22:51:34.516 INFO  [23963] [main@85] Starting up..
-2017-03-31 22:52:33.712 INFO  [24008] [main@85] Starting up..
-2017-03-31 22:54:24.611 INFO  [24056] [main@85] Starting up..
-2017-03-31 23:00:43.093 INFO  [24112] [main@85] Starting up..
-2017-03-31 23:01:10.761 INFO  [24154] [main@85] Starting up..
-2017-03-31 23:13:36.472 INFO  [24379] [main@85] Starting up..
-2017-03-31 23:20:44.808 INFO  [24525] [main@85] Starting up..
-2017-03-31 23:25:04.803 INFO  [24612] [main@85] Starting up..
-2017-03-31 23:27:53.912 INFO  [24694] [main@85] Starting up..
-2017-03-31 23:28:48.253 INFO  [24735] [main@85] Starting up..
-2017-03-31 23:37:17.652 INFO  [24920] [main@85] Starting up..
-2017-03-31 23:41:43.230 INFO  [25023] [main@85] Starting up..
-2017-04-01 00:08:29.207 INFO  [25521] [main@85] Starting up..
-2017-04-01 00:10:07.328 INFO  [25953] [main@85] Starting up..
-2017-04-01 00:10:58.480 DEBUG [25953] [entity_manager::lua_safe_script@53] [string "..."]:4: unexpected symbol near '13184289831198569330'
-2017-04-01 00:10:58.480 ERROR [25953] [entity_manager::load_daemon_from_fs@342] Unable to load /home/ken/git-repos/septem/game_data/daemon/command_proc: [string "..."]:5: attempt to call a nil value (global 'setfenv')
-2017-04-01 00:12:25.835 INFO  [26032] [main@85] Starting up..
-2017-04-01 00:12:33.051 DEBUG [26032] [entity_manager::lua_safe_script@53] [string "..."]:6: unexpected symbol near '/'
-2017-04-01 00:12:33.051 ERROR [26032] [entity_manager::load_daemon_from_fs@342] Unable to load /home/ken/git-repos/septem/game_data/daemon/command_proc: [string "..."]:5: attempt to call a nil value (global 'setfenv')
-2017-04-01 00:13:59.007 INFO  [26098] [main@85] Starting up..
-2017-04-01 00:14:10.750 DEBUG [26098] [entity_manager::lua_safe_script@53] [string "..."]:6: unexpected symbol near '='
-2017-04-01 00:14:10.750 ERROR [26098] [entity_manager::load_daemon_from_fs@342] Unable to load /home/ken/git-repos/septem/game_data/daemon/command_proc: [string "..."]:5: attempt to call a nil value (global 'setfenv')
-2017-04-01 00:15:32.010 INFO  [26162] [main@85] Starting up..
-2017-04-01 00:15:39.445 DEBUG [26162] [entity_manager::lua_safe_script@53] [string "..."]:6: unexpected symbol near '='
-2017-04-01 00:15:39.445 ERROR [26162] [entity_manager::load_daemon_from_fs@342] Unable to load /home/ken/git-repos/septem/game_data/daemon/command_proc: [string "..."]:5: attempt to call a nil value (global 'setfenv')
-2017-04-01 00:16:44.571 INFO  [26223] [main@85] Starting up..
-2017-04-01 00:39:24.915 INFO  [26717] [main@85] Starting up..
-2017-04-01 00:40:43.643 INFO  [26780] [main@85] Starting up..
-2017-04-01 00:43:29.020 INFO  [26855] [main@85] Starting up..
-2017-04-01 00:44:04.968 INFO  [26900] [main@85] Starting up..
-2017-04-01 00:48:06.407 INFO  [27069] [main@85] Starting up..
+﻿2017-04-01 08:27:06.053 DEBUG [30673] [entity_manager::compile_script@190] Loading daemon: /home/ken/git-repos/septem/game_data/daemon/command_proc..
+2017-04-01 08:27:06.053 ERROR [30673] [entity_manager::load_daemon_from_fs@445] Unable to load /home/ken/git-repos/septem/game_data/daemon/command_proc: [string "..."]:5: attempt to call a nil value (global 'setfenv')
+2017-04-01 08:27:06.053 DEBUG [30673] [entity_manager::compile_script@295] Loading room: /home/ken/git-repos/septem/game_data/realms/void..
+2017-04-01 08:35:58.615 INFO  [30854] [main@85] Starting up..
+2017-04-01 08:35:58.615 ERROR [30854] [entity_manager::_init_sol_@809] Error: /home/ken/git-repos/septem/game_data/init:10: syntax error near '..'
+2017-04-01 08:35:58.616 DEBUG [30854] [entity_manager::lua_safe_script@53] [string "..."]:4: attempt to index a nil value (upvalue '_ENV')
+2017-04-01 08:35:58.616 ERROR [30854] [entity_manager::load_daemon_from_fs@445] Unable to load /home/ken/git-repos/septem/game_data/daemon/command_proc: Unable to load daemon environment for: /home/ken/git-repos/septem/game_data/daemon/command_proc
+2017-04-01 08:35:58.616 DEBUG [30854] [entity_manager::lua_safe_script@53] [string "..."]:4: attempt to index a nil value (upvalue '_ENV')
+2017-04-01 08:35:58.616 ERROR [30854] [entity_manager::load_entities_from_fs@495] Unable to load /home/ken/git-repos/septem/game_data/realms/void: Unable to load room environment for: /home/ken/git-repos/septem/game_data/realms/void
+2017-04-01 08:35:58.616 DEBUG [30854] [entity_manager::lua_safe_script@53] [string "..."]:4: attempt to index a nil value (upvalue '_ENV')
+2017-04-01 08:35:58.616 ERROR [30854] [entity_manager::load_commands_from_fs@408] Unable to load /home/ken/git-repos/septem/game_data/cmds/move: Unable to load command environment for: /home/ken/git-repos/septem/game_data/cmds/move
+2017-04-01 08:35:58.616 DEBUG [30854] [entity_manager::lua_safe_script@53] [string "..."]:4: attempt to index a nil value (upvalue '_ENV')
+2017-04-01 08:35:58.616 ERROR [30854] [entity_manager::load_commands_from_fs@408] Unable to load /home/ken/git-repos/septem/game_data/cmds/look: Unable to load command environment for: /home/ken/git-repos/septem/game_data/cmds/look
+2017-04-01 08:36:48.880 INFO  [30904] [main@85] Starting up..
+2017-04-01 08:36:48.881 DEBUG [30904] [entity_manager::compile_script@190] Loading daemon: /home/ken/git-repos/septem/game_data/daemon/command_proc..
+2017-04-01 08:36:48.881 ERROR [30904] [entity_manager::load_daemon_from_fs@445] Unable to load /home/ken/git-repos/septem/game_data/daemon/command_proc: [string "..."]:5: attempt to call a nil value (global 'setfenv')
+2017-04-01 08:36:48.881 DEBUG [30904] [entity_manager::compile_script@295] Loading room: /home/ken/git-repos/septem/game_data/realms/void..
+2017-04-01 08:38:02.236 INFO  [30979] [main@85] Starting up..
+2017-04-01 08:38:02.237 DEBUG [30979] [entity_manager::compile_script@190] Loading daemon: /home/ken/git-repos/septem/game_data/daemon/command_proc..
+2017-04-01 08:38:02.238 ERROR [30979] [entity_manager::load_daemon_from_fs@445] Unable to load /home/ken/git-repos/septem/game_data/daemon/command_proc: [string "..."]:5: attempt to call a nil value (global 'setfenv')
+2017-04-01 08:38:02.238 DEBUG [30979] [entity_manager::compile_script@295] Loading room: /home/ken/git-repos/septem/game_data/realms/void..
