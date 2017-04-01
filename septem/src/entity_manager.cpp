@@ -96,8 +96,9 @@ bool replace(std::string& str, const std::string& from, const std::string& to) {
 bool entity_manager::_init_env_(EntityType& etype, std::string& script_path, sol::state& lua)
 {
     
-    std::string sid = script_path; sadsds
-    sid = replace(sid, DEFAULT_GAME_DATA_PATH, " ");
+    std::string sid = script_path; 
+   // sid = replace(sid, DEFAULT_GAME_DATA_PATH, " ");
+    string  st = std::regex_replace(sid, std::regex("\\" + std::string(DEFAULT_GAME_DATA_PATH)), "");
     strip_path(sid);
     std::string entitys = get_env_str(etype);
     
