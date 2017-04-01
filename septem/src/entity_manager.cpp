@@ -364,7 +364,7 @@ bool entity_manager::move_entity(shared_ptr<entity_wrapper>& eorig, entity_wrapp
                     sol::optional<base_entity&> bep = eorig->script_obj;
                     // player_entity * pe = dynamic_cast<player_entity*>(bep);
 
-                    self["execute_command"](self, bep.value(), "");
+                    self["ExecuteCommand"](self, bep.value(), "");
                     // lua["print_some_val"]();
                     // ew->script_state[ew->script_obj_name][]
                     // base_entity * bec = &ew->script_obj.value();
@@ -438,6 +438,7 @@ int test()
     };
     b test_obj;
     sol::state lua;
+    lua.open_libraries(sol::lib::base, sol::lib::string, sol::lib::package, sol::lib::math, sol::lib::table);
     lua.new_usertype<a>("a");
     lua.new_usertype<b>("b",
                         "GetCommands",
@@ -445,8 +446,44 @@ int test()
    // lua.set_function("GetCommands", &downcast<command>);
                         
     lua.script(R"(
+            
+            a = 1
+            function b:FooExtend ( o )
+                print('FooExtend')
+            
+            end
+            
+            local newgt = {} -- create new environment
+            --setmetatable(newgt, {__index = _G})
+            setfenv(1, {_G = _G})
+            setfenv(1, newgt) -- set it
+            print(a) --> 1
             p1 = b.new () 
             cmds = p1:GetCommands()
+            print( #cmds )
+            
+            local newgt2 = {} -- create new environment
+            --setmetatable(newgt2, {__index = _G})
+            setfenv(1, {_G = _G})
+            setfenv(1, newgt2) -- set it
+            print(a) --> 1
+            p1 = b.new () 
+            p1:FooExtend()
+            cmds = p1:GetCommands()
+            
+            -- Add a new extended method..
+            function b:FooExtendEx ( o )
+                print('FooExtendEx')
+            
+            end
+            
+            print( #cmds )
+            
+            -- Go back to global
+            setfenv( 1, _G )
+            newgt2.p1:FooExtend()
+            newgt2.p1:FooExtendEx()
+            newgt.p1:FooExtend()
         )");
     /*
     if(!lr.valid())
@@ -531,7 +568,7 @@ int test()
 
 void entity_manager::_init_room_type(sol::state& lua)
 {
-   // test();
+    test();
    // test();
     lua.open_libraries(sol::lib::base, sol::lib::string, sol::lib::package, sol::lib::math, sol::lib::table);
     // lua.new_usertype<base_entity>("base");
@@ -601,15 +638,13 @@ void entity_manager::_init_command_type(sol::state& lua)
     
     lua.open_libraries(sol::lib::base, sol::lib::string, sol::lib::package, sol::lib::math, sol::lib::table);
     lua.new_usertype<command>("command",
-                            sol::constructors<command(), command(std::string)>(),
-                              "GetName",
-                              &command::GetName,
-                              "SetName",
-                              &command::SetName,
-                              "GetSynonyms",
-                              &command::GetSynonyms,
-                              "SetSynonyms",
-                              &command::SetSynonyms,
+                            sol::constructors<command(), command(std::string), daemonobj(std::string, int)>(),
+                              "GetName", &command::GetName,
+                              "SetName", &command::SetName,
+                              "GetSynonyms", &command::GetSynonyms,
+                              "SetSynonyms", &command::SetSynonyms,
+                              "SetPriority", &command::SetPriority,
+                              "GetPriority", &command::GetPriority,
                               sol::base_classes,
                               sol::bases<base_entity>());
     lua.set_function("command_cast", &downcast<command>);
@@ -779,11 +814,12 @@ bool entity_manager::load_entities_from_script(sol::state& lua,
                 const sol::object& key = key_value_pair.first;
                 const sol::object& value = key_value_pair.second;
                 sol::type t = value.get_type();
+               // std::cerr << t << std::endl;
                 switch(t) {
                 case sol::type::function: {
-                    // if (key.is<std::string>())
-                    //{
-                    //   std::cout << "key " << key.as<std::string>() << " is a function -- " << endl;
+                    if (key.is<std::string>())
+                    {
+                       std::cout << "key " << key.as<std::string>() << " is a function -- " << endl;
                     // use this later to find interface functions we need
                     // std::cout << "value " << value.as<std::string>() << " is a sig -- " << std::endl;
                     // sol::optional<room&> maybe_function = value.as<sol::optional<sol::function&>>();
@@ -791,14 +827,14 @@ bool entity_manager::load_entities_from_script(sol::state& lua,
                     // if (v) {
                     //     cout << "OK";
                     // }
-                    //}
+                    }
                     break;
                 }
                 case sol::type::table: {
                     sol::optional<std::string> maybe_strkey = key.as<sol::optional<std::string> >();
                     if(maybe_strkey) {
                         std::string& strkey = maybe_strkey.value();
-                        // std::cout << "key " << strkey << " is a table...";
+                        std::cout << "key " << strkey << " is a table...";
                         if(base_library_names.find(strkey) != base_library_names.end()) {
                             //  std::cout << " built-in detected: skipping!" << std::endl;
                             continue;
@@ -843,6 +879,10 @@ bool entity_manager::load_entities_from_script(sol::state& lua,
 
                 } break;
                 default:
+                    if (key.is<std::string>())
+                    {
+                       std::cout << "key " << key.as<std::string>() << " is a unknown -- " << endl;
+                    }
                     // std::cout << "";
                     break;
                 }

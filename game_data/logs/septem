@@ -1,9 +1,15 @@
-﻿2017-03-31 11:19:51.898 ERROR [11123] [entity_manager::load_daemon_from_fs@251] Unable to load /home/ken/git-repos/septem/game_data/daemon/movement: No recognized objects instantiated in script.
-2017-03-31 11:19:51.903 INFO  [11123] [entity_manager::load_daemon_from_fs@243] Loaded daemon: /home/ken/git-repos/septem/game_data/daemon/command_proc
-2017-03-31 11:19:51.904 INFO  [11123] [entity_manager::load_entities_from_fs@287] Loaded room: /home/ken/git-repos/septem/game_data/realms/void
-2017-03-31 11:19:51.904 INFO  [11123] [entity_manager::load_entities_from_fs@290] Void room identified: /home/ken/git-repos/septem/game_data/realms/void
-2017-03-31 11:19:51.905 ERROR [11123] [entity_manager::load_commands_from_fs@214] Unable to load /home/ken/git-repos/septem/game_data/cmds/move: [string "c = command.new()..."]:2: attempt to call method 'SetVerb' (a nil value)
-2017-03-31 11:19:51.907 INFO  [11123] [entity_manager::load_commands_from_fs@206] Loaded command: /home/ken/git-repos/septem/game_data/cmds/look
-2017-03-31 11:20:09.641 INFO  [11127] [account_manager::load_account@206] Trying to load acount from file: kenthompson1@gmail.com
-2017-03-31 11:20:09.641 INFO  [11127] [account_manager::load_account@231] Account file [/home/ken/git-repos/septem/game_data/accounts/k/kenthompson1@gmail.com.xml] deserialized and loaded successefully.
-2017-03-31 11:20:09.641 INFO  [11127] [entity_manager::load_player@160] Successfully loaded player: kenthompson1@gmail.com
+﻿2017-03-31 18:54:34.212 ERROR [12978] [entity_manager::load_daemon_from_fs@251] Unable to load /home/ken/git-repos/septem/game_data/daemon/movement: No recognized objects instantiated in script.
+2017-03-31 18:57:45.789 INFO  [13039] [main@85] Starting up..
+2017-03-31 19:04:09.126 INFO  [13124] [main@85] Starting up..
+2017-03-31 19:05:18.469 INFO  [13188] [main@85] Starting up..
+2017-03-31 19:13:23.052 INFO  [13259] [main@85] Starting up..
+2017-03-31 19:15:08.303 ERROR [13259] [entity_manager::load_daemon_from_fs@251] Unable to load /home/ken/git-repos/septem/game_data/daemon/movement: No recognized objects instantiated in script.
+2017-03-31 19:16:10.419 INFO  [13313] [main@85] Starting up..
+2017-03-31 19:16:31.758 INFO  [13353] [main@85] Starting up..
+2017-03-31 19:43:20.185 INFO  [13507] [main@85] Starting up..
+2017-03-31 19:47:43.121 INFO  [13603] [main@85] Starting up..
+2017-03-31 19:49:42.207 INFO  [13686] [main@85] Starting up..
+2017-03-31 19:51:26.658 INFO  [13755] [main@85] Starting up..
+2017-03-31 19:52:25.434 INFO  [13817] [main@85] Starting up..
+2017-03-31 19:54:56.404 INFO  [13891] [main@85] Starting up..
+2017-03-31 20:05:01.380 INFO  [14015] [main@85] Starting up..

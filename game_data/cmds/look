@@ -1,10 +1,14 @@
 inherit command
-c = command.new('look')
-c:SetSynonyms({'l', 'lo', 'loo'})
+
+	
+c = command.new('look', 0) -- priority zero means that this command will win out over other similar commands, e.g., lo will resolve to look rather than locate.
+c:SetSynonyms({'peer'})
 -- o is the base_entity from which the command originated.  Cmd is the command text.  Note that the verb
 -- which initiated the command will be the first element in cmd.  Ex/ > look, cmd="look", >look chest, cmd = "look chest"
 
-function command:execute_command ( o, cmd )
+
+
+function command:ExecuteCommand ( o, cmd )
 	p = player_cast(o)
 	if p ~= nil then
 		-- lets see what room the player/npc is in..
@@ -44,3 +48,4 @@ function FormatRoom(r)
 	return s
 
 end
+
