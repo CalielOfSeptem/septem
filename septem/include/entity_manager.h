@@ -259,7 +259,9 @@ private:
      
      bool _init_env_(EntityType& etype, std::string& script_path, sol::state& lua, std::vector<std::string>& env_path);
      
-     bool _lua_set_env_(EntityType& etype, std::string& script_path, sol::state& lua);
+     bool _lua_set_env_(EntityType& etype, std::string& env_path, sol::state& lua);
+     
+     void get_change_env_script( std::string& script_path, EntityType& etype, std::string& env_script);
 };
 
 

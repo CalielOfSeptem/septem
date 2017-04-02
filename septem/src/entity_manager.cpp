@@ -11,51 +11,6 @@
 //string s = "heyho";
 
 //size_t hash = hasher(s);
-
-void hash_path(std::string& path)
-{
-    std::hash<std::string> hash_fn;
- 
-    size_t hash = hash_fn(path);
-    
-    std::stringstream ss;
-    ss << hash;
-    path = ss.str();
- 
-    //std::cout << hash << '\n';
-}
-void strip_path(std::string& path)
-{
-    //path.erase(std::remove_if(path.begin(), path.end(),  std::not1(std::ptr_fun( (int(*)(int))std::isalnum ), path.end());
-   
-    //path.erase(remove_if(path.begin(), path.end(), [](char c) { return !isalpha(c); } ), path.end());
-    std::replace_if(path.begin() , path.end() ,  
-            [] (const char& c) { return !isalpha(c); ;},'_');
-    //path.erase(std::remove_if(path.begin(), path.end(), my_predicate), path.end());
-    cout << "Output String: " << path;    
-}
-
-bool entity_manager::lua_safe_script(std::string& script, sol::state& lua)
-{
-        auto simple_handler = [](lua_State*, sol::protected_function_result result) {
-            // You can just pass it through to let the call-site handle it
-            return result;
-        };
-        auto result = lua.script(script, simple_handler);
-        if (result.valid()) {
-            //std::cout << "the code worked, and a double-hello statement should appear above this one!" << std::endl;
-           // int value = result;
-           // assert(value == 24);
-           return true;
-        }
-        else {
-            sol::error err = result;
-            LOG_DEBUG << err.what();
-            //std::cout << "error: " << err.what() << std::endl;
-        }
-        return false;
-}
-
 std::string get_env_str( EntityType& etype )
 {
     std::string entitys;
@@ -84,6 +39,97 @@ std::string get_env_str( EntityType& etype )
     
     return entitys;
 }
+void hash_path(std::string& path)
+{
+    std::hash<std::string> hash_fn;
+ 
+    size_t hash = hash_fn(path);
+    
+    std::stringstream ss;
+    ss << hash;
+    path = ss.str();
+ 
+    //std::cout << hash << '\n';
+}
+void strip_path(std::string& path)
+{
+    //path.erase(std::remove_if(path.begin(), path.end(),  std::not1(std::ptr_fun( (int(*)(int))std::isalnum ), path.end());
+   
+    //path.erase(remove_if(path.begin(), path.end(), [](char c) { return !isalpha(c); } ), path.end());
+    std::replace_if(path.begin() , path.end() ,  
+            [] (const char& c) { return !isalpha(c); ;},'_');
+    //path.erase(std::remove_if(path.begin(), path.end(), my_predicate), path.end());
+    //cout << "Output String: " << path;    
+}
+
+std::string env_path_to_string( std::vector<std::string> & env_path )
+{
+    assert( env_path.size() == 2 );
+    std::string s1 = "_G.%1%.%2%";
+    std::stringstream ss_script;
+    ss_script << boost::format(s1) % env_path[0] % env_path[1]; // 'simple' style.
+    std::string s2 = ss_script.str();
+    //std::cerr << s2 << std::endl;
+    return s2;
+}
+
+
+
+void entity_manager::get_change_env_script( std::string& script_path, EntityType& etype, std::string& env_script)
+{
+    
+    std::string sid = script_path; 
+   // sid = replace(sid, DEFAULT_GAME_DATA_PATH, " ");
+    string st = std::regex_replace(sid, std::regex("\\" + std::string(DEFAULT_GAME_DATA_PATH)), "");
+    strip_path(st);
+    std::string entitys = get_env_str(etype);
+    
+    std::string s1 = R"(_ENV = _G.%1%.%2%)";
+    std::stringstream ss_script;
+    ss_script << boost::format(s1) % entitys % st; // 'simple' style.
+    env_script = ss_script.str();
+   // std::cerr << env_script << std::endl;
+
+    //return lua_safe_script(str_script, lua);
+}
+
+void get_entity_env_path( std::string& script_path, EntityType& etype, std::vector<std::string>& env_path )
+{
+    string s1 = std::regex_replace(script_path, std::regex("\\" + std::string(DEFAULT_GAME_DATA_PATH)), "");
+    strip_path(s1);
+    std::string entitystr = get_env_str(etype);
+
+    env_path.push_back(entitystr);
+    env_path.push_back(s1);
+}
+ 
+
+bool entity_manager::lua_safe_script(std::string& script, sol::state& lua)
+{
+        //LOG_DEBUG << "Executing script:";
+        //LOG_DEBUG << script;
+        auto simple_handler = [](lua_State*, sol::protected_function_result result) {
+            // You can just pass it through to let the call-site handle it
+            return result;
+        };
+        auto result = lua.script(script, simple_handler);
+        if (result.valid()) {
+            LOG_VERBOSE << "Successfully execute script.";
+            //std::cout << "the code worked, and a double-hello statement should appear above this one!" << std::endl;
+           // int value = result;
+           // assert(value == 24);
+           return true;
+        }
+        else {
+            sol::error err = result;
+            LOG_ERROR << err.what();
+            LOG_DEBUG << script;
+            //std::cout << "error: " << err.what() << std::endl;
+        }
+        return false;
+}
+
+
 
 bool replace(std::string& str, const std::string& from, const std::string& to) {
     size_t start_pos = str.find(from);
@@ -96,53 +142,49 @@ bool replace(std::string& str, const std::string& from, const std::string& to) {
 bool entity_manager::_init_env_(EntityType& etype, std::string& script_path, sol::state& lua, std::vector<std::string>& env_path)
 {
     
-    std::string sid = script_path; 
-   // sid = replace(sid, DEFAULT_GAME_DATA_PATH, " ");
-    string st = std::regex_replace(sid, std::regex("\\" + std::string(DEFAULT_GAME_DATA_PATH)), "");
-    strip_path(st);
-    std::string entitys = get_env_str(etype);
+    string p1 = std::regex_replace(script_path, std::regex("\\" + std::string(DEFAULT_GAME_DATA_PATH)), "");
+    strip_path(p1);  // remove special chars
+    std::string entitystr = get_env_str(etype);
     
     std::string s1 = R"(
                 _ENV = _G
                 _ENV = %1%
-                %2% = {_G = _G.base}
+                %2% = {}
+                setmetatable(%2%, {__index = _G.base})
                 _ENV = %2%
                 internal_entity_script_path = '%3%'
                 _ENV = _G
                 )";
     std::stringstream ss_script;
-    ss_script << boost::format(s1) % entitys % st % script_path; // 'simple' style.
+    ss_script << boost::format(s1) % entitystr % p1 % script_path; // 'simple' style.
     std::string str_script = ss_script.str();
-    std::cerr << str_script << std::endl;
+   // std::cerr << str_script << std::endl;
     
-    // set our environment string for easy access
-    //std::string s2 = "_G.%1%.%2%"; 
-    env_path.push_back(entitys);
-    env_path.push_back(st);
-   // std::stringstream ss_env;
-    //ss_env << boost::format(s2) % entitys % st; // 'simple' style.
-    //env_path = ss_env.str();
+
+    env_path.push_back(entitystr);
+    env_path.push_back(p1);
+
     
     return lua_safe_script(str_script, lua);
 }
     
 
-bool entity_manager::_lua_set_env_(EntityType& etype, std::string& script_path, sol::state& lua)
+bool entity_manager::_lua_set_env_(EntityType& etype, std::string& env_path, sol::state& lua)
 {
-    std::string sid = script_path;
-    string st = std::regex_replace(sid, std::regex("\\" + std::string(DEFAULT_GAME_DATA_PATH)), "");
-    strip_path(st);
+  //  std::string sid = script_path;
+   // string st = std::regex_replace(sid, std::regex("\\" + std::string(DEFAULT_GAME_DATA_PATH)), "");
+   // strip_path(st);
     
 
-    std::string entitys = get_env_str(etype);
+    //std::string entitys = get_env_str(etype);
     std::string s = R"(
-                _ENV = _G
-                _ENV = %1%.%2%
+                _ENV = _G -- make sure we are where we think we are
+                _ENV = %1%
                 )";
     std::stringstream ss;
-    ss << boost::format(s) % entitys % st; // 'simple' style.
+    ss << boost::format(s) % env_path; // 'simple' style.
     std::string sc = ss.str();
-    std::cerr << sc << std::endl;
+    //std::cerr << sc << std::endl;
     return lua_safe_script(sc, lua);
 }
         
@@ -173,26 +215,36 @@ bool entity_manager::compile_script(std::string& script_path,
 
     shared_ptr<sol::state> lua = lua_primary;
     
+    
+    std::vector<std::string> my_env_path; // unique environment path for this script
+    if (!_init_env_(etype, script_path, *lua, my_env_path))
+    {
+        std::stringstream ss; 
+        ss << "Unable to load environment for: " << script_path;
+        reason = ss.str();
+        return false;
+    }
+    else
+    {
+        LOG_DEBUG << "Loading: " << script_path << "..";
+    }
+    
+    std::string tmp_env = env_path_to_string(my_env_path);
+    if( !this->_lua_set_env_(etype, tmp_env, *lua) )
+    {
+        std::stringstream ss; 
+        ss << "Unable to set environment for: " << script_path;
+        reason = ss.str();
+        return false;
+    }
+    
     //_init_sol_(*lua);
 
     switch(etype) {
     case EntityType::DAEMON: {
-        std::vector<std::string> my_env_path; // unique environment path for this script
-        if (!_init_env_(etype, script_path, *lua, my_env_path))
-        {
-            std::stringstream ss; 
-            ss << "Unable to load daemon environment for: " << script_path;
-            reason = ss.str();
-            return false;
-        }
-        else
-        {
-            LOG_DEBUG << "Loading daemon: " << script_path << "..";
-        }
-        
+
        // _init_daemon_type(
             //*lua); // may need to have all commands in the same state to reduce overhead... but that could get messy
-
         
         std::vector<string> daemon_obj_name;
         if(!load_entities_from_script((*lua), script_text, my_env_path, daemon_obj_name, EntityType::DAEMON, error_str)) {
@@ -201,11 +253,14 @@ bool entity_manager::compile_script(std::string& script_path,
         }
         for(string r_name : daemon_obj_name) {
             shared_ptr<entity_wrapper> new_se(new entity_wrapper());
-            sol::optional<base_entity&> so = ((*lua)[r_name]);
+            sol::optional<base_entity&> so = (*lua)[my_env_path[0]][my_env_path[1]][r_name];//((*lua)[r_name]);
+            assert( so );
 
             new_se->script_obj = so;
             new_se->script_obj_name = r_name;
-            new_se->script_state = lua; // shared_ptr<sol::state>(lua);
+           // new_se->script_state = lua; // shared_ptr<sol::state>(lua);
+           // new_se->env_path = tmp_env;
+           // new_se->env_path_v = my_env_path;
             new_se->script_path = script_path;
             new_se->entity_type = EntityType::DAEMON;
             new_se->instance_id = 0; // command_uid_count++;
@@ -214,19 +269,6 @@ bool entity_manager::compile_script(std::string& script_path,
     } break;
     case EntityType::COMMAND: {
 
-        std::vector<std::string> my_env_path;
-        if (!_init_env_(etype, script_path, *lua, my_env_path))
-        {
-            std::stringstream ss; 
-            ss << "Unable to load command environment for: " << script_path;
-            reason = ss.str();
-            return false;
-        }
-        else
-        {
-            LOG_DEBUG << "Loading command: " << script_path << "..";
-        }
-        
         std::vector<string> command_obj_name;
         if(!load_entities_from_script((*lua.get()), script_text, my_env_path, command_obj_name, EntityType::COMMAND, error_str)) {
             reason = error_str;
@@ -234,11 +276,14 @@ bool entity_manager::compile_script(std::string& script_path,
         }
         for(string r_name : command_obj_name) {
             shared_ptr<entity_wrapper> new_se(new entity_wrapper());
-            sol::optional<base_entity&> so = ((*lua)[r_name]);
-
+            //sol::optional<base_entity&> so = ((*lua)[r_name]);
+            sol::optional<base_entity&> so = (*lua)[my_env_path[0]][my_env_path[1]][r_name];//((*lua)[r_name]);
+            assert( so );
             new_se->script_obj = so;
             new_se->script_obj_name = r_name;
-            new_se->script_state = lua; // shared_ptr<sol::state>(lua);
+           // new_se->script_state = lua; // shared_ptr<sol::state>(lua);
+          //  new_se->env_path = tmp_env;
+          //  new_se->env_path_v = my_env_path;
             new_se->script_path = script_path;
             new_se->entity_type = EntityType::COMMAND;
             new_se->instance_id = command_uid_count++;
@@ -246,18 +291,7 @@ bool entity_manager::compile_script(std::string& script_path,
         }
     } break;
     case EntityType::PLAYER: {
-        std::vector<std::string> my_env_path;
-        if (!_init_env_(etype, script_path, *lua, my_env_path))
-        {
-            std::stringstream ss; 
-            ss << "Unable to load player environment for: " << script_path;
-            reason = ss.str();
-            return false;
-        }
-        else
-        {
-            LOG_DEBUG << "Loading player: " << script_path << "..";
-        }
+
         
         std::vector<string> player_obj_name;
         if(!load_entities_from_script((*lua.get()), script_text, my_env_path, player_obj_name, EntityType::PLAYER, error_str)) {
@@ -270,11 +304,14 @@ bool entity_manager::compile_script(std::string& script_path,
         }
         for(string r_name : player_obj_name) {
             shared_ptr<entity_wrapper> new_se(new entity_wrapper());
-            sol::optional<base_entity&> so = ((*lua)[r_name]);
-
+           // sol::optional<base_entity&> so = ((*lua)[r_name]);
+            sol::optional<base_entity&> so = (*lua)[my_env_path[0]][my_env_path[1]][r_name];//((*lua)[r_name]);
+            assert( so );
             new_se->script_obj = so;
             new_se->script_obj_name = r_name;
-            new_se->script_state = lua; // shared_ptr<sol::state>(lua);
+            //new_se->script_state = lua; // shared_ptr<sol::state>(lua);
+           // new_se->env_path = tmp_env;
+           // new_se->env_path_v = my_env_path;
             new_se->script_path = script_path;
             new_se->entity_type = EntityType::PLAYER;
             new_se->instance_id = player_uid_count++;
@@ -282,19 +319,6 @@ bool entity_manager::compile_script(std::string& script_path,
         }
     } break;
     case EntityType::ROOM: {
-        std::vector<std::string> my_env_path;
-        if (!_init_env_(etype, script_path, *lua, my_env_path))
-        {
-            std::stringstream ss; 
-            ss << "Unable to load room environment for: " << script_path;
-            reason = ss.str();
-            return false;
-        }
-        else
-        {
-            LOG_DEBUG << "Loading room: " << script_path << "..";
-        }
-        
         //_init_room_type(*lua);
         /**
          * Elements needed for heartbeat registration
@@ -313,10 +337,14 @@ bool entity_manager::compile_script(std::string& script_path,
             // cout << r.description << endl;
 
             shared_ptr<entity_wrapper> new_se(new entity_wrapper());
-            sol::optional<base_entity&> so = (*lua)[r_name];
+            //sol::optional<base_entity&> so = (*lua)[r_name];
+            sol::optional<base_entity&> so = (*lua)[my_env_path[0]][my_env_path[1]][r_name];//((*lua)[r_name]);
+            assert( so );
             new_se->script_obj = so;
             new_se->script_obj_name = r_name;
-            new_se->script_state = lua; // shared_ptr<sol::state>(lua);
+           // new_se->script_state = lua; // shared_ptr<sol::state>(lua);
+           //new_se->env_path = tmp_env;
+           // new_se->env_path_v = my_env_path;
             new_se->script_path = script_path;
             new_se->entity_type = EntityType::ROOM;
             new_se->instance_id =
@@ -553,17 +581,11 @@ bool entity_manager::move_entity(shared_ptr<entity_wrapper>& eorig, entity_wrapp
                 // re->inventory.insert(eorig);
                 shared_ptr<entity_wrapper> ew;
                 std::string l = "look";
-                if(get_command(l, ew)) {
-                    sol::table self = (*ew->script_state)[ew->script_obj_name];
-                    sol::optional<base_entity&> bep = eorig->script_obj;
-                    // player_entity * pe = dynamic_cast<player_entity*>(bep);
-
-                    self["ExecuteCommand"](self, bep.value(), "");
-                    // lua["print_some_val"]();
-                    // ew->script_state[ew->script_obj_name][]
-                    // base_entity * bec = &ew->script_obj.value();
-                    // command * ce = dynamic_cast<command*>(bec);
-                }
+               // if(get_command(l, ew)) {
+               //     sol::table self = (*ew->script_state)[ew->script_obj_name];
+                //    sol::optional<base_entity&> bep = eorig->script_obj;
+               //     self["ExecuteCommand"](self, bep.value(), "");
+               // }
                 // Now that the player is here, lets 'look' for them..
             }
             break;
@@ -821,6 +843,7 @@ void entity_manager::_init_types(sol::state& lua)
     _init_daemon_type(lua);
     _init_room_type(lua);
     _init_player_type(lua);
+    _init_command_type(lua);
 }
 
 void entity_manager::_init_base_entity_type(sol::state& lua)
@@ -944,6 +967,7 @@ bool entity_manager::load_script_text(std::string& script_path,
 
     std::string token;
     vector<string> file_tokens;
+    
     bool bFoundType = false;
     while(std::getline(buffer, token, '\n')) {
         trim(token);
@@ -954,6 +978,11 @@ bool entity_manager::load_script_text(std::string& script_path,
                 return false;
             }
             obj_type = EntityType::DAEMON;
+            std::string env_change_script;
+            get_change_env_script(script_path, obj_type, env_change_script);
+            file_tokens.push_back(env_change_script);
+            //get_entity_env_path(script_path, obj_type, )
+            
             bFoundType = true;
         } else if(token.compare("inherit room") == 0) {
             if(bFoundType) // bad. only one type per script
@@ -961,7 +990,10 @@ bool entity_manager::load_script_text(std::string& script_path,
                 reason = "Multiple inherit directives detected. Only one entity type is allowed per script.";
                 return false;
             }
+            std::string env_change_script;
             obj_type = EntityType::ROOM;
+            get_change_env_script(script_path, obj_type, env_change_script);
+            file_tokens.push_back(env_change_script);
             bFoundType = true;
         } else if(token.compare("inherit player") == 0) {
             if(bFoundType) // bad. only one type per script
@@ -969,7 +1001,10 @@ bool entity_manager::load_script_text(std::string& script_path,
                 reason = "Multiple inherit directives detected. Only one entity type is allowed per script.";
                 return false;
             }
+            std::string env_change_script;
             obj_type = EntityType::PLAYER;
+            get_change_env_script(script_path, obj_type, env_change_script);
+            file_tokens.push_back(env_change_script);
             bFoundType = true;
         } else if(token.compare("inherit object") == 0) {
             if(bFoundType) // bad. only one type per script
@@ -977,7 +1012,10 @@ bool entity_manager::load_script_text(std::string& script_path,
                 reason = "Multiple inherit directives detected. Only one entity type is allowed per script.";
                 return false;
             }
+            std::string env_change_script;
             obj_type = EntityType::ITEM;
+            get_change_env_script(script_path, obj_type, env_change_script);
+            file_tokens.push_back(env_change_script);
             bFoundType = true;
         } else if(token.compare("inherit npc") == 0) {
             if(bFoundType) // bad. only one type per script
@@ -985,7 +1023,10 @@ bool entity_manager::load_script_text(std::string& script_path,
                 reason = "Multiple inherit directives detected. Only one entity type is allowed per script.";
                 return false;
             }
+            std::string env_change_script;
             obj_type = EntityType::NPC;
+            get_change_env_script(script_path, obj_type, env_change_script);
+            file_tokens.push_back(env_change_script);
             bFoundType = true;
         } else if(token.compare("inherit command") == 0) {
             if(bFoundType) // bad. only one type per script
@@ -993,7 +1034,10 @@ bool entity_manager::load_script_text(std::string& script_path,
                 reason = "Multiple inherit directives detected. Only one entity type is allowed per script.";
                 return false;
             }
+            std::string env_change_script;
             obj_type = EntityType::COMMAND;
+            get_change_env_script(script_path, obj_type, env_change_script);
+            file_tokens.push_back(env_change_script);
             bFoundType = true;
         } else {
             file_tokens.push_back(token);
@@ -1001,9 +1045,10 @@ bool entity_manager::load_script_text(std::string& script_path,
         //  std::cout << token << '\n';
     }
     script_text = vector_to_string(file_tokens, '\n');
+    //cerr << script_text << std::endl;
     if(bFoundType == false) {
         //  reason = "No inherit directive found in script.";
-        //  return false;
+          return false;
     }
     return true;
 }
@@ -1015,6 +1060,7 @@ bool entity_manager::load_entities_from_script(sol::state& lua,
                                                EntityType entity_type,
                                                string& reason)
 {
+    
     sol::load_result lr = lua.load(script_text);
     if(!lr.valid()) {
         sol::error err = lr;
@@ -1073,7 +1119,7 @@ bool entity_manager::load_entities_from_script(sol::state& lua,
                 case sol::type::function: {
                     if (key.is<std::string>())
                     {
-                       std::cout << "key " << key.as<std::string>() << " is a function -- " << endl;
+                    //   std::cout << "key " << key.as<std::string>() << " is a function -- " << endl;
                     // use this later to find interface functions we need
                     // std::cout << "value " << value.as<std::string>() << " is a sig -- " << std::endl;
                     // sol::optional<room&> maybe_function = value.as<sol::optional<sol::function&>>();
@@ -1088,7 +1134,7 @@ bool entity_manager::load_entities_from_script(sol::state& lua,
                     sol::optional<std::string> maybe_strkey = key.as<sol::optional<std::string> >();
                     if(maybe_strkey) {
                         std::string& strkey = maybe_strkey.value();
-                        std::cout << "key " << strkey << " is a table...";
+                      //  std::cout << "key " << strkey << " is a table...";
                         if(base_library_names.find(strkey) != base_library_names.end()) {
                             //  std::cout << " built-in detected: skipping!" << std::endl;
                             continue;
@@ -1135,17 +1181,18 @@ bool entity_manager::load_entities_from_script(sol::state& lua,
                 default:
                     if (key.is<std::string>())
                     {
-                       std::cout << "key " << key.as<std::string>() << " is a unknown -- " << endl;
+                       //std::cout << "key " << key.as<std::string>() << " is a unknown -- " << endl;
                     }
                     // std::cout << "";
                     break;
                 }
             }
         };
-        sol::table globals = lua["_room_env"]["realms_void"];////env_path];//lua.globals();
-        sol::function a_function = lua["get_environment_table"];
-        sol::function b_function = lua["convert_path"];
-        std::string s_test = b_function(env_path);
+        // Dirty work around until sol2 supports more elegant environment access
+        sol::table globals = lua[env_path[0]][env_path[1]];//"_room_env"]["realms_void"];////env_path];//lua.globals();
+      //  sol::function a_function = lua["get_environment_table"];
+      //  sol::function b_function = lua["convert_path"];
+       // std::string s_test = b_function(env_path);//_room_env.realms_void");
         fx(fx, globals);
         if(bFindObject == false) {
             reason = "No recognized objects instantiated in script.";
@@ -1170,7 +1217,11 @@ bool entity_manager::process_player_cmd(const std::string& playerid, const std::
     shared_ptr<entity_wrapper> ew_daemon;
     std::string l = "command_proc";
     if(get_daemon(l, ew_daemon)) {
-        sol::table self = (*ew_daemon->script_state)[ew_daemon->script_obj_name];
+        std::vector<std::string> entity_env;
+        entity_env.reserve(2);
+        get_entity_env_path(ew_daemon->script_path, ew_daemon->entity_type, entity_env);
+        assert( entity_env.size() == 2 );
+        sol::table self = (*lua_primary)[entity_env[0]][entity_env[1]][ew_daemon->script_obj_name]; //(*ew_daemon->script_state)[ew_daemon->script_obj_name];
         sol::optional<base_entity&> bep = ew_daemon->script_obj;
 
         sol::protected_function exec = self["process_command"];

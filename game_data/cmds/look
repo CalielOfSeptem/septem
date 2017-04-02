@@ -9,6 +9,7 @@ c:SetSynonyms({'peer'})
 
 
 function command:ExecuteCommand ( o, cmd )
+	print('Look command called..')
 	p = player_cast(o)
 	if p ~= nil then
 		-- lets see what room the player/npc is in..
