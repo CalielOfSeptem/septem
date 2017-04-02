@@ -19,6 +19,10 @@ struct daemonobj : base_entity
         
     }
     
+    ~daemonobj()
+    {
+    }
+    
     const std::string& GetName()
     {
         return name;

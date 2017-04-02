@@ -440,16 +440,72 @@ bool entity_manager::load_commands_from_fs(const fs::path& dir_path)
     return true;
 }
 
-bool entity_manager::load_daemon_from_fs(const fs::path& dir_path)
+bool entity_manager::compile_entity(std::string& file_path, std::string& reason)
+{
+    fs::path p(file_path);
+    if(!fs::exists(p)) {
+        reason = "File does not exist.";
+        return false;
+    }
+    std::string script_text;
+    EntityType etype;
+    string error_str;
+
+    if(!load_script_text(file_path, script_text, etype, error_str)) {
+        reason = error_str;
+        return false;
+    }
+    switch(etype)
+    {
+        case EntityType::DAEMON:
+        {
+            // Iterator pointing to first element in map
+            std::unordered_map<std::string, shared_ptr<entity_wrapper>>::iterator it = this->daemon_objs.begin();
+         
+            // Erase all element whose key starts with letter 'F' in an iteration
+            while (it != daemon_objs.end()) {
+                // Check if key's first character is F
+                if (it->second->script_path.compare(file_path) == 0 ) {
+                    // erase() function returns the iterator of the next
+                    // to last deleted element.
+                    shared_ptr<entity_wrapper> & er = it->second;
+                    
+                    std::vector<std::string> entity_env;
+                    entity_env.reserve(2);
+                    get_entity_env_path(er->script_path, er->entity_type, entity_env);
+                    assert( entity_env.size() == 2 );
+        
+                    (*lua_primary)[entity_env[0]][entity_env[1]][er->script_obj_name] = sol::nil;
+                    (*lua_primary).collect_garbage();
+                    
+                    it = daemon_objs.erase(it);
+                } else
+                    it++;
+            }
+            //std::string reason;
+            return this->compile_daemon_entity(file_path, reason);
+            break;
+        }
+        default:
+        break;
+    }
+    return false;
+}
+
+bool entity_manager::load_daemon_from_fs(const fs::path& dir_path, std::string& reason)
 {
     if(!fs::exists(dir_path))
         return false;
     fs::directory_iterator end_itr; // default construction yields past-the-end
     for(fs::directory_iterator itr(dir_path); itr != end_itr; ++itr) {
         if(fs::is_directory(itr->status())) {
-            if(load_daemon_from_fs(itr->path()))
+            if(load_daemon_from_fs(itr->path(), reason))
                 return true;
         } else {
+            std::string tpath = itr->path().string();
+            //std::string reason;
+            return compile_daemon_entity(tpath, reason);
+            /*
             std::unordered_set<shared_ptr<entity_wrapper> > entities;
             std::string reason;
             std::string fpath = itr->path().string();
@@ -472,7 +528,36 @@ bool entity_manager::load_daemon_from_fs(const fs::path& dir_path)
             } else {
                 LOG_ERROR << "Unable to load " << fpath << ": " << reason;
             }
+            */
         }
+    }
+    return true;
+}
+
+bool entity_manager::compile_daemon_entity(std::string& file_path, std::string& reason)
+{
+    std::unordered_set<shared_ptr<entity_wrapper> > entities;
+    //std::string reason;
+    std::string fpath = file_path;
+    if(compile_script(fpath, entities, reason)) {
+
+        for(auto ent : entities) {
+            switch(ent->entity_type) {
+            case EntityType::DAEMON: {
+                base_entity* be = &ent->script_obj.value();
+                daemonobj* ce = dynamic_cast<daemonobj*>(be);
+                daemon_objs.insert({ boost::to_lower_copy(ce->GetName()), ent });
+
+                LOG_INFO << "Loaded daemon: " << fpath;
+            } break;
+            default:
+                LOG_DEBUG << "A non-daemon entity was detected when loading commands... strange.. " << fpath;
+                break;
+            }
+        }
+    } else {
+        LOG_ERROR << "Unable to load " << fpath << ": " << reason;
+        return false;
     }
     return true;
 }

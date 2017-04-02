@@ -669,6 +669,15 @@ private :
             send("\r\n"+ s);
         }
         
+        if( startsWith(cmd, "t")  ) // JUST FOR NOW!!
+        {
+            std::string reason;
+            std::string cmd_proc_path = "/home/ken/git-repos/septem/game_data/daemon/command_proc";
+            if( !entity_manager::Instance().compile_entity(cmd_proc_path, reason) )
+                LOG_ERROR << reason;
+            
+        }
+        
         if( input.length() == 0 )
             return;
             

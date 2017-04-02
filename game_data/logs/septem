@@ -1,56 +1,22 @@
-﻿2017-04-01 22:01:58.299 VERB  [3257] [entity_manager::lua_safe_script@117] Successfully execute script.
-2017-04-01 22:01:58.299 INFO  [3257] [entity_manager::load_commands_from_fs@428] Loaded command: /home/ken/git-repos/septem/game_data/cmds/look
-2017-04-01 22:02:05.728 INFO  [3261] [account_manager::load_account@206] Trying to load acount from file: kenthompson1@gmail.com
-2017-04-01 22:02:05.728 INFO  [3261] [account_manager::load_account@231] Account file [/home/ken/git-repos/septem/game_data/accounts/k/kenthompson1@gmail.com.xml] deserialized and loaded successefully.
-2017-04-01 22:02:05.729 VERB  [3261] [entity_manager::lua_safe_script@117] Successfully execute script.
-2017-04-01 22:02:05.729 DEBUG [3261] [entity_manager::compile_script@229] Loading: /home/ken/git-repos/septem/game_data/entities/player..
-2017-04-01 22:02:05.729 VERB  [3261] [entity_manager::lua_safe_script@117] Successfully execute script.
-2017-04-01 22:02:05.729 INFO  [3261] [entity_manager::load_player@382] Successfully loaded player: kenthompson1@gmail.com
-2017-04-01 22:03:05.652 INFO  [3313] [main@85] Starting up..
-2017-04-01 22:03:05.654 VERB  [3313] [entity_manager::lua_safe_script@117] Successfully execute script.
-2017-04-01 22:03:05.654 DEBUG [3313] [entity_manager::compile_script@229] Loading: /home/ken/git-repos/septem/game_data/daemon/command_proc..
-2017-04-01 22:03:05.654 VERB  [3313] [entity_manager::lua_safe_script@117] Successfully execute script.
-2017-04-01 22:03:05.654 INFO  [3313] [entity_manager::load_daemon_from_fs@465] Loaded daemon: /home/ken/git-repos/septem/game_data/daemon/command_proc
-2017-04-01 22:03:05.654 VERB  [3313] [entity_manager::lua_safe_script@117] Successfully execute script.
-2017-04-01 22:03:05.654 DEBUG [3313] [entity_manager::compile_script@229] Loading: /home/ken/git-repos/septem/game_data/realms/void..
-2017-04-01 22:03:05.654 VERB  [3313] [entity_manager::lua_safe_script@117] Successfully execute script.
-2017-04-01 22:03:05.654 INFO  [3313] [entity_manager::load_entities_from_fs@509] Loaded room: /home/ken/git-repos/septem/game_data/realms/void
-2017-04-01 22:03:05.654 INFO  [3313] [entity_manager::load_entities_from_fs@512] Void room identified: /home/ken/git-repos/septem/game_data/realms/void
-2017-04-01 22:03:05.654 VERB  [3313] [entity_manager::lua_safe_script@117] Successfully execute script.
-2017-04-01 22:03:05.654 DEBUG [3313] [entity_manager::compile_script@229] Loading: /home/ken/git-repos/septem/game_data/cmds/move..
-2017-04-01 22:03:05.655 VERB  [3313] [entity_manager::lua_safe_script@117] Successfully execute script.
-2017-04-01 22:03:05.655 ERROR [3313] [entity_manager::load_commands_from_fs@436] Unable to load /home/ken/git-repos/septem/game_data/cmds/move: [string "_ENV = _G._command_env.cmds_move..."]:3: attempt to call a nil value (method 'SetVerb')
-2017-04-01 22:03:05.655 VERB  [3313] [entity_manager::lua_safe_script@117] Successfully execute script.
-2017-04-01 22:03:05.655 DEBUG [3313] [entity_manager::compile_script@229] Loading: /home/ken/git-repos/septem/game_data/cmds/look..
-2017-04-01 22:03:05.655 VERB  [3313] [entity_manager::lua_safe_script@117] Successfully execute script.
-2017-04-01 22:03:05.655 INFO  [3313] [entity_manager::load_commands_from_fs@428] Loaded command: /home/ken/git-repos/septem/game_data/cmds/look
-2017-04-01 22:03:11.608 INFO  [3317] [account_manager::load_account@206] Trying to load acount from file: kenthompson1@gmail.com
-2017-04-01 22:03:11.608 INFO  [3317] [account_manager::load_account@231] Account file [/home/ken/git-repos/septem/game_data/accounts/k/kenthompson1@gmail.com.xml] deserialized and loaded successefully.
-2017-04-01 22:03:11.609 VERB  [3317] [entity_manager::lua_safe_script@117] Successfully execute script.
-2017-04-01 22:03:11.609 DEBUG [3317] [entity_manager::compile_script@229] Loading: /home/ken/git-repos/septem/game_data/entities/player..
-2017-04-01 22:03:11.609 VERB  [3317] [entity_manager::lua_safe_script@117] Successfully execute script.
-2017-04-01 22:03:11.609 INFO  [3317] [entity_manager::load_player@382] Successfully loaded player: kenthompson1@gmail.com
-2017-04-01 22:03:55.545 INFO  [3361] [main@85] Starting up..
-2017-04-01 22:03:55.546 VERB  [3361] [entity_manager::lua_safe_script@117] Successfully execute script.
-2017-04-01 22:03:55.546 DEBUG [3361] [entity_manager::compile_script@229] Loading: /home/ken/git-repos/septem/game_data/daemon/command_proc..
-2017-04-01 22:03:55.546 VERB  [3361] [entity_manager::lua_safe_script@117] Successfully execute script.
-2017-04-01 22:03:55.547 INFO  [3361] [entity_manager::load_daemon_from_fs@465] Loaded daemon: /home/ken/git-repos/septem/game_data/daemon/command_proc
-2017-04-01 22:03:55.547 VERB  [3361] [entity_manager::lua_safe_script@117] Successfully execute script.
-2017-04-01 22:03:55.547 DEBUG [3361] [entity_manager::compile_script@229] Loading: /home/ken/git-repos/septem/game_data/realms/void..
-2017-04-01 22:03:55.547 VERB  [3361] [entity_manager::lua_safe_script@117] Successfully execute script.
-2017-04-01 22:03:55.547 INFO  [3361] [entity_manager::load_entities_from_fs@509] Loaded room: /home/ken/git-repos/septem/game_data/realms/void
-2017-04-01 22:03:55.547 INFO  [3361] [entity_manager::load_entities_from_fs@512] Void room identified: /home/ken/git-repos/septem/game_data/realms/void
-2017-04-01 22:03:55.547 VERB  [3361] [entity_manager::lua_safe_script@117] Successfully execute script.
-2017-04-01 22:03:55.547 DEBUG [3361] [entity_manager::compile_script@229] Loading: /home/ken/git-repos/septem/game_data/cmds/move..
-2017-04-01 22:03:55.547 VERB  [3361] [entity_manager::lua_safe_script@117] Successfully execute script.
-2017-04-01 22:03:55.547 ERROR [3361] [entity_manager::load_commands_from_fs@436] Unable to load /home/ken/git-repos/septem/game_data/cmds/move: [string "_ENV = _G._command_env.cmds_move..."]:3: attempt to call a nil value (method 'SetVerb')
-2017-04-01 22:03:55.548 VERB  [3361] [entity_manager::lua_safe_script@117] Successfully execute script.
-2017-04-01 22:03:55.548 DEBUG [3361] [entity_manager::compile_script@229] Loading: /home/ken/git-repos/septem/game_data/cmds/look..
-2017-04-01 22:03:55.548 VERB  [3361] [entity_manager::lua_safe_script@117] Successfully execute script.
-2017-04-01 22:03:55.548 INFO  [3361] [entity_manager::load_commands_from_fs@428] Loaded command: /home/ken/git-repos/septem/game_data/cmds/look
-2017-04-01 22:04:01.949 INFO  [3365] [account_manager::load_account@206] Trying to load acount from file: kenthompson1@gmail.com
-2017-04-01 22:04:01.949 INFO  [3365] [account_manager::load_account@231] Account file [/home/ken/git-repos/septem/game_data/accounts/k/kenthompson1@gmail.com.xml] deserialized and loaded successefully.
-2017-04-01 22:04:01.950 VERB  [3365] [entity_manager::lua_safe_script@117] Successfully execute script.
-2017-04-01 22:04:01.950 DEBUG [3365] [entity_manager::compile_script@229] Loading: /home/ken/git-repos/septem/game_data/entities/player..
-2017-04-01 22:04:01.950 VERB  [3365] [entity_manager::lua_safe_script@117] Successfully execute script.
-2017-04-01 22:04:01.950 INFO  [3365] [entity_manager::load_player@382] Successfully loaded player: kenthompson1@gmail.com
+﻿2017-04-01 23:22:32.472 VERB  [4901] [entity_manager::lua_safe_script@117] Successfully execute script.
+2017-04-01 23:22:32.473 INFO  [4901] [entity_manager::compile_daemon_entity@551] Loaded daemon: /home/ken/git-repos/septem/game_data/daemon/command_proc
+2017-04-01 23:22:32.794 VERB  [4901] [entity_manager::lua_safe_script@117] Successfully execute script.
+2017-04-01 23:22:32.794 DEBUG [4901] [entity_manager::compile_script@229] Loading: /home/ken/git-repos/septem/game_data/daemon/command_proc..
+2017-04-01 23:22:32.794 VERB  [4901] [entity_manager::lua_safe_script@117] Successfully execute script.
+2017-04-01 23:22:32.794 INFO  [4901] [entity_manager::compile_daemon_entity@551] Loaded daemon: /home/ken/git-repos/septem/game_data/daemon/command_proc
+2017-04-01 23:22:33.049 VERB  [4901] [entity_manager::lua_safe_script@117] Successfully execute script.
+2017-04-01 23:22:33.049 DEBUG [4901] [entity_manager::compile_script@229] Loading: /home/ken/git-repos/septem/game_data/daemon/command_proc..
+2017-04-01 23:22:33.050 VERB  [4901] [entity_manager::lua_safe_script@117] Successfully execute script.
+2017-04-01 23:22:33.050 INFO  [4901] [entity_manager::compile_daemon_entity@551] Loaded daemon: /home/ken/git-repos/septem/game_data/daemon/command_proc
+2017-04-01 23:22:33.289 VERB  [4901] [entity_manager::lua_safe_script@117] Successfully execute script.
+2017-04-01 23:22:33.289 DEBUG [4901] [entity_manager::compile_script@229] Loading: /home/ken/git-repos/septem/game_data/daemon/command_proc..
+2017-04-01 23:22:33.289 VERB  [4901] [entity_manager::lua_safe_script@117] Successfully execute script.
+2017-04-01 23:22:33.289 INFO  [4901] [entity_manager::compile_daemon_entity@551] Loaded daemon: /home/ken/git-repos/septem/game_data/daemon/command_proc
+2017-04-01 23:22:33.514 VERB  [4901] [entity_manager::lua_safe_script@117] Successfully execute script.
+2017-04-01 23:22:33.514 DEBUG [4901] [entity_manager::compile_script@229] Loading: /home/ken/git-repos/septem/game_data/daemon/command_proc..
+2017-04-01 23:22:33.514 VERB  [4901] [entity_manager::lua_safe_script@117] Successfully execute script.
+2017-04-01 23:22:33.514 INFO  [4901] [entity_manager::compile_daemon_entity@551] Loaded daemon: /home/ken/git-repos/septem/game_data/daemon/command_proc
+2017-04-01 23:22:34.075 VERB  [4901] [entity_manager::lua_safe_script@117] Successfully execute script.
+2017-04-01 23:22:34.075 DEBUG [4901] [entity_manager::compile_script@229] Loading: /home/ken/git-repos/septem/game_data/daemon/command_proc..
+2017-04-01 23:22:34.075 VERB  [4901] [entity_manager::lua_safe_script@117] Successfully execute script.
+2017-04-01 23:22:34.076 INFO  [4901] [entity_manager::compile_daemon_entity@551] Loaded daemon: /home/ken/git-repos/septem/game_data/daemon/command_proc

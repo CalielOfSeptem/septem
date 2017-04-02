@@ -77,8 +77,9 @@ public:
     entity_manager& operator=(entity_manager &&) = delete;      // Move assign
 
     // Any other public methods
-    bool compile_script(std::string& script_path, unordered_set<shared_ptr<entity_wrapper>>& entities, std::string& reason);
     
+    
+    bool compile_entity(std::string& file_path, std::string& reason);
     
     std::string load_player( shared_ptr<client> c );
     
@@ -88,7 +89,7 @@ public:
     
     bool load_commands_from_fs( const fs::path & dir_path );
     
-    bool load_daemon_from_fs( const fs::path & dir_path );
+    bool load_daemon_from_fs( const fs::path & dir_path, std::string& reason );
     
     std::vector<command*> GetCommands();
     
@@ -200,6 +201,8 @@ protected:
     
 private:
 
+    bool compile_script(std::string& script_path, unordered_set<shared_ptr<entity_wrapper>>& entities, std::string& reason);
+
     std::unordered_map< string, shared_ptr<entity_wrapper>> room_objs;
     
     shared_ptr< entity_wrapper > void_room; // default void room
@@ -262,6 +265,8 @@ private:
      bool _lua_set_env_(EntityType& etype, std::string& env_path, sol::state& lua);
      
      void get_change_env_script( std::string& script_path, EntityType& etype, std::string& env_script);
+     
+     bool compile_daemon_entity(std::string& file_path, std::string& reason);
 };
 
 
