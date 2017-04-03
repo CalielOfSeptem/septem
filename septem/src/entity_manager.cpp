@@ -8,7 +8,7 @@
  * Helper functions..
  */
 
-std::string get_env_str( EntityType& etype )
+std::string get_env_str( EntityType etype )
 {
     std::string entitys;
     switch(etype) {
@@ -55,6 +55,16 @@ void strip_path(std::string& path)
 /*
  * environment functions
 */
+
+bool _init_lua_env_( sol::state& lua, sol::environment parent, sol::environment inherit, std::string new_child_env_name, 
+        sol::environment& new_child_env )
+{
+
+    new_child_env = sol::environment(lua, sol::create, inherit);
+    parent[new_child_env_name] = new_child_env;
+    
+    return true;
+} 
 
 std::string env_path_to_string( std::vector<std::string> & env_path )
 {
@@ -146,6 +156,60 @@ bool entity_manager::_lua_set_env_(EntityType& etype, std::string& env_path, sol
 /*
  * Script compiling functions
 */
+
+bool entity_manager::compile_entity(std::string& file_path, std::string& reason)
+{
+    fs::path p(file_path);
+    if(!fs::exists(p)) {
+        reason = "File does not exist.";
+        return false;
+    }
+    std::string script_text;
+    EntityType etype;
+    string error_str;
+
+    if(!load_script_text(file_path, script_text, etype, error_str)) {
+        reason = error_str;
+        return false;
+    }
+    switch(etype)
+    {
+        case EntityType::DAEMON:
+        {
+            // Iterator pointing to first element in map
+            std::unordered_map<std::string, shared_ptr<entity_wrapper>>::iterator it = this->daemon_objs.begin();
+         
+            // Erase all element whose key starts with letter 'F' in an iteration
+            while (it != daemon_objs.end()) {
+                // Check if key's first character is F
+                if (it->second->script_path.compare(file_path) == 0 ) {
+                    // erase() function returns the iterator of the next
+                    // to last deleted element.
+                    shared_ptr<entity_wrapper> & er = it->second;
+                    
+                    std::vector<std::string> entity_env;
+                    entity_env.reserve(2);
+                    get_entity_env_path(er->script_path, er->entity_type, entity_env);
+                    assert( entity_env.size() == 2 );
+        
+                    (*lua_primary)[entity_env[0]][entity_env[1]][er->script_obj_name] = sol::nil;
+                    (*lua_primary).collect_garbage();
+                    
+                    it = daemon_objs.erase(it);
+                } else
+                    it++;
+            }
+            //std::string reason;
+            return this->compile_daemon_entity(file_path, reason);
+            break;
+        }
+        default:
+        break;
+    }
+    return false;
+}
+
+
 bool entity_manager::lua_safe_script(std::string& script, sol::state& lua)
 {
         auto simple_handler = [](lua_State*, sol::protected_function_result result) {
@@ -163,6 +227,20 @@ bool entity_manager::lua_safe_script(std::string& script, sol::state& lua)
             LOG_DEBUG << script;
         }
         return false;
+}
+
+void init_entity_wrapper( shared_ptr<entity_wrapper> & new_se, sol::optional<base_entity&> & so,
+    std::string& r_name, shared_ptr<sol::state>& lua, sol::optional< sol::environment > child_env,
+    sol::optional< sol::environment > parent_env, std::string& script_path, EntityType& et, int id )
+{
+    new_se->script_obj = so;
+    new_se->script_obj_name = r_name;
+    new_se->script_state = lua; 
+    new_se->env_obj = child_env;
+    new_se->parent_env_obj = parent_env;
+    new_se->script_path = script_path;
+    new_se->entity_type = et;
+    new_se->instance_id = id; 
 }
 
 bool entity_manager::compile_script(std::string& script_path,
@@ -190,7 +268,17 @@ bool entity_manager::compile_script(std::string& script_path,
 
     shared_ptr<sol::state> lua = lua_primary;
     
+    string p1 = std::regex_replace(script_path, std::regex("\\" + std::string(DEFAULT_GAME_DATA_PATH)), "");
+    strip_path(p1);  // remove special chars
+    std::string entitystr = get_env_str(etype);
+    sol::environment new_child_env;
+    std::string envstr = get_env_str(etype);
     
+    sol::table & t = (*lua)[ envstr ];
+    sol::environment parent_env = t;//(*lua).get<sol::environment>( envstr );
+    _init_lua_env_(*lua, parent_env, parent_env, entitystr, new_child_env );
+    
+    /*
     std::vector<std::string> my_env_path; // unique environment path for this script
     if (!_init_env_(etype, script_path, *lua, my_env_path))
     {
@@ -212,58 +300,50 @@ bool entity_manager::compile_script(std::string& script_path,
         reason = ss.str();
         return false;
     }
+    */
     
 
     switch(etype) {
     case EntityType::DAEMON: {
 
         std::vector<string> daemon_obj_name;
-        if(!load_entities_from_script((*lua), script_text, my_env_path, daemon_obj_name, EntityType::DAEMON, error_str)) {
+        if(!load_entities_from_script((*lua), script_text, new_child_env, daemon_obj_name, EntityType::DAEMON, error_str)) {
             reason = error_str;
             return false;
         }
         for(string r_name : daemon_obj_name) {
             shared_ptr<entity_wrapper> new_se(new entity_wrapper());
-            sol::optional<base_entity&> so = (*lua)[my_env_path[0]][my_env_path[1]][r_name];//((*lua)[r_name]);
+            sol::optional<base_entity&> so = new_child_env[r_name];//(*lua)[my_env_path[0]][my_env_path[1]][r_name];//((*lua)[r_name]);
             assert( so );
-
-            new_se->script_obj = so;
-            new_se->script_obj_name = r_name;
-            new_se->script_state = lua; 
-            new_se->env_path_v = my_env_path;
-            new_se->script_path = script_path;
-            new_se->entity_type = EntityType::DAEMON;
-            new_se->instance_id = 0; 
+            
+            init_entity_wrapper(new_se, so, r_name, lua, new_child_env, parent_env, script_path, etype, 0);
             entities.insert(new_se);
         }
     } break;
     case EntityType::COMMAND: {
 
         std::vector<string> command_obj_name;
-        if(!load_entities_from_script((*lua.get()), script_text, my_env_path, command_obj_name, EntityType::COMMAND, error_str)) {
+        if(!load_entities_from_script((*lua.get()), script_text, new_child_env, command_obj_name, EntityType::COMMAND, error_str)) {
             reason = error_str;
             return false;
         }
+        int cmd_count = 0;
         for(string r_name : command_obj_name) {
+            
             shared_ptr<entity_wrapper> new_se(new entity_wrapper());
- 
-            sol::optional<base_entity&> so = (*lua)[my_env_path[0]][my_env_path[1]][r_name];//((*lua)[r_name]);
+            sol::optional<base_entity&> so = new_child_env[r_name];//(*lua)[my_env_path[0]][my_env_path[1]][r_name];//((*lua)[r_name]);
             assert( so );
-            new_se->script_obj = so;
-            new_se->script_obj_name = r_name;
-            new_se->script_state = lua; 
-            new_se->env_path_v = my_env_path;
-            new_se->script_path = script_path;
-            new_se->entity_type = EntityType::COMMAND;
-            new_se->instance_id = command_uid_count++;
+            
+            init_entity_wrapper(new_se, so, r_name, lua, new_child_env, parent_env, script_path, etype, cmd_count++);
             entities.insert(new_se);
+            
         }
     } break;
     case EntityType::PLAYER: {
 
         
         std::vector<string> player_obj_name;
-        if(!load_entities_from_script((*lua.get()), script_text, my_env_path, player_obj_name, EntityType::PLAYER, error_str)) {
+        if(!load_entities_from_script((*lua.get()), script_text, new_child_env, player_obj_name, EntityType::PLAYER, error_str)) {
             reason = error_str;
             return false;
         }
@@ -272,24 +352,20 @@ bool entity_manager::compile_script(std::string& script_path,
             return false;
         }
         for(string r_name : player_obj_name) {
+            
             shared_ptr<entity_wrapper> new_se(new entity_wrapper());
-
-            sol::optional<base_entity&> so = (*lua)[my_env_path[0]][my_env_path[1]][r_name];//((*lua)[r_name]);
+            sol::optional<base_entity&> so = new_child_env[r_name];//(*lua)[my_env_path[0]][my_env_path[1]][r_name];//((*lua)[r_name]);
             assert( so );
-            new_se->script_obj = so;
-            new_se->script_obj_name = r_name;
-            new_se->script_state = lua; 
-            new_se->env_path_v = my_env_path;
-            new_se->script_path = script_path;
-            new_se->entity_type = EntityType::PLAYER;
-            new_se->instance_id = player_uid_count++;
+            
+            init_entity_wrapper(new_se, so, r_name, lua, new_child_env, parent_env, script_path, etype, player_uid_count++);
             entities.insert(new_se);
+            
         }
     } break;
     case EntityType::ROOM: {
 
         std::vector<string> room_obj_names;
-        if(!load_entities_from_script((*lua.get()), script_text, my_env_path, room_obj_names, EntityType::ROOM, error_str)) {
+        if(!load_entities_from_script((*lua.get()), script_text, new_child_env, room_obj_names, EntityType::ROOM, error_str)) {
             reason = error_str;
             heartbeatManager.clear_heartbeat_funcs(script_path);
             return false;
@@ -297,16 +373,11 @@ bool entity_manager::compile_script(std::string& script_path,
 
         for(string r_name : room_obj_names) {
             shared_ptr<entity_wrapper> new_se(new entity_wrapper());
-            sol::optional<base_entity&> so = (*lua)[my_env_path[0]][my_env_path[1]][r_name];//((*lua)[r_name]);
+            sol::optional<base_entity&> so = new_child_env[r_name];//(*lua)[my_env_path[0]][my_env_path[1]][r_name];//((*lua)[r_name]);
             assert( so );
-            new_se->script_obj = so;
-            new_se->script_obj_name = r_name;
-            new_se->script_state = lua;
-            new_se->env_path_v = my_env_path;
-            new_se->script_path = script_path;
-            new_se->entity_type = EntityType::ROOM;
-            new_se->instance_id = 0; // if a script has multiple rooms defined, this allows us to address them individually
-            entities.insert(new_se); // std::unique_ptr<entity_wrapper>(std::move(new_se)));
+            
+            init_entity_wrapper(new_se, so, r_name, lua, new_child_env, parent_env, script_path, etype, 0);
+            entities.insert(new_se);
         }
 
     } break;
@@ -395,57 +466,6 @@ bool entity_manager::load_commands_from_fs(const fs::path& dir_path)
     return true;
 }
 
-bool entity_manager::compile_entity(std::string& file_path, std::string& reason)
-{
-    fs::path p(file_path);
-    if(!fs::exists(p)) {
-        reason = "File does not exist.";
-        return false;
-    }
-    std::string script_text;
-    EntityType etype;
-    string error_str;
-
-    if(!load_script_text(file_path, script_text, etype, error_str)) {
-        reason = error_str;
-        return false;
-    }
-    switch(etype)
-    {
-        case EntityType::DAEMON:
-        {
-            // Iterator pointing to first element in map
-            std::unordered_map<std::string, shared_ptr<entity_wrapper>>::iterator it = this->daemon_objs.begin();
-         
-            // Erase all element whose key starts with letter 'F' in an iteration
-            while (it != daemon_objs.end()) {
-                // Check if key's first character is F
-                if (it->second->script_path.compare(file_path) == 0 ) {
-                    // erase() function returns the iterator of the next
-                    // to last deleted element.
-                    shared_ptr<entity_wrapper> & er = it->second;
-                    
-                    std::vector<std::string> entity_env;
-                    entity_env.reserve(2);
-                    get_entity_env_path(er->script_path, er->entity_type, entity_env);
-                    assert( entity_env.size() == 2 );
-        
-                    (*lua_primary)[entity_env[0]][entity_env[1]][er->script_obj_name] = sol::nil;
-                    (*lua_primary).collect_garbage();
-                    
-                    it = daemon_objs.erase(it);
-                } else
-                    it++;
-            }
-            //std::string reason;
-            return this->compile_daemon_entity(file_path, reason);
-            break;
-        }
-        default:
-        break;
-    }
-    return false;
-}
 
 bool entity_manager::load_daemon_from_fs(const fs::path& dir_path, std::string& reason)
 {
@@ -855,15 +875,37 @@ bool entity_manager::_init_sol_(sol::state& lua)
     _init_libs(lua);
     _init_types(lua);
     
+
+    sol::environment global_env = lua.globals();
+    sol::environment base_env;
+    _init_lua_env_(lua, global_env, global_env, "base", base_env);
+    
+    sol::environment daemon_env;
+    _init_lua_env_( lua, global_env, base_env, get_env_str(EntityType::DAEMON), daemon_env );
+    
+    sol::environment command_env;
+    _init_lua_env_( lua, global_env, base_env, get_env_str(EntityType::COMMAND), command_env );
+    
+    sol::environment item_env;
+    _init_lua_env_( lua, global_env, base_env, get_env_str(EntityType::ITEM), item_env );
+    
+    sol::environment npc_env;
+    _init_lua_env_( lua, global_env, base_env, get_env_str(EntityType::NPC), npc_env );
+    
+    sol::environment player_env;
+    _init_lua_env_( lua, global_env, base_env, get_env_str(EntityType::PLAYER), player_env );
+    
+    sol::environment room_env;
+    _init_lua_env_( lua, global_env, base_env, get_env_str(EntityType::ROOM), room_env );
+    
+
     auto simple_handler = [](lua_State*, sol::protected_function_result result) {
         // You can just pass it through to let the call-site handle it
         return result;
     };
+    
     auto result = lua.script_file(DEFAULT_SOL_INIT_PATH, simple_handler);
     if (result.valid()) {
-        //std::cout << "the code worked, and a double-hello statement should appear above this one!" << std::endl;
-       // int value = result;
-       // assert(value == 24);
        return true;
     }
     else {
@@ -871,6 +913,7 @@ bool entity_manager::_init_sol_(sol::state& lua)
         LOG_ERROR << "Error: " << err.what();
         return false;
     }
+    
 }
 
 
@@ -896,9 +939,11 @@ bool entity_manager::load_script_text(std::string& script_path,
                 return false;
             }
             obj_type = EntityType::DAEMON;
-            std::string env_change_script;
-            get_change_env_script(script_path, obj_type, env_change_script);
-            file_tokens.push_back(env_change_script);
+            token = "";
+            file_tokens.push_back(token);
+           //// std::string env_change_script;
+           // get_change_env_script(script_path, obj_type, env_change_script);
+            
             //get_entity_env_path(script_path, obj_type, )
             
             bFoundType = true;
@@ -908,10 +953,13 @@ bool entity_manager::load_script_text(std::string& script_path,
                 reason = "Multiple inherit directives detected. Only one entity type is allowed per script.";
                 return false;
             }
-            std::string env_change_script;
+            //std::string env_change_script;
             obj_type = EntityType::ROOM;
-            get_change_env_script(script_path, obj_type, env_change_script);
-            file_tokens.push_back(env_change_script);
+            //get_change_env_script(script_path, obj_type, env_change_script);
+            //file_tokens.push_back(env_change_script);
+            token = "";
+            file_tokens.push_back(token);
+            
             bFoundType = true;
         } else if(token.compare("inherit player") == 0) {
             if(bFoundType) // bad. only one type per script
@@ -919,10 +967,13 @@ bool entity_manager::load_script_text(std::string& script_path,
                 reason = "Multiple inherit directives detected. Only one entity type is allowed per script.";
                 return false;
             }
-            std::string env_change_script;
+           // std::string env_change_script;
             obj_type = EntityType::PLAYER;
-            get_change_env_script(script_path, obj_type, env_change_script);
-            file_tokens.push_back(env_change_script);
+            token = "";
+            file_tokens.push_back(token);
+            
+            //get_change_env_script(script_path, obj_type, env_change_script);
+            //file_tokens.push_back(env_change_script);
             bFoundType = true;
         } else if(token.compare("inherit object") == 0) {
             if(bFoundType) // bad. only one type per script
@@ -930,10 +981,13 @@ bool entity_manager::load_script_text(std::string& script_path,
                 reason = "Multiple inherit directives detected. Only one entity type is allowed per script.";
                 return false;
             }
-            std::string env_change_script;
+            //std::string env_change_script;
             obj_type = EntityType::ITEM;
-            get_change_env_script(script_path, obj_type, env_change_script);
-            file_tokens.push_back(env_change_script);
+            token = "";
+            file_tokens.push_back(token);
+            
+            //get_change_env_script(script_path, obj_type, env_change_script);
+            //file_tokens.push_back(env_change_script);
             bFoundType = true;
         } else if(token.compare("inherit npc") == 0) {
             if(bFoundType) // bad. only one type per script
@@ -941,10 +995,13 @@ bool entity_manager::load_script_text(std::string& script_path,
                 reason = "Multiple inherit directives detected. Only one entity type is allowed per script.";
                 return false;
             }
-            std::string env_change_script;
+            //std::string env_change_script;
             obj_type = EntityType::NPC;
-            get_change_env_script(script_path, obj_type, env_change_script);
-            file_tokens.push_back(env_change_script);
+           // get_change_env_script(script_path, obj_type, env_change_script);
+           // file_tokens.push_back(env_change_script);
+            token = "";
+            file_tokens.push_back(token);
+            
             bFoundType = true;
         } else if(token.compare("inherit command") == 0) {
             if(bFoundType) // bad. only one type per script
@@ -952,10 +1009,13 @@ bool entity_manager::load_script_text(std::string& script_path,
                 reason = "Multiple inherit directives detected. Only one entity type is allowed per script.";
                 return false;
             }
-            std::string env_change_script;
+           // std::string env_change_script;
             obj_type = EntityType::COMMAND;
-            get_change_env_script(script_path, obj_type, env_change_script);
-            file_tokens.push_back(env_change_script);
+          //  get_change_env_script(script_path, obj_type, env_change_script);
+           // file_tokens.push_back(env_change_script);
+            token = "";
+            file_tokens.push_back(token);
+            
             bFoundType = true;
         } else {
             file_tokens.push_back(token);
@@ -973,13 +1033,26 @@ bool entity_manager::load_script_text(std::string& script_path,
 
 bool entity_manager::load_entities_from_script(sol::state& lua,
                                                const std::string& script_text,
-                                               const std::vector<std::string>& env_path,
+                                               const sol::environment& env,
                                                std::vector<string>& obj_names,
                                                EntityType entity_type,
                                                string& reason)
 {
-    
-    sol::load_result lr = lua.load(script_text);
+    auto simple_handler = [](lua_State*, sol::protected_function_result result) {
+        // You can just pass it through to let the call-site handle it
+        return result;
+    };
+    auto result = lua.script(script_text, env, simple_handler);
+    if (result.valid()) {
+    }
+    else {
+        sol::error err = result;
+        reason = err.what();
+        return false;
+    }
+
+    /*
+    sol::load_result lr = env.load(script_text);
     if(!lr.valid()) {
         sol::error err = lr;
         reason = err.what();
@@ -987,137 +1060,137 @@ bool entity_manager::load_entities_from_script(sol::state& lua,
     }
     // lr();
     // execute and return result
-    sol::protected_function_result result1 =
-        lr(); // lua.do_string("return 24"); // test to make sure it loaded correctly
+    sol::protected_function_result result1 = lr(); // lua.do_string("return 24"); // test to make sure it loaded correctly
     if(!result1.valid()) {
         sol::error err = result1;
         reason = err.what();
         // std::cout << "call failed, sol::error::what() is " << what << std::endl;
         return false;
     } else {
+    */
 
-        // These are all the table names
-        // that can trigger an infinite lookup because
-        // it contains references to other entities already being
-        // traversed: exclude them from the lookup list
-        std::unordered_set<std::string> base_library_names({ "_G", // global table
-                                                             "base",
-                                                             "io",
-                                                             "os",
-                                                             "utf8",
-                                                             "jit",
-                                                             "package",
-                                                             "loaded",
-                                                             "preload",
-                                                             "coroutine",
-                                                             "string",
-                                                             "math",
-                                                             "table",
-                                                             "debug",
-                                                             "bit32" });
-        // Our recursive function
-        // We use some lambda techniques and pass the function itself itself so we can recurse,
-        // but a regular function would work too!
-        bool bFindObject = false;
-        auto fx = [&lua, &obj_names, &base_library_names, &bFindObject, &entity_type](auto& f, auto& tbl) -> void {
-            // You can iterate through a table: it has
-            // begin() and end()
-            // like standard containers
-            for(auto key_value_pair : tbl) {
-                // Note that iterators are extremely frail
-                // and should not be used outside of
-                // well-constructed for loops
-                // that use pre-increment ++,
-                // or C++ ranged-for loops
-                const sol::object& key = key_value_pair.first;
-                const sol::object& value = key_value_pair.second;
-                sol::type t = value.get_type();
-               // std::cerr << t << std::endl;
-                switch(t) {
-                case sol::type::function: {
-                    if (key.is<std::string>())
-                    {
-                    //   std::cout << "key " << key.as<std::string>() << " is a function -- " << endl;
-                    // use this later to find interface functions we need
-                    // std::cout << "value " << value.as<std::string>() << " is a sig -- " << std::endl;
-                    // sol::optional<room&> maybe_function = value.as<sol::optional<sol::function&>>();
-                    // sol::function& v = value;
-                    // if (v) {
-                    //     cout << "OK";
-                    // }
-                    }
-                    break;
+    // These are all the table names
+    // that can trigger an infinite lookup because
+    // it contains references to other entities already being
+    // traversed: exclude them from the lookup list
+    std::unordered_set<std::string> base_library_names({ "_G", // global table
+                                                         "base",
+                                                         "io",
+                                                         "os",
+                                                         "utf8",
+                                                         "jit",
+                                                         "package",
+                                                         "loaded",
+                                                         "preload",
+                                                         "coroutine",
+                                                         "string",
+                                                         "math",
+                                                         "table",
+                                                         "debug",
+                                                         "bit32" });
+    // Our recursive function
+    // We use some lambda techniques and pass the function itself itself so we can recurse,
+    // but a regular function would work too!
+    bool bFindObject = false;
+    auto fx = [&lua, &env, &obj_names, &base_library_names, &bFindObject, &entity_type](auto& f, auto& tbl) -> void {
+        // You can iterate through a table: it has
+        // begin() and end()
+        // like standard containers
+        for(auto key_value_pair : tbl) {
+            // Note that iterators are extremely frail
+            // and should not be used outside of
+            // well-constructed for loops
+            // that use pre-increment ++,
+            // or C++ ranged-for loops
+            const sol::object& key = key_value_pair.first;
+            const sol::object& value = key_value_pair.second;
+            sol::type t = value.get_type();
+           // std::cerr << t << std::endl;
+            switch(t) {
+            case sol::type::function: {
+                if (key.is<std::string>())
+                {
+                //   std::cout << "key " << key.as<std::string>() << " is a function -- " << endl;
+                // use this later to find interface functions we need
+                // std::cout << "value " << value.as<std::string>() << " is a sig -- " << std::endl;
+                // sol::optional<room&> maybe_function = value.as<sol::optional<sol::function&>>();
+                // sol::function& v = value;
+                // if (v) {
+                //     cout << "OK";
+                // }
                 }
-                case sol::type::table: {
-                    sol::optional<std::string> maybe_strkey = key.as<sol::optional<std::string> >();
-                    if(maybe_strkey) {
-                        std::string& strkey = maybe_strkey.value();
-                      //  std::cout << "key " << strkey << " is a table...";
-                        if(base_library_names.find(strkey) != base_library_names.end()) {
-                            //  std::cout << " built-in detected: skipping!" << std::endl;
-                            continue;
-                        }
-                        //   std::cout << std::endl;
-                    }
-                    sol::table inner = value.as<sol::table>();
-                    f(f, inner);
-                } break;
-                case sol::type::userdata: {
-                    // This allows us to check if a userdata is
-                    // a specific class type
-
-                    sol::optional<room&> maybe_room = value.as<sol::optional<room&> >();
-                    if(maybe_room) {
-                        entity_type = EntityType::ROOM;
-                        bFindObject = true;
-                        obj_names.push_back(key.as<std::string>());
-                        break;
-                    }
-                    sol::optional<command&> maybe_command = value.as<sol::optional<command&> >();
-                    if(maybe_command) {
-                        entity_type = EntityType::COMMAND;
-                        bFindObject = true;
-                        obj_names.push_back(key.as<std::string>());
-                        break;
-                    }
-                    sol::optional<player_entity&> maybe_player = value.as<sol::optional<player_entity&> >();
-                    if(maybe_player) {
-                        entity_type = EntityType::PLAYER;
-                        bFindObject = true;
-                        obj_names.push_back(key.as<std::string>());
-                        break;
-                    }
-                    sol::optional<daemonobj&> maybe_daemon = value.as<sol::optional<daemonobj&> >();
-                    if(maybe_daemon) {
-                        entity_type = EntityType::DAEMON;
-                        bFindObject = true;
-                        obj_names.push_back(key.as<std::string>());
-                        break;
-                    }
-
-                } break;
-                default:
-                    if (key.is<std::string>())
-                    {
-                       //std::cout << "key " << key.as<std::string>() << " is a unknown -- " << endl;
-                    }
-                    // std::cout << "";
-                    break;
-                }
+                break;
             }
-        };
-        // Dirty work around until sol2 supports more elegant environment access
-        sol::table globals = lua[env_path[0]][env_path[1]];//"_room_env"]["realms_void"];////env_path];//lua.globals();
-      //  sol::function a_function = lua["get_environment_table"];
-      //  sol::function b_function = lua["convert_path"];
-       // std::string s_test = b_function(env_path);//_room_env.realms_void");
-        fx(fx, globals);
-        if(bFindObject == false) {
-            reason = "No recognized objects instantiated in script.";
-            return false;
+            case sol::type::table: {
+                sol::optional<std::string> maybe_strkey = key.as<sol::optional<std::string> >();
+                if(maybe_strkey) {
+                    std::string& strkey = maybe_strkey.value();
+                  //  std::cout << "key " << strkey << " is a table...";
+                    if(base_library_names.find(strkey) != base_library_names.end()) {
+                        //  std::cout << " built-in detected: skipping!" << std::endl;
+                        continue;
+                    }
+                    //   std::cout << std::endl;
+                }
+                sol::table inner = value.as<sol::table>();
+                f(f, inner);
+            } break;
+            case sol::type::userdata: {
+                // This allows us to check if a userdata is
+                // a specific class type
+
+                sol::optional<room&> maybe_room = value.as<sol::optional<room&> >();
+                if(maybe_room) {
+                    entity_type = EntityType::ROOM;
+                    bFindObject = true;
+                    obj_names.push_back(key.as<std::string>());
+                    break;
+                }
+                sol::optional<command&> maybe_command = value.as<sol::optional<command&> >();
+                if(maybe_command) {
+                    entity_type = EntityType::COMMAND;
+                    bFindObject = true;
+                    obj_names.push_back(key.as<std::string>());
+                    break;
+                }
+                sol::optional<player_entity&> maybe_player = value.as<sol::optional<player_entity&> >();
+                if(maybe_player) {
+                    entity_type = EntityType::PLAYER;
+                    bFindObject = true;
+                    obj_names.push_back(key.as<std::string>());
+                    break;
+                }
+                sol::optional<daemonobj&> maybe_daemon = value.as<sol::optional<daemonobj&> >();
+                if(maybe_daemon) {
+                    entity_type = EntityType::DAEMON;
+                    bFindObject = true;
+                    obj_names.push_back(key.as<std::string>());
+                    break;
+                }
+
+            } break;
+            default:
+                if (key.is<std::string>())
+                {
+                   //std::cout << "key " << key.as<std::string>() << " is a unknown -- " << endl;
+                }
+                // std::cout << "";
+                break;
+            }
         }
-        return true;
+    };
+    // Dirty work around until sol2 supports more elegant environment access
+    sol::table globals = env;//lua[env_path[0]][env_path[1]];//"_room_env"]["realms_void"];////env_path];//lua.globals();
+  //  sol::function a_function = lua["get_environment_table"];
+  //  sol::function b_function = lua["convert_path"];
+   // std::string s_test = b_function(env_path);//_room_env.realms_void");
+    fx(fx, globals);
+    if(bFindObject == false) {
+        reason = "No recognized objects instantiated in script.";
+        return false;
     }
+    return true;
+
 }
 
 bool entity_manager::process_player_cmd(const std::string& playerid, const std::string& args)

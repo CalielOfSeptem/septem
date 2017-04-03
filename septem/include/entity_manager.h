@@ -240,7 +240,7 @@ private:
     
     bool load_script_text(std::string& script_path, std::string& script_text, EntityType& obj_type, string& reason);
     
-    bool load_entities_from_script(sol::state& lua, const std::string& script_text, const std::vector<std::string>& env_path,
+    bool load_entities_from_script(sol::state& lua, const std::string& script_text, const sol::environment& env,
         std::vector<string>& obj_names, EntityType entity_type, string& reason);
         
     bool get_command(std::string& verb, shared_ptr<entity_wrapper>& cmd);

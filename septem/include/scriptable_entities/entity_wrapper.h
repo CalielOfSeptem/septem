@@ -39,8 +39,10 @@
      std::string script_path;
      std::string script_obj_name;
      sol::optional<base_entity&> script_obj;
+     sol::optional<sol::environment> env_obj;
+     sol::optional<sol::environment> parent_env_obj;
      //std::string env_path;
-     std::vector<std::string> env_path_v;
+    // std::vector<std::string> env_path_v;
      shared_ptr<sol::state> script_state;
      EntityType entity_type;
      unsigned int instance_id; // zero based.
