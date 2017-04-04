@@ -276,7 +276,7 @@ bool entity_manager::compile_script(std::string& script_path,
     
     //sol::table & t = (*lua)[ envstr ];
     sol::environment parent_env = (*lua).get<sol::environment>( envstr );
-    _init_lua_env_(*lua, parent_env, parent_env, entitystr, new_child_env );
+    _init_lua_env_(*lua, parent_env, parent_env, p1, new_child_env );
     
     /*
     std::vector<std::string> my_env_path; // unique environment path for this script
@@ -708,7 +708,7 @@ int test()
     
     // now add yet another new env, but use the env_with_fallback metatable
     sol::environment env_with_fallback2(lua, sol::create, env_with_fallback);
-    env["base2"] = env_with_fallback;
+    env["base2"] = env_with_fallback2;
     
     // now add a child env.. to base2
     sol::environment env_with_fallback3(lua, sol::create, env_with_fallback2);
