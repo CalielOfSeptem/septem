@@ -274,8 +274,8 @@ bool entity_manager::compile_script(std::string& script_path,
     sol::environment new_child_env;
     std::string envstr = get_env_str(etype);
     
-    sol::table & t = (*lua)[ envstr ];
-    sol::environment parent_env = t;//(*lua).get<sol::environment>( envstr );
+    //sol::table & t = (*lua)[ envstr ];
+    sol::environment parent_env = (*lua).get<sol::environment>( envstr );
     _init_lua_env_(*lua, parent_env, parent_env, entitystr, new_child_env );
     
     /*
@@ -691,6 +691,49 @@ int test()
     {
         
     };
+    //std::cout << "=== environments example ===" << std::endl;
+
+	sol::state lua;
+    
+    lua.open_libraries(sol::lib::base, sol::lib::string, sol::lib::package, sol::lib::math, sol::lib::table);
+    lua.new_usertype<a>("a");
+
+
+	// get the global env
+	sol::environment env = lua.globals();
+    
+    // add a new env..
+    sol::environment env_with_fallback(lua, sol::create, lua.globals());
+    env["base"] = env_with_fallback;
+    
+    // now add yet another new env, but use the env_with_fallback metatable
+    sol::environment env_with_fallback2(lua, sol::create, env_with_fallback);
+    env["base2"] = env_with_fallback;
+    
+    // now add a child env.. to base2
+    sol::environment env_with_fallback3(lua, sol::create, env_with_fallback2);
+    env_with_fallback2["child"] = env_with_fallback3;
+    
+    auto simple_handler = [](lua_State*, sol::protected_function_result result) {
+        // You can just pass it through to let the call-site handle it
+        return result;
+    };
+    auto result = lua.script("my_a = a.new()", env_with_fallback3, simple_handler);
+    if (result.valid()) {
+    }
+    else {
+        sol::error err = result;
+        std::cout << err.what() << std::endl;
+    }
+   // a & test_a = lua["base2"]["child"]["my_a"];
+    sol::table self = lua["base2"]["child"]["my_a"];//(*lua_primary)[entity_env[0]][entity_env[1]][ew_daemon->script_obj_name];
+    
+    return 0;
+    /*
+    struct a
+    {
+        
+    };
     struct b
     {
         b()
@@ -747,6 +790,7 @@ int test()
 
         return 0;
    // lua.set_function("GetCommands", &downcast<command>);
+    */
        /*                 
     lua.script(R"(
             
@@ -872,6 +916,7 @@ int test()
 
 bool entity_manager::_init_sol_(sol::state& lua)
 {
+    test();
     _init_libs(lua);
     _init_types(lua);
     
