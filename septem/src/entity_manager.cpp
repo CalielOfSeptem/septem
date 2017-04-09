@@ -307,10 +307,11 @@ bool entity_manager::compile_script(std::string& script_path,
     case EntityType::DAEMON: {
 
         std::vector<string> daemon_obj_name;
-        if(!load_entities_from_script((*lua), script_text, new_child_env, daemon_obj_name, EntityType::DAEMON, error_str)) {
-            reason = error_str;
-            return false;
-        }
+        //f() {
+        load_entities_from_script((*lua), script_text, new_child_env, daemon_obj_name, EntityType::DAEMON, error_str);
+            //reason = error_str;
+            //return false;
+        //}
         for(string r_name : daemon_obj_name) {
             shared_ptr<entity_wrapper> new_se(new entity_wrapper());
             sol::optional<base_entity&> so = new_child_env[r_name];//(*lua)[my_env_path[0]][my_env_path[1]][r_name];//((*lua)[r_name]);
@@ -689,14 +690,17 @@ int test()
 {
     struct a
     {
-        
+        void test()
+        {
+            
+        }
     };
     //std::cout << "=== environments example ===" << std::endl;
 
 	sol::state lua;
     
     lua.open_libraries(sol::lib::base, sol::lib::string, sol::lib::package, sol::lib::math, sol::lib::table);
-    lua.new_usertype<a>("a");
+    lua.new_usertype<a>("a", "test", &a::test);
 
 
 	// get the global env
@@ -718,7 +722,7 @@ int test()
         // You can just pass it through to let the call-site handle it
         return result;
     };
-    auto result = lua.script("my_a = a.new()", env_with_fallback3, simple_handler);
+    auto result = lua.script("my_a = a.new() function a:test() print 'hello' end", env_with_fallback3, simple_handler);
     if (result.valid()) {
     }
     else {
@@ -727,7 +731,8 @@ int test()
     }
    // a & test_a = lua["base2"]["child"]["my_a"];
     sol::table self = lua["base2"]["child"]["my_a"];//(*lua_primary)[entity_env[0]][entity_env[1]][ew_daemon->script_obj_name];
-    
+    a & my_a = lua["my_a"];
+    my_a.test();
     return 0;
     /*
     struct a
@@ -916,7 +921,7 @@ int test()
 
 bool entity_manager::_init_sol_(sol::state& lua)
 {
-    test();
+    //test();
     _init_libs(lua);
     _init_types(lua);
     
@@ -1253,19 +1258,31 @@ bool entity_manager::process_player_cmd(const std::string& playerid, const std::
     shared_ptr<entity_wrapper> ew_daemon;
     std::string l = "command_proc";
     if(get_daemon(l, ew_daemon)) {
-        std::vector<std::string> entity_env;
-        entity_env.reserve(2);
-        get_entity_env_path(ew_daemon->script_path, ew_daemon->entity_type, entity_env);
-        assert( entity_env.size() == 2 );
-        sol::table self = (*lua_primary)[entity_env[0]][entity_env[1]][ew_daemon->script_obj_name]; //(*ew_daemon->script_state)[ew_daemon->script_obj_name];
-        sol::optional<base_entity&> bep = ew_daemon->script_obj;
-
-        sol::protected_function exec = self["process_command"];
-        auto result = exec(self, be, args);
-        if ( !result.valid() ) {
-            sol::error err = result;
-            LOG_DEBUG << err.what();
+        //std::vector<std::string> entity_env;
+        //entity_env.reserve(2);
+       // get_entity_env_path(ew_daemon->script_path, ew_daemon->entity_type, entity_env);
+       // assert( entity_env.size() == 2 );
+        if( !ew_daemon->env_obj )
+        {
+            LOG_ERROR << "Unable to load command processor environment.";
+            return false;
         }
+        sol::optional<sol::table> self = ew_daemon->env_obj.value()[ew_daemon->script_obj_name];//(*lua_primary)[entity_env[0]][entity_env[1]][ew_daemon->script_obj_name]; //(*ew_daemon->script_state)[ew_daemon->script_obj_name];
+        sol::optional<base_entity&> bep = ew_daemon->script_obj;
+        if( self && bep  )
+        {
+            sol::protected_function exec = self.value()["process_command"];
+            auto result = exec(self.value(), be, args);
+            if ( !result.valid() ) {
+                sol::error err = result;
+                LOG_ERROR << err.what();
+            }
+        }
+        else
+        {
+            LOG_ERROR << "Unable to load command processor.";
+        }
+
     }
     else
     {

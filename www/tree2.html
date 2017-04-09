@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<style>
+	html { margin:0; padding:0; font-size:62.5%; }
+	body { max-width:800px; min-width:300px; margin:0 auto; padding:20px 10px; font-size:14px; font-size:1.4em; }
+	h1 { font-size:1.8em; }
+	.demo { overflow:auto; border:1px solid silver; min-height:100px; }
+	</style>
+	<link rel="stylesheet" href="jstree/dist/themes/default/style.min.css" />
+</head>
+<body>
+	
+
+
+	<div id="lazy" class="demo"></div>
+
+	<div id="clbk" class="demo"></div>
+
+
+	<button id="evts_button">select node with id 1</button> <em>either click the button or a node in the tree</em>
+	<div id="evts" class="demo"></div>
+
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
+	<script src="jstree/dist/jstree.min.js"></script>
+	
+	<script>
+
+	// ajax demo
+	$('#ajax').jstree({
+		'core' : {
+			'data' : {
+				"url" : "http://192.168.0.17:8090/match/123",//"url" : "jstree/demo/basic/root.json",
+				"dataType" : "json" // needed only if you do not supply JSON headers
+			}
+		}
+	});
+
+	// lazy demo
+	$('#lazy').jstree({
+		'core' : {
+			'data' : {
+				"url" : "http://192.168.0.17:8090/match/123",//"//www.jstree.com/fiddle/?lazy",
+				"data" : function (node) {
+					return { "id" : node.id };
+				}
+			}
+		}
+	});
+
+	// data from callback
+	$('#clbk').jstree({
+		'core' : {
+			'data' : function (node, cb) {
+				if(node.id === "#") {
+					cb([{"text" : "Root", "id" : "1", "children" : true}]);
+				}
+				else {
+					cb(["Child"]);
+				}
+			}
+		}
+	});
+
+	// interaction and events
+	$('#evts_button').on("click", function () {
+		var instance = $('#evts').jstree(true);
+		instance.deselect_all();
+		instance.select_node('1');
+	});
+	$('#evts')
+		.on("changed.jstree", function (e, data) {
+			if(data.selected.length) {
+				alert('The selected node is: ' + data.instance.get_node(data.selected[0]).text);
+			}
+		})
+		.jstree({
+			'core' : {
+				'multiple' : false,
+				'data' : [
+					{ "text" : "Root node", "children" : [
+							{ "text" : "Child node 1", "id" : 1 },
+							{ "text" : "Child node 2" }
+					]}
+				]
+			}
+		});
+	</script>
+</body>
+</html>

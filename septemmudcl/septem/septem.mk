@@ -13,7 +13,7 @@ CurrentFileName        :=
 CurrentFilePath        :=
 CurrentFileFullPath    :=
 User                   :=ken
-Date                   :=03/04/17
+Date                   :=08/04/17
 CodeLitePath           :=/home/ken/.codelite
 LinkerName             :=/usr/bin/g++
 SharedObjectLinkerName :=/usr/bin/g++ -shared -fPIC
@@ -39,8 +39,8 @@ LinkOptions            :=  -lz -ldl
 IncludePath            :=  $(IncludeSwitch). $(IncludeSwitch). $(IncludeSwitch)../../telnetpp/include $(IncludeSwitch)../../terminalpp/include $(IncludeSwitch)../../ttvfs/ttvfs $(IncludeSwitch)../../odin/include $(IncludeSwitch)../../septem/include $(IncludeSwitch)../../septem/include/script $(IncludeSwitch)../../septem/include/scriptable_entities $(IncludeSwitch)../../../cereal/include $(IncludeSwitch)../../AngelscriptUtils/src $(IncludeSwitch)../../sol2 $(IncludeSwitch)/home/ken/git-repos/lua-5.3.4/src $(IncludeSwitch)../../plog/include 
 IncludePCH             := 
 RcIncludePath          := 
-Libs                   := $(LibrarySwitch)pthread $(LibrarySwitch)boost_system $(LibrarySwitch)boost_program_options $(LibrarySwitch)boost_filesystem $(LibrarySwitch)odin $(LibrarySwitch)telnetpp $(LibrarySwitch)terminalpp $(LibrarySwitch)cryptopp $(LibrarySwitch)ttvfs $(LibrarySwitch)lua 
-ArLibs                 :=  "pthread" "boost_system" "boost_program_options" "boost_filesystem" "odin" "telnetpp" "terminalpp" "cryptopp" "ttvfs" "lua" 
+Libs                   := $(LibrarySwitch)pthread $(LibrarySwitch)boost_system $(LibrarySwitch)boost_program_options $(LibrarySwitch)boost_filesystem $(LibrarySwitch)boost_thread $(LibrarySwitch)odin $(LibrarySwitch)telnetpp $(LibrarySwitch)terminalpp $(LibrarySwitch)cryptopp $(LibrarySwitch)ttvfs $(LibrarySwitch)lua 
+ArLibs                 :=  "pthread" "boost_system" "boost_program_options" "boost_filesystem" "boost_thread" "odin" "telnetpp" "terminalpp" "cryptopp" "ttvfs" "lua" 
 LibPath                := $(LibraryPathSwitch). $(LibraryPathSwitch)/usr/lib/x86_64-linux-gnu/ $(LibraryPathSwitch)../odin/Debug $(LibraryPathSwitch)../telnetpp/Debug $(LibraryPathSwitch)../terminalpp/Debug $(LibraryPathSwitch)../ttvfs/Debug $(LibraryPathSwitch)../angelscript/Debug $(LibraryPathSwitch)../AngelscriptUtils/Debug $(LibraryPathSwitch)/home/ken/git-repos/lua-5.3.4/src $(LibraryPathSwitch)/usr/local/bin/ 
 
 ##
@@ -61,7 +61,7 @@ AS       := /usr/bin/as
 ##
 CodeLiteDir:=/usr/share/codelite
 Objects0=$(IntermediateDirectory)/up_up_septem_src_communication.cpp$(ObjectSuffix) $(IntermediateDirectory)/up_up_septem_src_entity_manager.cpp$(ObjectSuffix) $(IntermediateDirectory)/up_up_septem_src_account_manager.cpp$(ObjectSuffix) $(IntermediateDirectory)/up_up_septem_src_main.cpp$(ObjectSuffix) $(IntermediateDirectory)/up_up_septem_src_account.cpp$(ObjectSuffix) $(IntermediateDirectory)/up_up_septem_src_septem.cpp$(ObjectSuffix) $(IntermediateDirectory)/up_up_septem_src_vfs_filesystem_manager.cpp$(ObjectSuffix) $(IntermediateDirectory)/up_up_septem_src_server_context_impl.cpp$(ObjectSuffix) $(IntermediateDirectory)/up_up_septem_src_server_connection.cpp$(ObjectSuffix) $(IntermediateDirectory)/up_up_septem_src_server_client.cpp$(ObjectSuffix) \
-	$(IntermediateDirectory)/up_up_septem_src_env_room.cpp$(ObjectSuffix) 
+	$(IntermediateDirectory)/up_up_septem_src_server_httpserv.cpp$(ObjectSuffix) $(IntermediateDirectory)/up_up_septem_src_env_room.cpp$(ObjectSuffix) 
 
 
 
@@ -171,6 +171,14 @@ $(IntermediateDirectory)/up_up_septem_src_server_client.cpp$(DependSuffix): ../.
 
 $(IntermediateDirectory)/up_up_septem_src_server_client.cpp$(PreprocessSuffix): ../../septem/src/server/client.cpp
 	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/up_up_septem_src_server_client.cpp$(PreprocessSuffix) ../../septem/src/server/client.cpp
+
+$(IntermediateDirectory)/up_up_septem_src_server_httpserv.cpp$(ObjectSuffix): ../../septem/src/server/httpserv.cpp $(IntermediateDirectory)/up_up_septem_src_server_httpserv.cpp$(DependSuffix)
+	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/ken/git-repos/septem/septem/src/server/httpserv.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/up_up_septem_src_server_httpserv.cpp$(ObjectSuffix) $(IncludePath)
+$(IntermediateDirectory)/up_up_septem_src_server_httpserv.cpp$(DependSuffix): ../../septem/src/server/httpserv.cpp
+	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/up_up_septem_src_server_httpserv.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/up_up_septem_src_server_httpserv.cpp$(DependSuffix) -MM ../../septem/src/server/httpserv.cpp
+
+$(IntermediateDirectory)/up_up_septem_src_server_httpserv.cpp$(PreprocessSuffix): ../../septem/src/server/httpserv.cpp
+	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/up_up_septem_src_server_httpserv.cpp$(PreprocessSuffix) ../../septem/src/server/httpserv.cpp
 
 $(IntermediateDirectory)/up_up_septem_src_env_room.cpp$(ObjectSuffix): ../../septem/src/env/room.cpp $(IntermediateDirectory)/up_up_septem_src_env_room.cpp$(DependSuffix)
 	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/ken/git-repos/septem/septem/src/env/room.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/up_up_septem_src_env_room.cpp$(ObjectSuffix) $(IncludePath)

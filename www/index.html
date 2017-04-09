@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>W2UI Demo: layout-4</title>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
+
+    <script type="text/javascript" src="http://rawgit.com/vitmalina/w2ui/master/dist/w2ui.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="http://rawgit.com/vitmalina/w2ui/master/dist/w2ui.min.css" />
+	<script src="jstree/dist/jstree.min.js"></script>
+	<link rel="stylesheet" href="jstree/dist/themes/default-dark/style.min.css" /> 
+	<script src="/ace-builds/src-noconflict/ace.js" type="text/javascript" charset="utf-8"></script>
+	<style>
+	.vakata-context { 
+		 z-index:999 !important; 
+	} 
+	</style>
+		<style>
+	html { margin:0; padding:0; font-size:62.5%; }
+	body { max-width:1024px; min-width:300px; min-height:800px; margin:0 auto; padding:10px 10px; font-size:16px; font-size:1.4em; }
+	h1 { font-size:1.8em; }
+	.demo { overflow:auto; border:1px solid silver; min-height:100px; }
+	</style>
+	<style type="text/css" media="screen">
+    #ace_editor { 
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+    }
+	</style>
+</head>
+<body>
+
+<div id="layout" style="width: 100%; height: 800px;"></div>
+
+<div style="height: 20px;"></div>
+
+<div id="clbk" class="demo" style="width: 100%; height: 100%;"></div>
+<div id="ace_editor">function foo(items) {
+    var x = "All this is syntax highlighted";
+    return x;
+}</div>
+
+
+<span style="display: inline-block; width: 50px;"> Left: </span>
+<button class="w2ui-btn" onclick="w2ui['layout'].content('left', 'This is some content set manually')">Set Content</button>
+<button class="w2ui-btn" onclick="w2ui['layout'].load('left', 'data/content1.html')">Load Content 1</button>
+<button class="w2ui-btn" onclick="w2ui['layout'].load('left', 'data/content2.html')">Load Content 2</button>
+<button class="w2ui-btn" onclick="w2ui['layout'].load('left', 'data/content2.html')">Load Content 3</button>
+<div style="height: 10px;"></div>
+
+<span style="display: inline-block; width: 50px;"> Main: </span>
+<button class="w2ui-btn" onclick="w2ui['layout'].content('main', 'This is some content set manually')">Set Content</button>
+
+<button class="w2ui-btn" onclick="w2ui['layout'].load('main', 'data/content2.html')">Load Content 2</button>
+<button id="refresh_button">Refresh</button> <em></em>
+
+
+<input type="button" value="Capacity Chart" id="MyButton" >
+<input type="button" value="Save" id="save" >
+
+<script type="text/javascript">
+
+
+	// data from callback
+	$('#clbk')
+		.on("changed.jstree", function (e, data) {
+			if(data.selected.length) {
+				//console.log('The selected node is: ' + data.instance.get_node(data.selected[0]).text);
+				//console.log('The selected node is: ' + data.instance.get_node(data.selected[0]).id);
+			}
+		})
+		.jstree({
+		'conditionalselect' : function (node) {
+			return false; //<something that determines condition> ? true : false;
+		},
+		'core' : {
+			"check_callback" : true,
+			"themes": {
+                "name": "default-dark",
+                "dots": true,
+                "icons": true
+            },
+			'data' : function (node, cb) {
+				if(node.id === "#") {
+					 //callback.call(this, ['Root 1', 'Root 2']);
+					//cb([{"text" : "Root", "id" : "1", "children" : true}]);
+					httpGetAsync("http://192.168.0.17:8090/list/123", cb);
+				}
+				else {
+					httpGetAsync("http://192.168.0.17:8090/list/123", cb);//cb(["Child"]);
+				}
+			}
+			
+		},
+		'plugins' : ['contextmenu', 'types', 'conditionalselect'],
+			'types' : {
+				'#' : { /* options */ },
+				'file' : { /* options */ },
+				'directory' : { /* options */ }
+				// etc...
+			},
+			'contextmenu' : {
+                    "items": customMenub
+					}
+	});
+	$("#clbk").jstree("set_theme", "default-dark"); 
+	
+	$(function () {    
+    var pstyle = 'border: 1px solid #dfdfdf; padding: 5px;';
+    $('#layout').w2layout({
+        name: 'layout',
+        panels: [
+            { type: 'top', size: 50, style: pstyle, content: 'top', resizable: true },
+            { type: 'left', size: 300, style: pstyle, content: 'left', resizable: true },
+            { type: 'main', style: pstyle, content: 'main' }
+        ]
+    });
+	
+	set_grid_on_main($('#clbk'), $('#ace_editor'));
+
+	});
+
+    $('#MyButton').click(function(){
+		//httpGetAsync("http://192.168.0.17:8090/list/123", cb);
+		$("#clbk").jstree("set_theme", "default"); 
+
+    });
+	
+	function httpGetAsync(theUrl, callback)
+	{
+		var xmlHttp = new XMLHttpRequest();
+		xmlHttp.onreadystatechange = function() { 
+	
+			if (xmlHttp.readyState == 4 && xmlHttp.status == 200)
+			{
+				eval("var x = " + xmlHttp.responseText + ";");
+				callback(x);
+			}
+		}
+		xmlHttp.open("GET", theUrl, true); // true for asynchronous 
+		xmlHttp.send(null);
+	}
+	
+	
+	
+$(document).ready(function(){
+	//$("#content").load("tree.html");
+           // var k = $("#clbk")[0].innerHTML;
+           // alert(k);
+           // $("object")[0].innerHTML = "testing";
+    
+});
+
+	// jstree conditional select node
+	(function ($, undefined) {
+	  "use strict";
+	  $.jstree.defaults.conditionalselect = function () { return true; };
+
+	  $.jstree.plugins.conditionalselect = function (options, parent) {
+		// own function
+		this.select_node = function (obj, supress_event, prevent_open) {
+		  if(this.settings.conditionalselect.call(this, this.get_node(obj))) {
+			parent.select_node.call(this, obj, supress_event, prevent_open);
+		  }
+		};
+	  };
+	})(jQuery);
+
+function set_grid_on_main(tree_obj, ace_obj){
+
+    //w2ui.layout.load('main', 'ace.html');
+	//w2ui.layout.content('main', $("#content"));
+	w2ui["layout"].content("left", {
+		render: function() {
+		$(this.box).empty();
+		$(this.box).append(tree_obj);
+
+		}
+
+		});
+		
+	w2ui["layout"].content("main", {
+		render: function() {
+		$(this.box).empty();
+		$(this.box).append(ace_obj);
+
+		}
+
+		});
+		
+   tree_obj.on('dblclick','.jstree-anchor', function (e) {
+   var instance = $.jstree.reference(this),
+         node = instance.get_node(this);
+		 console.log(node);
+		 var saveButton = document.getElementById("save")
+		 if( node.type === 'file' && saveButton.disabled )
+		 {
+			console.log('Getting document from server..' + node.relative_path);
+			getDocumentContent(node);
+		 }
+	});
+	myFunction()
+	//console.log('main panel content is', c1);
+   // w2ui.layout.load('left', 'tree.html');
+}
+
+function getDocumentContent( node )
+{
+	make_json_request('http://192.168.0.17:8090/' + node.data, loadDocument);
+}
+
+function loadDocument( src )
+{
+	//console.log(src);
+	var editor = ace.edit("ace_editor");
+	editor.setValue(src, -1);
+	//editor.session.getUndoManager().markClean();
+	
+	setTimeout(
+	  reset_ace_save_status,
+	  1000
+	);
+	
+	//var saveButton = document.getElementById("save");
+	//saveButton.disabled = true;
+	//editor.on("input", function() {
+	//	saveButton.disabled = editor.session.getUndoManager().isClean()
+	//});
+}
+
+function reset_ace_save_status()
+{
+
+	var editor = ace.edit("ace_editor");
+	var saveButton = document.getElementById("save");
+	saveButton.disabled = true;
+	editor.session.getUndoManager().markClean();
+}
+
+function make_json_request(theUrl, cb)
+{
+	//alert(this);
+	var xmlHttp = new XMLHttpRequest();
+	//var instance = $('#clbk').jstree();
+	//instance.jstree("set_theme", "default-dark"); 
+	xmlHttp.onreadystatechange = function() { 
+
+		if (xmlHttp.readyState == 4 && xmlHttp.status == 200)
+		{
+			//eval("var x = " + xmlHttp.responseText + ";");
+			cb( xmlHttp.responseText );
+			//$('#clbk').jstree(true).settings.core.data = x;
+			//$('#clbk').jstree(true).refresh();
+		}
+	}
+	xmlHttp.open("GET", theUrl, true); // true for asynchronous 
+	xmlHttp.send(null);
+}
+
+function myFunction() {
+    var editor = ace.edit("ace_editor");
+    editor.setTheme("ace/theme/twilight");
+    editor.getSession().setMode("ace/mode/lua");
+	var saveButton = document.getElementById("save");
+	saveButton.disabled = true;
+	
+	//editor.getValue();
+	//editor.on("change", aceChange)
+	
+	//var saveButton = document.getElementById("save");
+	//var editor = ace.edit("editor")
+	// using input event instead of change since it's called with some timeout
+	editor.on("input", function() {
+		saveButton.disabled = editor.session.getUndoManager().isClean()
+	});
+
+	saveButton.addEventListener("click", function() {
+		editor.session.getUndoManager().markClean()
+		saveButton.disabled = editor.session.getUndoManager().isClean()
+	})
+	//document.getElementById("demo").textContent = editor.getValue();
+
+}
+
+
+function processRequest(e) {
+    if (xhr.readyState == 4 && xhr.status == 200) {
+        var response = JSON.parse(xhr.responseText);
+        alert(response.ip);
+    }
+}
+
+
+function refresh_tree(theUrl)
+{
+	//alert(this);
+	var xmlHttp = new XMLHttpRequest();
+	//var instance = $('#clbk').jstree();
+	//instance.jstree("set_theme", "default-dark"); 
+	xmlHttp.onreadystatechange = function() { 
+
+		if (xmlHttp.readyState == 4 && xmlHttp.status == 200)
+		{
+			eval("var x = " + xmlHttp.responseText + ";");
+			$('#clbk').jstree(true).settings.core.data = x;
+			$('#clbk').jstree(true).refresh();
+		}
+	}
+	xmlHttp.open("GET", theUrl, true); // true for asynchronous 
+	xmlHttp.send(null);
+	
+
+}
+
+	
+	$('#refresh_button').on("click", function () {
+	//alert(this);
+	//var element = document.querySelector('.clbk');
+	//alert(element);
+		//var instance = $('#clbk').jstree(true);
+		//instance.deselect_all();
+		//instance.select_node('1');
+		refresh_tree("http://192.168.0.17:8090/list/123");
+	});
+
+	function customMenub(node)
+	{
+		
+		var items = {
+			'item1' : {
+               "separator_before": false,
+                "separator_after": false,
+                "label": "Create",
+                "action": function (obj) { 
+                    $node2 = $("#clbk").jstree('create_node', $node2);
+                    $("#clbk").jstree('edit', $node2);
+                }
+			},
+			'item2' : {
+				'label' : 'item2',
+				'action' : function () { /* action */ }
+			}
+		}
+		//alert(node.type);
+		if (node.type === 'level_1') {
+			delete items.item2;
+		} else if (node.type === 'level_2') {
+			delete items.item1;
+		}
+
+		return items;
+	}
+	
+
+</script>
+<p id="demo" onclick="myFunction()">Click me to change my text color.</p>
+</body>
+</html>

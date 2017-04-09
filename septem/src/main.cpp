@@ -22,6 +22,7 @@
 #include <plog/Log.h>
 #include <plog/Appenders/ConsoleAppender.h>
 
+#include "server/httpserv.h"
 
 
 //#include "test_lua.h"
@@ -197,6 +198,8 @@ int main(int argc, char *argv[])
 	timer->async_wait( 
 		strand->wrap( boost::bind( &TimerHandler, _1, timer, strand ) )
 	);
+    
+    std::thread http_thread =  std::thread(start_serv, 8090);
 
 /*
 	boost::shared_ptr< boost::asio::io_service > io_service(
@@ -249,6 +252,7 @@ int main(int argc, char *argv[])
     {
         pthread.join();
     }
+    http_thread.join();
     
     io_service.stop();
 

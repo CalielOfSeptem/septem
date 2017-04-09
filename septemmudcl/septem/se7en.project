@@ -25,6 +25,7 @@
       <File Name="../../septem/src/server/context_impl.cpp"/>
       <File Name="../../septem/src/server/connection.cpp"/>
       <File Name="../../septem/src/server/client.cpp"/>
+      <File Name="../../septem/src/server/httpserv.cpp"/>
     </VirtualDirectory>
     <VirtualDirectory Name="env">
       <File Name="../../septem/src/env/room.cpp"/>
@@ -47,6 +48,7 @@
       <File Name="../../septem/include/server/context_impl.hpp"/>
       <File Name="../../septem/include/server/client.hpp"/>
       <File Name="../../septem/include/server/connection.hpp"/>
+      <File Name="../../septem/include/server/httpserv.h"/>
     </VirtualDirectory>
     <VirtualDirectory Name="scriptable_entities">
       <File Name="../../septem/include/scriptable_entities/command.h"/>
@@ -120,6 +122,7 @@
         <Library Value="boost_system"/>
         <Library Value="boost_program_options"/>
         <Library Value="boost_filesystem"/>
+        <Library Value="boost_thread"/>
         <Library Value="odin"/>
         <Library Value="telnetpp"/>
         <Library Value="terminalpp"/>
