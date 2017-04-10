@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>W2UI Demo: layout-4</title>
+    <title>Septem Control Alpha v0.1</title>
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
 
     <script type="text/javascript" src="http://rawgit.com/vitmalina/w2ui/master/dist/w2ui.min.js"></script>
@@ -14,21 +14,11 @@
 		 z-index:999 !important; 
 	} 
 	</style>
-		<style>
-	html { margin:0; padding:0; font-size:62.5%; }
-	body { max-width:1024px; min-width:300px; min-height:800px; margin:0 auto; padding:10px 10px; font-size:16px; font-size:1.4em; }
-	h1 { font-size:1.8em; }
-	.demo { overflow:auto; border:1px solid silver; min-height:100px; }
-	</style>
-	<style type="text/css" media="screen">
-    #ace_editor { 
-        position: absolute;
-        top: 0;
-        right: 0;
-        bottom: 0;
-        left: 0;
-    }
-	</style>
+	
+
+
+
+	
 </head>
 <body>
 
@@ -37,28 +27,11 @@
 <div style="height: 20px;"></div>
 
 <div id="clbk" class="demo" style="width: 100%; height: 100%;"></div>
-<div id="ace_editor">function foo(items) {
-    var x = "All this is syntax highlighted";
-    return x;
-}</div>
 
-
-<span style="display: inline-block; width: 50px;"> Left: </span>
-<button class="w2ui-btn" onclick="w2ui['layout'].content('left', 'This is some content set manually')">Set Content</button>
-<button class="w2ui-btn" onclick="w2ui['layout'].load('left', 'data/content1.html')">Load Content 1</button>
-<button class="w2ui-btn" onclick="w2ui['layout'].load('left', 'data/content2.html')">Load Content 2</button>
-<button class="w2ui-btn" onclick="w2ui['layout'].load('left', 'data/content2.html')">Load Content 3</button>
-<div style="height: 10px;"></div>
-
-<span style="display: inline-block; width: 50px;"> Main: </span>
-<button class="w2ui-btn" onclick="w2ui['layout'].content('main', 'This is some content set manually')">Set Content</button>
-
-<button class="w2ui-btn" onclick="w2ui['layout'].load('main', 'data/content2.html')">Load Content 2</button>
 <button id="refresh_button">Refresh</button> <em></em>
 
+	<div id="ace_editor"></div>
 
-<input type="button" value="Capacity Chart" id="MyButton" >
-<input type="button" value="Save" id="save" >
 
 <script type="text/javascript">
 
@@ -86,10 +59,10 @@
 				if(node.id === "#") {
 					 //callback.call(this, ['Root 1', 'Root 2']);
 					//cb([{"text" : "Root", "id" : "1", "children" : true}]);
-					httpGetAsync("http://192.168.0.17:8090/list/123", cb);
+					httpGetAsync("http://127.0.0.1:8090/list/123", cb);
 				}
 				else {
-					httpGetAsync("http://192.168.0.17:8090/list/123", cb);//cb(["Child"]);
+					httpGetAsync("http://127.0.0.1:8090/list/123", cb);//cb(["Child"]);
 				}
 			}
 			
@@ -112,18 +85,57 @@
     $('#layout').w2layout({
         name: 'layout',
         panels: [
-            { type: 'top', size: 50, style: pstyle, content: 'top', resizable: true },
+            { type: 'top', size: 50, style: pstyle, content: 'top', resizable: true,
+				toolbar: {
+					name : 'myToolbar',
+                    items: [
+                        { type: 'button',  id: 'savebtn', caption: 'Save', hotkey: 'CTRL+S' },
+                        { type: 'button',  id: 'compilebtn', caption: 'Compile' },
+                    ],
+                    onClick: function (event) {
+					console.log(event);
+						if( event.target === 'savebtn' )
+						{
+							var btn = w2ui.layout.get('main').toolbar.get('savebtn');
+							var editor = ace.edit("ace_editor");
+							editor.session.getUndoManager().markClean();
+							btn.disabled = editor.session.getUndoManager().isClean()
+							w2ui.layout.get('main').toolbar.refresh();
+						}
+					                       
+                    }
+                }
+			},
             { type: 'left', size: 300, style: pstyle, content: 'left', resizable: true },
-            { type: 'main', style: pstyle, content: 'main' }
+            { type: 'main', overflow: 'hidden', 
+                style: 'background-color: white; border: 1px solid silver; border-top: 0px; padding: 10px;',
+                tabs: {
+                    active: 'tab0',
+                    tabs: [{ id: 'tab0', caption: 'Initial Tab' }],
+                    onClick: function (event) {
+                        //w2ui.layout.html('main', 'Active tab: '+ event.target);
+						set_active_tab( event );
+                    },
+                    onClose: function (event) {
+                        
+						set_active_tab( event );
+						//var tabs = w2ui.layout_main_tabs;
+			
+						this.click('tab0');
+						//this.click('
+						//this.click('
+                    }
+                }
+            }
         ]
     });
 	
-	set_grid_on_main($('#clbk'), $('#ace_editor'));
+	init_ui_main($('#clbk'));
 
 	});
 
     $('#MyButton').click(function(){
-		//httpGetAsync("http://192.168.0.17:8090/list/123", cb);
+		//httpGetAsync("http://127.0.0.1:8090/list/123", cb);
 		$("#clbk").jstree("set_theme", "default"); 
 
     });
@@ -150,6 +162,9 @@ $(document).ready(function(){
            // var k = $("#clbk")[0].innerHTML;
            // alert(k);
            // $("object")[0].innerHTML = "testing";
+	window.onbeforeunload = function() {
+    return "Are you sure you want to leave?";
+	}
     
 });
 
@@ -167,8 +182,10 @@ $(document).ready(function(){
 		};
 	  };
 	})(jQuery);
+	
 
-function set_grid_on_main(tree_obj, ace_obj){
+
+function init_ui_main(tree_obj){
 
     //w2ui.layout.load('main', 'ace.html');
 	//w2ui.layout.content('main', $("#content"));
@@ -181,12 +198,14 @@ function set_grid_on_main(tree_obj, ace_obj){
 
 		});
 		
-	w2ui["layout"].content("main", {
-		render: function() {
-		$(this.box).empty();
-		$(this.box).append(ace_obj);
 
-		}
+		
+	w2ui["layout"].content("main", {
+		//render: function() {
+		//$(this.box).empty();
+		//$(this.box).append(ace_obj);
+
+		//}
 
 		});
 		
@@ -194,52 +213,228 @@ function set_grid_on_main(tree_obj, ace_obj){
    var instance = $.jstree.reference(this),
          node = instance.get_node(this);
 		 console.log(node);
-		 var saveButton = document.getElementById("save")
-		 if( node.type === 'file' && saveButton.disabled )
+		 //var saveButton = w2ui.layout.get('main').toolbar.get('savebtn');
+		 if( node.type === 'file')// && saveButton.disabled )
 		 {
 			console.log('Getting document from server..' + node.relative_path);
 			getDocumentContent(node);
 		 }
 	});
-	myFunction()
+	
+	//myFunction();
+	//console.log(w2ui.layout.get('main').toolbar)
+	//var btn = w2ui.layout.get('main').toolbar.get('savebtn');
+	//btn.disabled = true;
+	//w2ui.layout.get('main').toolbar.refresh();
+	
+	
+
+
+
+	// console.log($('#savebtn'));//.get('savebtn'));
 	//console.log('main panel content is', c1);
    // w2ui.layout.load('left', 'tree.html');
 }
 
 function getDocumentContent( node )
 {
-	make_json_request('http://192.168.0.17:8090/' + node.data, loadDocument);
+	make_json_request('http://127.0.0.1:8090/' + node.data, loadDocument, node);
 }
 
-function loadDocument( src )
+function create_ace_div(id)
 {
-	//console.log(src);
-	var editor = ace.edit("ace_editor");
-	editor.setValue(src, -1);
-	//editor.session.getUndoManager().markClean();
+
+	var iDiv = document.createElement('div');
+	iDiv.id = 'editors';
+	iDiv.className = 'editors';
+	document.getElementsByTagName('body')[0].appendChild(iDiv);
+
+
+
+
+	console.log("creating ace div for id: "+id);
+	// Your existing code unmodified...
+	var aceDiv = document.createElement('div');
+	aceDiv.id = 'ace'+id;
+	aceDiv.position = 'absolute';
+	aceDiv.display = 'block';
+	aceDiv.top = 0;
+	aceDiv.bottom = 0;
+	aceDiv.left = 0;
+	aceDiv.right = 0;
+	aceDiv.style = "height: 100%; width: 100%";
+	//iDiv.id = 'block';
+	aceDiv.className = 'block';
+	aceDiv.visibility = 'visible';
+	//document.getElementsByTagName('body')[0].appendChild(aceDiv);
 	
-	setTimeout(
-	  reset_ace_save_status,
-	  1000
-	);
+
+	// The variable iDiv is still good... Just append to it.
+	iDiv.appendChild(aceDiv);
+	//console.log(aceDiv);
+	var editor = ace.edit(aceDiv);
+    editor.setTheme("ace/theme/tomorrow_night");
+    editor.getSession().setMode("ace/mode/lua");
 	
-	//var saveButton = document.getElementById("save");
-	//saveButton.disabled = true;
-	//editor.on("input", function() {
-	//	saveButton.disabled = editor.session.getUndoManager().isClean()
-	//});
+	
+	editor.on("input", function() {
+		//btn.disabled = editor.session.getUndoManager().isClean()
+		//w2ui.layout.get('main').toolbar.refresh();
+	});
+
+}
+
+function set_active_tab( tab )
+{
+	console.log(tab);
+	if( tab.type == 'close' )
+	{
+		console.log("Looking to remove ace"+ tab.target);
+		var iDiv = document.getElementById('editors');
+		
+		var ace_move = document.getElementById('ace'+tab.target);
+		if( ace_move )
+		{
+			console.log("Moving ace"+ tab.target);
+			iDiv.appendChild(ace_move);
+		}
+		return;
+	}
+	
+	
+	var tabs = w2ui.layout_main_tabs;
+	var t_active = tabs.active;
+	if( t_active )
+	{
+		console.log("Looking to move ace"+ t_active);
+		var iDiv = document.getElementById('editors');
+		
+		var ace_move = document.getElementById('ace'+t_active);
+		if( ace_move )
+		{
+			console.log("Moving ace"+ t_active);
+			iDiv.appendChild(ace_move);
+		}
+	}
+	console.log( 'Looking for ace'+tab.target );
+	var ace2 = document.getElementById('ace'+tab.target);
+	console.log(ace2);
+	
+	if( ace2 )
+	{
+		console.log( 'Found ace' + tab.target);
+		var editor = ace.edit(ace2);
+		w2ui.layout.html('main', ace2);
+	}
+}
+
+function loadDocument( src, node )
+{
+	var tabs = w2ui.layout_main_tabs;
+	var t_active = tabs.active;
+	if( t_active )
+	{
+		console.log("Looking to move ace"+ t_active);
+		var iDiv = document.getElementById('editors');
+		
+		//var parentDOM = document.getElementById('parent-id');
+        //var test1=parentDOM.getElementById('test1');
+		
+		var ace_move = document.getElementById('ace'+t_active);
+		if( ace_move )
+		{
+			console.log("Moving ace"+ t_active);
+			iDiv.appendChild(ace_move);
+		}
+	}
+
+	
+	if (tabs.get(node.id)) {
+	
+		//var t = tabs.get(node.id);
+		
+		//tabs.active = node.id;
+		//create_ace_div( node.id );
+		console.log( 'Looking for ace'+node.id );
+		var ace2 = document.getElementById('ace'+node.id);
+		console.log(ace2);
+		
+		if( ace2 )
+		{
+			console.log( 'Found ace' + node.id);
+			var editor = ace.edit(ace2);
+			w2ui.layout.html('main', ace2);
+		}
+		tabs.select(node.id);
+		
+		
+		//$('ace'+node.id).resize();
+		//editor.resize();
+		//w2ui.layout.html('main', ace2);
+
+		// w2ui.layout.html('main', 'Tab Selected' + node.data);
+		//editor.setValue(src, -1);
+		
+		//w2ui["layout"].content("main", {
+		//render: function() {
+		//$(this.box).empty();
+		//$(this.box).append(ace2);
+
+		//}
+//
+		//});
+		
+		//editor.setValue(src, -1);
+		//tabs.select(node.id);
+		//$('#editors .ace').hide();
+		//$('#editors .ace'+node.id).show();
+
+	//	w2ui.layout.get('main').tabs.refresh();
+	} else {
+		console.log( 'Adding ace'+node.id );
+		tabs.add({ id: node.id, caption: 'Tab '+ node.data, closable: true });
+		//var t = tabs.get(node.id);
+		
+		
+		create_ace_div( node.id );
+		var ace2 = document.getElementById('ace'+node.id);
+		
+		//ace2 = $('ace'+node.id);
+		var editor = ace.edit(ace2);
+		//editor.resize();
+		//$('ace'+node.id).resize();
+		//$('#editors .ace').hide();
+		//$('#editors .ace'+node.id).show();
+		w2ui.layout.html('main', ace2);
+
+		//$('#editors .ace'+node.id).show();
+		editor.setValue(src, -1);
+		tabs.select(node.id);
+	//	w2ui.layout.html('main', 'Tab Selected' + node.data);
+
+	}
+	//var editor = ace.edit("ace_editor");
+	//editor.setValue(src, -1);
+	
+	//setTimeout(
+	//  reset_ace_save_status,
+	//  1000
+	//);
+	
+
 }
 
 function reset_ace_save_status()
 {
 
 	var editor = ace.edit("ace_editor");
-	var saveButton = document.getElementById("save");
+	var saveButton = w2ui.layout.get('main').toolbar.get('savebtn');//document.getElementById("save");
 	saveButton.disabled = true;
+	w2ui.layout.get('main').toolbar.refresh();
 	editor.session.getUndoManager().markClean();
 }
 
-function make_json_request(theUrl, cb)
+function make_json_request(theUrl, cb, tag)
 {
 	//alert(this);
 	var xmlHttp = new XMLHttpRequest();
@@ -250,7 +445,7 @@ function make_json_request(theUrl, cb)
 		if (xmlHttp.readyState == 4 && xmlHttp.status == 200)
 		{
 			//eval("var x = " + xmlHttp.responseText + ";");
-			cb( xmlHttp.responseText );
+			cb( xmlHttp.responseText, tag );
 			//$('#clbk').jstree(true).settings.core.data = x;
 			//$('#clbk').jstree(true).refresh();
 		}
@@ -259,30 +454,6 @@ function make_json_request(theUrl, cb)
 	xmlHttp.send(null);
 }
 
-function myFunction() {
-    var editor = ace.edit("ace_editor");
-    editor.setTheme("ace/theme/twilight");
-    editor.getSession().setMode("ace/mode/lua");
-	var saveButton = document.getElementById("save");
-	saveButton.disabled = true;
-	
-	//editor.getValue();
-	//editor.on("change", aceChange)
-	
-	//var saveButton = document.getElementById("save");
-	//var editor = ace.edit("editor")
-	// using input event instead of change since it's called with some timeout
-	editor.on("input", function() {
-		saveButton.disabled = editor.session.getUndoManager().isClean()
-	});
-
-	saveButton.addEventListener("click", function() {
-		editor.session.getUndoManager().markClean()
-		saveButton.disabled = editor.session.getUndoManager().isClean()
-	})
-	//document.getElementById("demo").textContent = editor.getValue();
-
-}
 
 
 function processRequest(e) {
@@ -322,7 +493,7 @@ function refresh_tree(theUrl)
 		//var instance = $('#clbk').jstree(true);
 		//instance.deselect_all();
 		//instance.select_node('1');
-		refresh_tree("http://192.168.0.17:8090/list/123");
+		refresh_tree("http://127.0.0.1:8090/list/123");
 	});
 
 	function customMenub(node)
@@ -353,6 +524,7 @@ function refresh_tree(theUrl)
 		return items;
 	}
 	
+
 
 </script>
 <p id="demo" onclick="myFunction()">Click me to change my text color.</p>

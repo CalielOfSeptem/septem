@@ -3,89 +3,178 @@
 <head>
 	<meta charset="UTF-8">
 	<style>
+	.lm_splitter.lm_vertical{
+	  opacity: 1;
+	  transition: opacity 200ms ease;
+	  background: -webkit-gradient(linear, left top, left bottom, from(#505050), to(#383838));
+	  background: -webkit-linear-gradient(top, #505050, #383838);
+	  background: linear-gradient(to bottom, #505050, #383838);
+	  border-top: 1px solid black;
+	  border-bottom: 1px solid black;
+	  -webkit-box-shadow: inset 0 1px 0 #6e6e6e,0 2px 2px rgba(0,0,0,0.4);
+	  box-shadow: inset 0 1px 0 #6e6e6e,0 2px 2px rgba(0,0,0,0.4);
+	}
+
+	.lm_splitter.lm_vertical .lm_drag_handle{
+	  background: url(http://assets.codepen.io/assets/editor/handle-vert.png) center 15px no-repeat;
+	}
+	
+	
+	h2{
+  font: 14px Arial, sans-serif;
+  color:#fff;
+  padding: 10px;
+  text-align: center;
+	}
+
+	html, body{
+	  height: 100%;
+	}
+
+	*{
+	  margin: 0;
+	  padding: 0;
+	  list-style-type:none;
+	}
+
+	#wrapper{
+	  height: 100%;
+	  position: relative;
+	  width: 100%;
+	  overflow: hidden;
+	}
+
+	
+	#menuContainer{
+	  width: 20%;
+	  height: 100%;
+	  position:absolute;
+	  top: 0;
+	  left: 0;
+	  background: #222;
+	}
+
+	#menuContainer li{
+	  border-bottom: 1px solid #000;
+	  border-top: 1px solid #333;
+	  cursor: pointer;
+	  padding: 10px 5px;
+	  color: #BBB;
+	  background: #1a1a1a;
+	  font: 12px Arial, sans-serif;
+	}
+
+	#menuContainer li:hover{
+	  background: #111;
+	  color: #CCC;
+	}
+
+	#layoutContainer{
+	  width: 80%;
+	  height: 100%;
+	  position:absolute;
+	  top: 0;
+	  left: 20%;
+	  box-shadow: -3px 0px 9px 0px rgba( 0, 0, 0, 0.4 );
+	}
+	</style>
+	
+	<style>
 	html { margin:0; padding:0; font-size:62.5%; }
 	body { max-width:800px; min-width:300px; margin:0 auto; padding:20px 10px; font-size:14px; font-size:1.4em; }
 	h1 { font-size:1.8em; }
-	.demo { overflow:auto; border:1px solid silver; min-height:100px; }
+	.demo { overflow:auto; border:1px solid silver; min-height:800px; }
 	</style>
-	<link rel="stylesheet" href="jstree/dist/themes/default/style.min.css" />
+	
 </head>
 <body>
-	
+	<div id="treewrapper" ></div>
 
-
-	<div id="lazy" class="demo"></div>
-
-	<div id="clbk" class="demo"></div>
-
-
-	<button id="evts_button">select node with id 1</button> <em>either click the button or a node in the tree</em>
-	<div id="evts" class="demo"></div>
-
-	<script src="//ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
+	<script type="text/javascript" src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+	<script type="text/javascript" src="//golden-layout.com/assets/js/goldenlayout.min.js"></script>
 	<script src="jstree/dist/jstree.min.js"></script>
+	<link type="text/css" rel="stylesheet" href="//golden-layout.com/assets/css/goldenlayout-base.css" />
+	<link type="text/css" rel="stylesheet" href="//golden-layout.com/assets/css/goldenlayout-light-theme.css" />
+	<link rel="stylesheet" href="jstree/dist/themes/default/style.min.css" />
 	
 	<script>
+	
+	var config = {
+		dimensions: {
+		  borderWidth: 17,
+		 minItemHeight: 800
 
-	// ajax demo
-	$('#ajax').jstree({
-		'core' : {
-			'data' : {
-				"url" : "http://192.168.0.17:8090/match/123",//"url" : "jstree/demo/basic/root.json",
-				"dataType" : "json" // needed only if you do not supply JSON headers
-			}
-		}
+		},
+		content: [{
+			type: 'row',
+			content:[{
+				type: 'component',
+				componentName: 'testComponent',
+				componentState: { label: 'A' },
+				height: 800,
+
+			},{
+				type: 'column',
+				content:[{
+					type: 'component',
+					componentName: 'testComponent',
+					componentState: { label: 'B' }
+				},{
+					type: 'component',
+					componentName: 'testComponent',
+					componentState: { label: 'C' }
+				}]
+			}]
+		}]
+	};
+	
+
+	$(document).ready( function() {
+		//$("#load_home").on("click", function() {
+			$("#treewrapper").load("tree.html");
+		//});
 	});
 
-	// lazy demo
-	$('#lazy').jstree({
-		'core' : {
-			'data' : {
-				"url" : "http://192.168.0.17:8090/match/123",//"//www.jstree.com/fiddle/?lazy",
-				"data" : function (node) {
-					return { "id" : node.id };
-				}
-			}
-		}
-	});
-
-	// data from callback
-	$('#clbk').jstree({
-		'core' : {
-			'data' : function (node, cb) {
-				if(node.id === "#") {
-					cb([{"text" : "Root", "id" : "1", "children" : true}]);
-				}
-				else {
-					cb(["Child"]);
-				}
-			}
-		}
-	});
-
-	// interaction and events
-	$('#evts_button').on("click", function () {
-		var instance = $('#evts').jstree(true);
-		instance.deselect_all();
-		instance.select_node('1');
-	});
-	$('#evts')
-		.on("changed.jstree", function (e, data) {
-			if(data.selected.length) {
-				alert('The selected node is: ' + data.instance.get_node(data.selected[0]).text);
-			}
-		})
-		.jstree({
-			'core' : {
-				'multiple' : false,
-				'data' : [
-					{ "text" : "Root node", "children" : [
-							{ "text" : "Child node 1", "id" : 1 },
-							{ "text" : "Child node 2" }
-					]}
-				]
-			}
+	
+	function load_tree() {
+		 document.getElementById("treewrapper").innerHTML='<object type="text/html" data="tree.html" ></object>';
+		 var wrap =  document.getElementById("treewrapper");
+		 var test =  document.getElementById("tree");
+		 
+		// var instance = $.jstree.reference(this);
+		// console.log(test);
+		
+		test.on('dblclick','.jstree-anchor', function (e) {
+		//var instance = $.jstree.reference(e);
+		console.log('blah');
+        // node = test.get_node(e);
+		// console.log(node);
+		 //var saveButton = document.getElementById("save")
+		 //if( node.type === 'file' && saveButton.disabled )
+		 //{
+		//	console.log('Getting document from server..' + node.relative_path);
+		//	//getDocumentContent(node);
+		// }
 		});
+	}
+		
+	var myLayout = new GoldenLayout( config );
+
+	myLayout.registerComponent( 'testComponent', function( container, componentState ){
+	  console.log(componentState);
+	  if( componentState.label === 'A' )
+	  {
+			//load_tree();
+		   container.getElement().html($('#treewrapper'));
+		   //container.getElement().setSize(200, 800);
+	  }
+	  //setTimeout(function(){
+	//	debugger;
+	  //}.bind(container), 3000);
+	});
+	
+
+	myLayout.init();
 	</script>
 </body>
 </html>
