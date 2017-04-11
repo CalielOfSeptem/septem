@@ -308,13 +308,25 @@ int start_serv(int port) {
 #endif
 
             auto ifs=make_shared<ifstream>();
-            ifs->open(path.string(), ifstream::in | ios::binary | ios::ate);
-            cout << path.string() << endl;
+            ifs->open(path.string());//, ifstream::in | ios::binary | ios::ate);
+            ///std::ifstream t("file.txt");
+
+            
+           // cout << path.string() << endl;
             if(*ifs) {
-                auto length=ifs->tellg();
-                ifs->seekg(0, ios::beg);
-                
-                *response << "HTTP/1.1 200 OK\r\nAccess-Control-Allow-Origin: *\r\n" << cache_control << etag << "Content-Length: " << length << "\r\n\r\n";
+                std::stringstream buffer;
+                buffer << (*ifs).rdbuf();
+                json jresp;
+                jresp["text"] = buffer.str();
+                jresp["path"] = path.string();
+               // auto length=ifs->tellg();
+                //ifs->seekg(0, ios::beg);
+                    std::string test = jresp.dump(4); 
+                //cout << s << std::endl;
+                cout << "Servicing request.." << endl;
+                *response << "HTTP/1.1 200 OK\r\nAccess-Control-Allow-Origin: *\r\nContent-Length: " << test.length() << "\r\n\r\n" << test;
+                //};
+               // *response << "HTTP/1.1 200 OK\r\nAccess-Control-Allow-Origin: *\r\n" << cache_control << etag << "Content-Length: " << length << "\r\n\r\n";
                 default_resource_send(server, response, ifs);
             }
             else

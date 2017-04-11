@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+    <title>Septem Control Alpha v0.1</title>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
+	<script src="jstree/dist/jstree.min.js"></script>
+	<link rel="stylesheet" href="jstree/dist/themes/default-dark/style.min.css" /> 
+	<script src="/ace-builds/src-noconflict/ace.js" type="text/javascript" charset="utf-8"></script>
+	<style>
+	.vakata-context { 
+		 z-index:999 !important; 
+	} 
+	</style>
+	
+
+<script type="text/javascript" src="//golden-layout.com/files/latest/js/goldenlayout.min.js"></script>
+<link type="text/css" rel="stylesheet" href="//golden-layout.com/files/latest/css/goldenlayout-base.css" />
+<link type="text/css" rel="stylesheet" href="//golden-layout.com/files/latest/css/goldenlayout-dark-theme.css" />
+<style>
+
+h2{
+  font: 14px Arial, sans-serif;
+  color:#fff;
+  padding: 10px;
+  text-align: center;
+}
+
+html, body{
+  height: 100%;
+}
+
+*{
+  margin: 0;
+  padding: 0;
+  list-style-type:none;
+}
+
+#wrapper{
+  height: 100%;
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+}
+
+#menuContainer{
+  width: 20%;
+  height: 100%;
+  position:absolute;
+  top: 0;
+  left: 0;
+  background: #222;
+}
+
+#menuContainer li{
+  border-bottom: 1px solid #000;
+  border-top: 1px solid #333;
+  cursor: pointer;
+  padding: 10px 5px;
+  color: #BBB;
+  background: #1a1a1a;
+  font: 12px Arial, sans-serif;
+}
+
+#menuContainer li:hover{
+  background: #111;
+  color: #CCC;
+}
+
+#layoutContainer{
+  width: 100%;
+  height: 100%;
+  position:absolute;
+  top: 0;
+  left: 0%;
+}
+</style>
+
+	<div id="wrapper">
+	  
+	  <div id="layoutContainer"></div>
+	  
+	</div>
+	<div id="tree" class="demo" style="width: 100%; height: 100%;"></div>
+</head>
+<body>
+<script>
+	// data from callback
+	$('#tree')
+		.on("changed.jstree", function (e, data) {
+			if(data.selected.length) {
+				//console.log('The selected node is: ' + data.instance.get_node(data.selected[0]).text);
+				//console.log('The selected node is: ' + data.instance.get_node(data.selected[0]).id);
+			}
+		})
+		.jstree({
+		'conditionalselect' : function (node) {
+			return false; //<something that determines condition> ? true : false;
+		},
+		'core' : {
+			"check_callback" : true,
+			"themes": {
+                "name": "default-dark",
+                "dots": true,
+                "icons": true
+            },
+			'data' : function (node, cb) {
+				if(node.id === "#") {
+					//httpGetAsync("http://127.0.0.1:8090/list/123", cb);
+					make_json_request('http://127.0.0.1:8090/list/123', cb, node);
+				}
+				else {
+					//httpGetAsync("http://127.0.0.1:8090/list/123", cb);//cb(["Child"]);
+				}
+			}
+			
+		},
+		'plugins' : ['contextmenu', 'types', 'conditionalselect'],
+			'types' : {
+				'#' : { /* options */ },
+				'file' : { /* options */ },
+				'directory' : { /* options */ }
+				// etc...
+			},
+			'contextmenu' : {
+                    "items": ''
+					}
+	});
+
+	var config = {
+	    settings:{
+        hasHeaders: true,
+        constrainDragToContainer: true,
+        reorderEnabled: true,
+        selectionEnabled: false,
+        popoutWholeStack: false,
+        blockedPopoutsThrowError: true,
+        closePopoutsOnUnload: true,
+        showPopoutIcon: false,
+        showMaximiseIcon: false,
+        showCloseIcon: true
+		},
+		content: [{
+			type: 'row',
+			content:[{
+				title: 'Folders',
+				width: 20,
+				type: 'component',
+				content: [],
+				id: 'some id',
+				isClosable: false,
+				componentName: 'testComponent',
+				componentState: { label: 'A' }
+			},{
+				type: 'column',
+				content:[{
+					title: 'Test1',
+					type: 'component',
+					id : 'myID',
+					componentName: 'testComponent',
+					componentState: { label: 'B' }
+				},{
+					title: 'Console',
+					isClosable:false,
+					type: 'component',
+					componentName: 'testComponent',
+					componentState: { label: 'C' }
+				}]
+			}]
+		}]
+	};
+	
+	$(document).ready(function(){
+	//$("#content").load("tree.html");
+           // var k = $("#clbk")[0].innerHTML;
+           // alert(k);
+           // $("object")[0].innerHTML = "testing";
+		   $("#tree").on('dblclick','.jstree-anchor', function (e) {
+		   var instance = $.jstree.reference(this),
+				 node = instance.get_node(this);
+				 console.log(node);
+				 //var saveButton = w2ui.layout.get('main').toolbar.get('savebtn');
+				 if( node.type === 'file')// && saveButton.disabled )
+				 {
+					console.log('Getting document from server..' + node.relative_path);
+					getDocumentContent(node);
+				 }
+			});
+	window.onbeforeunload = function() {
+    return "Are you sure you want to leave?";
+	}
+    
+	});
+	//var myLayout = new GoldenLayout( config );
+	var myLayout = new window.GoldenLayout( config, $('#layoutContainer') );
+	myLayout.registerComponent( 'testComponent', function( container, state ){
+		if( state.label === 'A' )
+		{
+			container.getElement().html( $('#tree') );
+		}
+		setTimeout(function(){
+			//console.log(container.parent.parent.header.controlsContainer);
+			container.parent.parent.header.controlsContainer.find( '.lm_maximise').hide();
+			container.parent.parent.header.controlsContainer.find( '.lm_close').hide();
+		//	debugger;
+		  }.bind(container));
+	});
+
+
+	myLayout.init();
+	
+
+
+	
+	var addMenuItem = function( title, text ) {
+		var element = $( '<li>' + text + '</li>' );
+		$( '#menuContainer' ).append( element );
+
+		var newItemConfig = {
+			title: title,
+			type: 'component',
+			componentName: 'testComponent',
+			componentState: { text: text }
+		};
+	  
+		element.click(function(){
+			console.log(myLayout.root);
+			myLayout.root.contentItems[ 0 ].contentItems[1].contentItems[0].addChild( newItemConfig );
+			
+			//var v = myLayout;//.root.contentItems[ 0 ].contentItems[1].contentItems[0];//.getItemsById("testID");
+			console.log(v);
+			//v.container.getElement().html( $('#tree') );
+		});
+	};
+	
+	var addSrcEditor = function( title, src_obj ) {
+		var element = $( '<li>' + title + '</li>' );
+		$( '#wrapper' ).append( element );
+
+		var newItemConfig = {
+			title: title,
+			type: 'component',
+			id : 'testID',
+			componentName: 'testComponent',
+			componentState: { text: title }
+		};
+		//container.getElement().html( $('#tree') );
+	  
+		//element.click(function(){
+			//console.log(myLayout.root);
+			myLayout.root.contentItems[ 0 ].contentItems[1].contentItems[0].addChild( newItemConfig );
+			var v = myLayout.root.contentItems[ 0 ].contentItems[1].contentItems[0].getItemsById("testID");
+			//var v = myLayout.root.contentItems[ 0 ].contentItems[1].contentItems[0].contentItems[0];
+			v[0].container.getElement().html( $('#tree') );
+			console.log(v);
+		//});
+	};
+	
+	function getDocumentContent( node )
+	{
+		make_json_request('http://127.0.0.1:8090/' + node.data, loadDocument, node);
+	}
+
+	function make_json_request(theUrl, cb, tag)
+	{
+		var xmlHttp = new XMLHttpRequest();
+
+		xmlHttp.onreadystatechange = function() { 
+
+			if (xmlHttp.readyState == 4 && xmlHttp.status == 200)
+			{
+				eval("var x = " + xmlHttp.responseText + ";");
+				console.log(x);
+				cb( x, tag );
+			}
+		}
+		xmlHttp.open("GET", theUrl, true); // true for asynchronous 
+		xmlHttp.send(null);
+	}
+	
+	function loadDocument( src, node )
+	{
+		console.log(src.text);
+		addSrcEditor( node.data, src );
+		//var v = myLayout.root.contentItems[ 0 ].contentItems[1].contentItems[0].getItemsById("myID");
+		//console.log(v);
+	}
+	
+	function create_ace_div(id)
+	{
+		var iDiv = document.createElement('div');
+		iDiv.id = 'editors';
+		iDiv.className = 'editors';
+		document.getElementsByTagName('body')[0].appendChild(iDiv);
+
+		console.log("creating ace div for id: "+id);
+		// Your existing code unmodified...
+		var aceDiv = document.createElement('div');
+		aceDiv.id = 'ace'+id;
+		aceDiv.position = 'absolute';
+		aceDiv.display = 'block';
+		aceDiv.top = 0;
+		aceDiv.bottom = 0;
+		aceDiv.left = 0;
+		aceDiv.right = 0;
+		aceDiv.style = "height: 100%; width: 100%";
+		//iDiv.id = 'block';
+		aceDiv.className = 'block';
+		aceDiv.visibility = 'visible';
+		//document.getElementsByTagName('body')[0].appendChild(aceDiv);
+		
+
+		// The variable iDiv is still good... Just append to it.
+		iDiv.appendChild(aceDiv);
+		//console.log(aceDiv);
+		var editor = ace.edit(aceDiv);
+		editor.setTheme("ace/theme/tomorrow_night");
+		editor.getSession().setMode("ace/mode/lua");
+		
+		
+		editor.on("input", function() {
+			//btn.disabled = editor.session.getUndoManager().isClean()
+			//w2ui.layout.get('main').toolbar.refresh();
+		});
+
+	}
+
+
+</script>
+
+</body>
+</html>

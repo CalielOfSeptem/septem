@@ -131,7 +131,18 @@
 
 	$(document).ready( function() {
 		//$("#load_home").on("click", function() {
-			$("#treewrapper").load("tree.html");
+			
+		$("#tree").on('dblclick','.jstree-anchor', function (e) {
+		   var instance = $.jstree.reference(this),
+				 node = instance.get_node(this);
+				 console.log(node);
+				 //var saveButton = w2ui.layout.get('main').toolbar.get('savebtn');
+				 if( node.type === 'file')// && saveButton.disabled )
+				 {
+					console.log('Getting document from server..' + node.relative_path);
+					getDocumentContent(node);
+				 }
+			});
 		//});
 	});
 
