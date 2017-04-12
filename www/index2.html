@@ -75,7 +75,8 @@ html, body{
   left: 0%;
 }
 </style>
-
+	<div id="src_editors">
+	</div>
 	<div id="wrapper">
 	  
 	  <div id="layoutContainer"></div>
@@ -228,33 +229,95 @@ html, body{
 			myLayout.root.contentItems[ 0 ].contentItems[1].contentItems[0].addChild( newItemConfig );
 			
 			//var v = myLayout;//.root.contentItems[ 0 ].contentItems[1].contentItems[0];//.getItemsById("testID");
-			console.log(v);
+			//console.log(v);
 			//v.container.getElement().html( $('#tree') );
 		});
 	};
 	
-	var addSrcEditor = function( title, src_obj ) {
-		var element = $( '<li>' + title + '</li>' );
-		$( '#wrapper' ).append( element );
+	var loadSrcEditor = function( node, src_obj ) {
+	//	var element = $( '<li>' + title + '</li>' );
+	//	$( '#src_editors' ).append( element );
+	
+		var find_config = myLayout.root.contentItems[ 0 ].contentItems[1].contentItems[0];//.getItemsById('ace_'+node.id);//.addChild( newItemConfig );//myLayout.root.contentItems[ 0 ].contentItems[1].contentItems[0].getItemsById('ace_'+node.id);
+		if ( myLayout.root.contentItems[ 0 ].contentItems[1].contentItems[0].getItemsById('ace_'+node.id).length > 0 )
+		{
+			
+			var d1  = myLayout.root.contentItems[ 0 ].contentItems[1].contentItems[0].setActiveContentItem( 
+				myLayout.root.contentItems[ 0 ].contentItems[1].contentItems[0].getItemsById('ace_'+node.id)[0]
+			 );//.getItemsById('ace_'+node.id);//find_config[0]);
+			console.log(d1);
+			//d1[0].container.show();
+			//console.log(myLayout.root.contentItems[ 0 ].contentItems[1].contentItems[0]);
+			//console.log("Found an existing config for: "+node.data);
+			//find_config.config.activeItemIndex = 0;
+			return;
+		}
+		//return;
+	
 
 		var newItemConfig = {
-			title: title,
+			title: node.data,
 			type: 'component',
-			id : 'testID',
+			id : 'ace_'+node.id,
 			componentName: 'testComponent',
-			componentState: { text: title }
+			componentState: { text: node.data }
 		};
 		//container.getElement().html( $('#tree') );
 	  
-		//element.click(function(){
-			//console.log(myLayout.root);
+	  
 			myLayout.root.contentItems[ 0 ].contentItems[1].contentItems[0].addChild( newItemConfig );
-			var v = myLayout.root.contentItems[ 0 ].contentItems[1].contentItems[0].getItemsById("testID");
-			//var v = myLayout.root.contentItems[ 0 ].contentItems[1].contentItems[0].contentItems[0];
-			v[0].container.getElement().html( $('#tree') );
-			console.log(v);
-		//});
+			var v = myLayout.root.contentItems[ 0 ].contentItems[1].contentItems[0].getItemsById('ace_'+node.id);//src_obj.data);
+			if( v )
+			{
+				console.log(node);
+				console.log(src_obj);
+				create_ace_div(node.id);
+				//var new_ace = $('#ace'+node.id);
+				var ace2 = document.getElementById('ace'+node.id);
+				v[0].container.getElement().html( ace2 );//$('#ace'+node.id) );//$('#tree') );
+				
+				
+				var editor = ace.edit(ace2);
+				editor.setValue(src_obj.text, -1);
+			}
+
+			//console.log(v);
+
 	};
+	
+	function create_ace_div(id)
+	{
+
+		var iDiv = document.createElement('div');
+		iDiv.id = 'editors';
+		iDiv.className = 'editors';
+		document.getElementsByTagName('body')[0].appendChild(iDiv);
+
+
+		console.log("creating ace div for id: "+id);
+
+		var aceDiv = document.createElement('div');
+		aceDiv.id = 'ace'+id;
+		aceDiv.position = 'absolute';
+		aceDiv.display = 'block';
+		aceDiv.top = 0;
+		aceDiv.bottom = 0;
+		aceDiv.left = 0;
+		aceDiv.right = 0;
+		aceDiv.style = "height: 100%; width: 100%";
+		aceDiv.className = 'block';
+		aceDiv.visibility = 'visible';
+
+		iDiv.appendChild(aceDiv);
+		var editor = ace.edit(aceDiv);
+		editor.setTheme("ace/theme/tomorrow_night");
+		editor.getSession().setMode("ace/mode/lua");
+		
+		
+		editor.on("input", function() {
+		});
+
+	}
 	
 	function getDocumentContent( node )
 	{
@@ -280,8 +343,8 @@ html, body{
 	
 	function loadDocument( src, node )
 	{
-		console.log(src.text);
-		addSrcEditor( node.data, src );
+		//console.log(src.text);
+		loadSrcEditor( node, src );
 		//var v = myLayout.root.contentItems[ 0 ].contentItems[1].contentItems[0].getItemsById("myID");
 		//console.log(v);
 	}
