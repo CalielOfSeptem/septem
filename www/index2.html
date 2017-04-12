@@ -17,6 +17,44 @@
 <script type="text/javascript" src="//golden-layout.com/files/latest/js/goldenlayout.min.js"></script>
 <link type="text/css" rel="stylesheet" href="//golden-layout.com/files/latest/css/goldenlayout-base.css" />
 <link type="text/css" rel="stylesheet" href="//golden-layout.com/files/latest/css/goldenlayout-dark-theme.css" />
+  <!--- Component CSS -->
+<link rel="stylesheet" type="text/css" href="Semantic-UI/dist/components/menu.css">
+
+  <!--- Component JS -->
+  <script type="text/javascript" src="Semantic-UI/dist/components/transition.js"></script>
+  <script type="text/javascript" src="Semantic-UI/dist/components/dropdown.js"></script>
+  
+  
+  
+    <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+
+
+  <!--- Site CSS -->
+  <link rel="stylesheet" type="text/css" href="Semantic-UI/dist/components/reset.css">
+  <link rel="stylesheet" type="text/css" href="Semantic-UI/dist/components/site.css">
+  <link rel="stylesheet" type="text/css" href="Semantic-UI/dist/components/grid.css">
+
+  <!--- Component CSS -->
+  <link rel="stylesheet" type="text/css" href="Semantic-UI/dist/components/menu.css">
+  <link rel="stylesheet" type="text/css" href="Semantic-UI/dist/components/input.css">
+  <link rel="stylesheet" type="text/css" href="Semantic-UI/dist/components/dropdown.css">
+  <link rel="stylesheet" type="text/css" href="Semantic-UI/dist/components/icon.css">
+  <link rel="stylesheet" type="text/css" href="Semantic-UI/dist/components/button.css">
+  <link rel="stylesheet" type="text/css" href="Semantic-UI/dist/components/transition.css">
+
+  <!--- Example Libs -->
+  <link rel="stylesheet" type="text/css" href="Semantic-UI/dist/components/popup.css">
+
+  <script src="Semantic-UI/examples/assets/library/iframe-content.js"></script>
+  <script src="Semantic-UI/examples/assets/show-examples.js"></script>
+  <script type="text/javascript" src="Semantic-UI/dist/components/popup.js"></script>
+
+  <!--- Component JS -->
+  <script type="text/javascript" src="Semantic-UI/dist/components/transition.js"></script>
+  <script type="text/javascript" src="Semantic-UI/dist/components/dropdown.js"></script>
+
 <style>
 
 h2{
@@ -74,7 +112,72 @@ html, body{
   top: 0;
   left: 0%;
 }
+
+  <!--- Example CSS -->
+  <style>
+  body {
+    padding: 1em;
+  }
+  .ui.menu {
+    margin: 0em 0em;
+  }
+  .ui.menu:last-child {
+    margin-bottom: 0px;
+  }
+  </style>
+
 </style>
+  <!--- Example Javascript -->
+  <script>
+  $(document)
+    .ready(function() {
+      $('.ui.menu .ui.dropdown').dropdown({
+        on: 'hover'
+      });
+      $('.ui.menu a.item')
+        .on('click', function() {
+          $(this)
+            .addClass('active')
+            .siblings()
+            .removeClass('active')
+          ;
+        })
+      ;
+    })
+  ;
+  </script>
+</head>
+<body>
+<div class="ui inverted menu">
+  <div class="header item">Septem Creator</div>
+  <div class="active item">Link</div>
+  <a class="item">Link</a>
+  <div class="ui dropdown item">
+    Dropdown
+    <i class="dropdown icon"></i>
+    <div class="menu">
+      <div class="item">Action</div>
+      <div class="item">Another Action</div>
+      <div class="item">Something else here</div>
+      <div class="divider"></div>
+      <div class="item">Separated Link</div>
+      <div class="divider"></div>
+      <div class="item">One more separated link</div>
+    </div>
+  </div>
+  <div class="right menu">
+    <div class="item">
+      <div class="ui transparent inverted icon input">
+        <i class="search icon"></i>
+        <input type="text" placeholder="Search">
+      </div>
+    </div>
+    <a class="item">Link</a>
+  </div>
+</div>
+
+
+
 	<div id="src_editors">
 	</div>
 	<div id="wrapper">
@@ -83,8 +186,7 @@ html, body{
 	  
 	</div>
 	<div id="tree" class="demo" style="width: 100%; height: 100%;"></div>
-</head>
-<body>
+
 <script>
 	// data from callback
 	$('#tree')
@@ -234,10 +336,53 @@ html, body{
 		});
 	};
 	
+	var findTab = function( layout, id ) {
+		for (i = 0; i < layout.contentItems.length; i++) { 
+			//stext += cars[i] + "<br>";
+			var items = layout.contentItems[i].getItemsById( id );
+			if( items.length > 0 )
+				return items[0];
+			return findTab( layout.contentItems[i], id );
+		}
+	}
+	
+	var findSourceContainer = function( layout ) {
+			if( layout.contentItems[ 0 ].contentItems[1].isStack === true )
+			{
+				console.log("1");
+				//myLayout.root.contentItems[ 0 ].contentItems[1].addChild( newItemConfig );
+				return layout.contentItems[ 0 ].contentItems[1];//.getItemsById('ace_'+node.id);
+			}
+			else if( layout.contentItems[ 0 ].contentItems[1].contentItems.length == 1 ) // situation where the console is the only window open
+			{
+				console.log("2");
+				//myLayout.root.contentItems[ 0 ].contentItems[1].addChild( newItemConfig );
+				return layout.contentItems[ 0 ].contentItems[1];//getItemsById('ace_'+node.id);
+			}
+			else
+			{
+				console.log("3");
+				//myLayout.root.contentItems[ 0 ].contentItems[1].contentItems[0].addChild( newItemConfig );
+				//console.log(myLayout.root.contentItems[ 0 ].contentItems[1].contentItems[0]);
+				return layout.contentItems[ 0 ].contentItems[1].contentItems[0];//.getItemsById('ace_'+node.id);//src_obj.data);
+			}
+	}
+	
 	var loadSrcEditor = function( node, src_obj ) {
+		tab = findTab( myLayout.root,  'ace_'+node.id);
+		if( tab )
+		{
+			//console.log("FOUND TAB!!");
+			//console.log(tab);
+			var d1  = findSourceContainer( myLayout.root).setActiveContentItem( 
+				tab
+			 );
+			return;
+		}
 	//	var element = $( '<li>' + title + '</li>' );
 	//	$( '#src_editors' ).append( element );
 	
+	/*
 		var find_config = myLayout.root.contentItems[ 0 ].contentItems[1].contentItems[0];//.getItemsById('ace_'+node.id);//.addChild( newItemConfig );//myLayout.root.contentItems[ 0 ].contentItems[1].contentItems[0].getItemsById('ace_'+node.id);
 		if ( myLayout.root.contentItems[ 0 ].contentItems[1].contentItems[0].getItemsById('ace_'+node.id).length > 0 )
 		{
@@ -252,6 +397,7 @@ html, body{
 			//find_config.config.activeItemIndex = 0;
 			return;
 		}
+		*/
 		//return;
 	
 
@@ -262,13 +408,60 @@ html, body{
 			componentName: 'testComponent',
 			componentState: { text: node.data }
 		};
+		
+
 		//container.getElement().html( $('#tree') );
-	  
-	  
-			myLayout.root.contentItems[ 0 ].contentItems[1].contentItems[0].addChild( newItemConfig );
-			var v = myLayout.root.contentItems[ 0 ].contentItems[1].contentItems[0].getItemsById('ace_'+node.id);//src_obj.data);
-			if( v )
+	 
+	 
+			//console.log(myLayout.root.contentItems[ 0 ].contentItems[1].contentItems[0]);
+			//myLayout.root.contentItems[ 0 ].contentItems[1].addChild( new_stack );
+			//if( myLayout.root.contentItems[ 0 ].contentItems[1].contentItems[0] )
+			//var v;
+			
+			//if( myLayout.root.contentItems[ 0 ].contentItems[1].contentItems.length > 0 )
+			//{
+		//	console.log("ok");
+		//	console.log(myLayout.root.contentItems[ 0 ].contentItems[1]);
+		/*
+			if( myLayout.root.contentItems[ 0 ].contentItems[1].isStack === true )
 			{
+				myLayout.root.contentItems[ 0 ].contentItems[1].addChild( newItemConfig );
+				v = myLayout.root.contentItems[ 0 ].contentItems[1].getItemsById('ace_'+node.id);
+			}
+			else if( myLayout.root.contentItems[ 0 ].contentItems[1].contentItems.length == 1 )
+			{
+				myLayout.root.contentItems[ 0 ].contentItems[1].addChild( newItemConfig );
+				v = myLayout.root.contentItems[ 0 ].contentItems[1].getItemsById('ace_'+node.id);
+			}
+			else
+			{
+				myLayout.root.contentItems[ 0 ].contentItems[1].contentItems[0].addChild( newItemConfig );
+				//console.log(myLayout.root.contentItems[ 0 ].contentItems[1].contentItems[0]);
+				v = myLayout.root.contentItems[ 0 ].contentItems[1].contentItems[0].getItemsById('ace_'+node.id);//src_obj.data);
+			}
+			*/
+			var v;
+			var t = findSourceContainer( myLayout.root );
+			if( t )
+			{
+				//console.log("found a tab..");
+				t.addChild(newItemConfig);
+				v = t.getItemsById('ace_'+node.id);
+			}
+
+			//}
+			//else
+			//{
+			//	myLayout.root.contentItems[ 0 ].contentItems[1].addChild( newItemConfig );
+			//	v = myLayout.root.contentItems[ 0 ].contentItems[1].getItemsById('ace_'+node.id);//src_obj.data);
+			//}
+			////else
+				//myLayout.root.contentItems[ 0 ].contentItems[1].addChild( newItemConfig );
+		//setTimeout(function(){
+			
+			if( v[0] )
+			{
+		
 				console.log(node);
 				console.log(src_obj);
 				create_ace_div(node.id);
@@ -280,11 +473,23 @@ html, body{
 				var editor = ace.edit(ace2);
 				editor.setValue(src_obj.text, -1);
 			}
+		 // }.bind(node, src_obj));
+
 
 			//console.log(v);
 
 	};
-	
+	myLayout.on( 'tabCreated', function( tab ){
+	tab
+		.closeElement
+		.off( 'click' ) //unbind the current click handler
+		.click(function(){
+			//add your own
+			if( confirm( 'really close this?' ) ) {
+				tab.contentItem.remove();
+			}
+		});
+	});
 	function create_ace_div(id)
 	{
 
