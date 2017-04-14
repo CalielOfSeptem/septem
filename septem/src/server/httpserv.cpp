@@ -73,10 +73,11 @@ void default_resource_send(const HttpServer &server, const shared_ptr<HttpServer
         tmp_path = SplitFilename(tmp_path);
         j["text"] = tmp_path;//itr->path().string();
         j["type"] = "directory";
-        j["data"] = std::regex_replace(dir_path.string(), std::regex("\\" + std::string(DEFAULT_GAME_DATA_PATH)), "");
+        j["data"]["relativePath"] = std::regex_replace(dir_path.string(), std::regex("\\" + std::string(DEFAULT_GAME_DATA_PATH)), "");
+        j["data"]["systemPath"] = dir_path.string();
        // cout << dir_path.string() << endl;
         //cout << tmp_path.c_str() << endl;
-            std::size_t str_hash = std::hash<std::string>{}(dir_path.string());
+        std::size_t str_hash = std::hash<std::string>{}(dir_path.string());
         
         j["id"] = std::to_string( str_hash );
         
@@ -116,7 +117,8 @@ void default_resource_send(const HttpServer &server, const shared_ptr<HttpServer
         
             new_child["id"] = std::to_string( str_hash2 );
             new_child["text"] = itr->path().filename().string();//
-            new_child["data"] = std::regex_replace(itr->path().string(), std::regex("\\" + std::string(DEFAULT_GAME_DATA_PATH)), "");
+            new_child["data"]["relativePath"] = std::regex_replace(itr->path().string(), std::regex("\\" + std::string(DEFAULT_GAME_DATA_PATH)), "");
+            new_child["data"]["systemPath"] = itr->path().string();
             new_child["icon"] = "jstree-file";
             new_child["type"] = "file";
            // load_directory_map( itr->path(), new_child);
@@ -181,7 +183,50 @@ int start_serv(int port) {
         }
     };
 
+    //POST-example for the path /save, responds firstName+" "+lastName from the posted json
+    //Responds with an appropriate error message if the posted json is not valid, or if firstName or lastName is missing
+    //Example posted json:
+    //{
+    //  "firstName": "John",
+    //  "lastName": "Smith",
+    //  "age": 25
+    //}
+    server.resource["^/save$"]["POST"]=[](shared_ptr<HttpServer::Response> response, shared_ptr<HttpServer::Request> request) {
+        try {
+            json j;
+            j << request->content;
+            std::string l = j.dump();
+            cout << l << endl;
+           // ptree pt;
+           // read_json(request->content, pt);
 
+           // string name=pt.get<string>("firstName")+" "+pt.get<string>("lastName");
+
+            *response << "HTTP/1.1 200 OK\r\n"
+                      << "Content-Type: application/json\r\n"
+                      << "Access-Control-Allow-Origin: *\r\n"
+                      << "Content-Length: 0" << "\r\n\r\n";
+        }
+        catch(exception& e) {
+            *response << "HTTP/1.1 400 Bad Request\r\nContent-Length: " << strlen(e.what()) << "\r\n\r\n" << e.what();
+        }
+    };
+
+    server.resource["^/save$"]["OPTIONS"]=[](shared_ptr<HttpServer::Response> response, shared_ptr<HttpServer::Request> request) {
+        try {
+
+          cout << "Providing options.." << endl;
+            *response << "HTTP/1.1 200 OK\r\n"
+                      << "Date: Mon, 01 Dec 2008 01:15:39 GMT\r\n"
+                      << "Access-Control-Allow-Origin: *\r\n"
+                      << "Access-Control-Allow-Methods: POST, GET, OPTIONS\r\n"
+                      << "Access-Control-Allow-Headers: Content-Type\r\n";
+
+        }
+        catch(exception& e) {
+            *response << "HTTP/1.1 400 Bad Request\r\nContent-Length: " << strlen(e.what()) << "\r\n\r\n" << e.what();
+        }
+    };
 
     
     
@@ -211,7 +256,12 @@ int start_serv(int port) {
     std::string test = j1.dump(4); 
     //cout << s << std::endl;
     cout << "Servicing request.." << endl;
-        *response << "HTTP/1.1 200 OK\r\nAccess-Control-Allow-Origin: *\r\nContent-Length: " << test.length() << "\r\n\r\n" << test;
+   // cout << test;
+        *response << "HTTP/1.1 200 OK\r\nAccess-Control-Allow-Origin: *\r\n"
+         << "Content-Type: application/json\r\n"
+        << "Access-Control-Allow-Methods: POST, GET, OPTIONS\r\n"
+        << "Access-Control-Allow-Headers: Content-Type\r\n"
+        << "Content-Length: " << test.length() << "\r\n\r\n" << test;
     };
     
     //Get example simulating heavy work in a separate thread
@@ -322,7 +372,7 @@ int start_serv(int port) {
                // auto length=ifs->tellg();
                 //ifs->seekg(0, ios::beg);
                     std::string test = jresp.dump(4); 
-                //cout << s << std::endl;
+                cout << test << std::endl;
                 cout << "Servicing request.." << endl;
                 *response << "HTTP/1.1 200 OK\r\nAccess-Control-Allow-Origin: *\r\nContent-Length: " << test.length() << "\r\n\r\n" << test;
                 //};

@@ -2,18 +2,22 @@
 <html>
 <head>
 
-    <title>Septem Control Alpha v0.1</title>
+    <title>Septem Creator Alpha v0.1</title>
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
 	<script src="jstree/dist/jstree.min.js"></script>
 	<link rel="stylesheet" href="jstree/dist/themes/default-dark/style.min.css" /> 
 	<script src="/ace-builds/src-noconflict/ace.js" type="text/javascript" charset="utf-8"></script>
+	
+	 <link rel="stylesheet" type="text/css" href="Semantic-UI/dist/components/loader.css">
+
+	<script type="text/javascript" src="Semantic-UI/dist/components/loader.js"></script>
+   
 	<style>
 	.vakata-context { 
 		 z-index:999 !important; 
 	} 
 	</style>
 	
-
 <script type="text/javascript" src="//golden-layout.com/files/latest/js/goldenlayout.min.js"></script>
 <link type="text/css" rel="stylesheet" href="//golden-layout.com/files/latest/css/goldenlayout-base.css" />
 <link type="text/css" rel="stylesheet" href="//golden-layout.com/files/latest/css/goldenlayout-dark-theme.css" />
@@ -24,11 +28,7 @@
   <script type="text/javascript" src="Semantic-UI/dist/components/transition.js"></script>
   <script type="text/javascript" src="Semantic-UI/dist/components/dropdown.js"></script>
   
-  
-  
-    <meta charset="utf-8" />
-  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+
 
 
   <!--- Site CSS -->
@@ -54,6 +54,11 @@
   <!--- Component JS -->
   <script type="text/javascript" src="Semantic-UI/dist/components/transition.js"></script>
   <script type="text/javascript" src="Semantic-UI/dist/components/dropdown.js"></script>
+  
+  
+  <script src="jquery.terminal/js/jquery.mousewheel-min.js"></script>
+  <script src="jquery.terminal/js/jquery.terminal.min.js"></script>
+  <link href="jquery.terminal/css/jquery.terminal.css" rel="stylesheet"/>
 
 <style>
 
@@ -146,59 +151,42 @@ html, body{
     })
   ;
   </script>
+  
+
 </head>
 <body>
-<div class="ui inverted menu">
-  <div class="header item">Septem Creator</div>
-  <div class="active item">Link</div>
-  <a class="item">Link</a>
-  <div class="ui dropdown item">
-    Dropdown
-    <i class="dropdown icon"></i>
-    <div class="menu">
-      <div class="item">Action</div>
-      <div class="item">Another Action</div>
-      <div class="item">Something else here</div>
-      <div class="divider"></div>
-      <div class="item">Separated Link</div>
-      <div class="divider"></div>
-      <div class="item">One more separated link</div>
-    </div>
-  </div>
-  <div class="right menu">
-    <div class="item">
-      <div class="ui transparent inverted icon input">
-        <i class="search icon"></i>
-        <input type="text" placeholder="Search">
-      </div>
-    </div>
-    <a class="item">Link</a>
-  </div>
-</div>
 
 
 
-	<div id="src_editors">
+	<div id="editors">
+	</div>
+	<div id="terminals">
 	</div>
 	<div id="wrapper">
+	  <div id="layoutContainer">
 	  
-	  <div id="layoutContainer"></div>
+		<div class="ui inverted menu">
+			<div class="header item">Septem Creator</div>
+			<div class="active item">Link</div>
+		</div>
+	  </div>
 	  
 	</div>
-	<div id="tree" class="demo" style="width: 100%; height: 100%;"></div>
+	<div id="tree" class="ui segment" style="width: 100%; height: 100%;"></div>
 
 <script>
 	// data from callback
 	$('#tree')
 		.on("changed.jstree", function (e, data) {
 			if(data.selected.length) {
+			findActiveTab(myLayout.root);
 				//console.log('The selected node is: ' + data.instance.get_node(data.selected[0]).text);
 				//console.log('The selected node is: ' + data.instance.get_node(data.selected[0]).id);
 			}
 		})
 		.jstree({
 		'conditionalselect' : function (node) {
-			return false; //<something that determines condition> ? true : false;
+			return true; //<something that determines condition> ? true : false;
 		},
 		'core' : {
 			"check_callback" : true,
@@ -285,12 +273,13 @@ html, body{
 				 //var saveButton = w2ui.layout.get('main').toolbar.get('savebtn');
 				 if( node.type === 'file')// && saveButton.disabled )
 				 {
-					console.log('Getting document from server..' + node.relative_path);
 					getDocumentContent(node);
 				 }
 			});
 	window.onbeforeunload = function() {
     return "Are you sure you want to leave?";
+	
+
 	}
     
 	});
@@ -301,12 +290,19 @@ html, body{
 		{
 			container.getElement().html( $('#tree') );
 		}
+		if( state.label === 'C' )
+		{
+			create_terminal_div("_debug");
+			container.getElement().html( $('#terminal_debug') );
+		}
+		
 		setTimeout(function(){
 			//console.log(container.parent.parent.header.controlsContainer);
 			container.parent.parent.header.controlsContainer.find( '.lm_maximise').hide();
 			container.parent.parent.header.controlsContainer.find( '.lm_close').hide();
 		//	debugger;
 		  }.bind(container));
+		
 	});
 
 
@@ -314,28 +310,6 @@ html, body{
 	
 
 
-	
-	var addMenuItem = function( title, text ) {
-		var element = $( '<li>' + text + '</li>' );
-		$( '#menuContainer' ).append( element );
-
-		var newItemConfig = {
-			title: title,
-			type: 'component',
-			componentName: 'testComponent',
-			componentState: { text: text }
-		};
-	  
-		element.click(function(){
-			console.log(myLayout.root);
-			myLayout.root.contentItems[ 0 ].contentItems[1].contentItems[0].addChild( newItemConfig );
-			
-			//var v = myLayout;//.root.contentItems[ 0 ].contentItems[1].contentItems[0];//.getItemsById("testID");
-			//console.log(v);
-			//v.container.getElement().html( $('#tree') );
-		});
-	};
-	
 	var findTab = function( layout, id ) {
 		for (i = 0; i < layout.contentItems.length; i++) { 
 			//stext += cars[i] + "<br>";
@@ -343,6 +317,30 @@ html, body{
 			if( items.length > 0 )
 				return items[0];
 			return findTab( layout.contentItems[i], id );
+		}
+	}
+	
+	var findActiveTab = function( layout ) {
+		for (i = 0; i < layout.contentItems.length; i++) { 
+			//stext += cars[i] + "<br>";
+			//var items = layout.contentItems[i].getItemsById( id );
+			//if( items.length > 0 )
+			//	return items[0];
+			//console.log(layout.contentItems[i]);
+			var sts = layout.contentItems[i].getItemsByType('stack');
+			for (j = 0; j < sts.length; j++) { 
+				//console.log(sts[j]);
+			}
+			
+			if( layout.contentItems[i].isStack=== true )
+			{
+				//console.log("stack!");
+				var v = layout.contentItems[i].getActiveContentItem();
+				//if( v )
+					//console.log(v);
+			}
+
+			//return findTab( layout.contentItems[i]);
 		}
 	}
 	
@@ -379,104 +377,47 @@ html, body{
 			 );
 			return;
 		}
-	//	var element = $( '<li>' + title + '</li>' );
-	//	$( '#src_editors' ).append( element );
-	
-	/*
-		var find_config = myLayout.root.contentItems[ 0 ].contentItems[1].contentItems[0];//.getItemsById('ace_'+node.id);//.addChild( newItemConfig );//myLayout.root.contentItems[ 0 ].contentItems[1].contentItems[0].getItemsById('ace_'+node.id);
-		if ( myLayout.root.contentItems[ 0 ].contentItems[1].contentItems[0].getItemsById('ace_'+node.id).length > 0 )
-		{
-			
-			var d1  = myLayout.root.contentItems[ 0 ].contentItems[1].contentItems[0].setActiveContentItem( 
-				myLayout.root.contentItems[ 0 ].contentItems[1].contentItems[0].getItemsById('ace_'+node.id)[0]
-			 );//.getItemsById('ace_'+node.id);//find_config[0]);
-			console.log(d1);
-			//d1[0].container.show();
-			//console.log(myLayout.root.contentItems[ 0 ].contentItems[1].contentItems[0]);
-			//console.log("Found an existing config for: "+node.data);
-			//find_config.config.activeItemIndex = 0;
-			return;
-		}
-		*/
-		//return;
-	
+
+
 
 		var newItemConfig = {
-			title: node.data,
+			title: node.text,
+			caption: node.data.relativePath,
 			type: 'component',
 			id : 'ace_'+node.id,
+			extid : node.id,
 			componentName: 'testComponent',
-			componentState: { text: node.data }
+			componentState: { text: node.text }
 		};
 		
 
-		//container.getElement().html( $('#tree') );
-	 
-	 
-			//console.log(myLayout.root.contentItems[ 0 ].contentItems[1].contentItems[0]);
-			//myLayout.root.contentItems[ 0 ].contentItems[1].addChild( new_stack );
-			//if( myLayout.root.contentItems[ 0 ].contentItems[1].contentItems[0] )
-			//var v;
+		var v;
+		var t = findSourceContainer( myLayout.root );
+		if( t )
+		{
+			//console.log("found a tab..");
+			t.addChild(newItemConfig);
+			v = t.getItemsById('ace_'+node.id);
+		}
+
+
+		if( v[0] )
+		{
+			create_ace_div(node.id, node);
+			var ace2 = document.getElementById('ace'+node.id);
+			var editor = ace.edit(ace2);
+			editor.setValue(src_obj.text, -1);
+			newItemConfig.componentState.editor = editor;
+			//console.log(node);
+			//console.log(src_obj);
 			
-			//if( myLayout.root.contentItems[ 0 ].contentItems[1].contentItems.length > 0 )
-			//{
-		//	console.log("ok");
-		//	console.log(myLayout.root.contentItems[ 0 ].contentItems[1]);
-		/*
-			if( myLayout.root.contentItems[ 0 ].contentItems[1].isStack === true )
-			{
-				myLayout.root.contentItems[ 0 ].contentItems[1].addChild( newItemConfig );
-				v = myLayout.root.contentItems[ 0 ].contentItems[1].getItemsById('ace_'+node.id);
-			}
-			else if( myLayout.root.contentItems[ 0 ].contentItems[1].contentItems.length == 1 )
-			{
-				myLayout.root.contentItems[ 0 ].contentItems[1].addChild( newItemConfig );
-				v = myLayout.root.contentItems[ 0 ].contentItems[1].getItemsById('ace_'+node.id);
-			}
-			else
-			{
-				myLayout.root.contentItems[ 0 ].contentItems[1].contentItems[0].addChild( newItemConfig );
-				//console.log(myLayout.root.contentItems[ 0 ].contentItems[1].contentItems[0]);
-				v = myLayout.root.contentItems[ 0 ].contentItems[1].contentItems[0].getItemsById('ace_'+node.id);//src_obj.data);
-			}
-			*/
-			var v;
-			var t = findSourceContainer( myLayout.root );
-			if( t )
-			{
-				//console.log("found a tab..");
-				t.addChild(newItemConfig);
-				v = t.getItemsById('ace_'+node.id);
-			}
-
-			//}
-			//else
-			//{
-			//	myLayout.root.contentItems[ 0 ].contentItems[1].addChild( newItemConfig );
-			//	v = myLayout.root.contentItems[ 0 ].contentItems[1].getItemsById('ace_'+node.id);//src_obj.data);
-			//}
-			////else
-				//myLayout.root.contentItems[ 0 ].contentItems[1].addChild( newItemConfig );
-		//setTimeout(function(){
+			//var new_ace = $('#ace'+node.id);
+			//var ace2 = document.getElementById('ace'+node.id);
+			v[0].container.getElement().html( ace2 );//$('#ace'+node.id) );//$('#tree') );
 			
-			if( v[0] )
-			{
-		
-				console.log(node);
-				console.log(src_obj);
-				create_ace_div(node.id);
-				//var new_ace = $('#ace'+node.id);
-				var ace2 = document.getElementById('ace'+node.id);
-				v[0].container.getElement().html( ace2 );//$('#ace'+node.id) );//$('#tree') );
-				
-				
-				var editor = ace.edit(ace2);
-				editor.setValue(src_obj.text, -1);
-			}
-		 // }.bind(node, src_obj));
+			
 
-
-			//console.log(v);
+		}
 
 	};
 	myLayout.on( 'tabCreated', function( tab ){
@@ -485,20 +426,92 @@ html, body{
 		.off( 'click' ) //unbind the current click handler
 		.click(function(){
 			//add your own
-			if( confirm( 'really close this?' ) ) {
+			console.log(tab);
+			var ace2 = document.getElementById('ace'+tab.contentItem.config.extid);
+			var editor = ace.edit(ace2);
+			if( !editor.session.getUndoManager().isClean() )
+			{
+				if( confirm( 'Close this window?\r\nWarning, unsaved changes will be lost.' ) ) 
+					tab.contentItem.remove();
+			}
+			else
+			{
 				tab.contentItem.remove();
 			}
 		});
+		
+		myLayout.on( 'stackCreated', function( stack ){
+
+			/*
+			 * Listening for activeContentItemChanged. This happens initially
+			 * when the stack is created and everytime the user clicks a tab
+			 */
+			stack.on( 'activeContentItemChanged', function( contentItem ){
+				console.log(contentItem);
+				// interact with the contentItem
+			});
+
+			/*
+			 * Accessing the container and updating its state
+			 */
+			//stack.getActiveContentItem().container.extendState({color: '#faa'});
+		});
 	});
-	function create_ace_div(id)
+	
+	
+	function create_terminal_div(id)
+	{
+	
+		var iDiv = document.getElementById('terminals');
+
+		var terminalDiv = document.createElement('div');
+		terminalDiv.id = 'terminal'+id;
+		terminalDiv.position = 'absolute';
+		terminalDiv.display = 'block';
+		terminalDiv.top = 0;
+		terminalDiv.bottom = 0;
+		terminalDiv.left = 0;
+		terminalDiv.right = 0;
+		terminalDiv.style = "height: 100%; width: 100%";
+		terminalDiv.className = 'block';
+		terminalDiv.visibility = 'visible';
+
+		iDiv.appendChild(terminalDiv);
+		
+		$('#terminal'+id).terminal(function(command, term) 
+		{
+			if (command == 'help') 
+			{
+				//term.echo("available commands are mysql, js, test");
+			}   
+			else 
+			{
+				term.echo("unknown command " + command);
+			}
+		}, 
+		{
+			greetings: "Septem Creator Debugger (c) 2017 Kenneth Thompson",
+			enabled: false,
+			onBlur: function() 
+			{
+				// prevent loosing focus
+				return false;
+			}
+		});
+		
+	}
+
+	function print_to_debug_terminal(text)
+	{
+		$('#terminal_debug').terminal().echo(text);
+		//$('#terminal').terminal().enabled = false;
+
+	}
+
+	function create_ace_div(id, node)
 	{
 
-		var iDiv = document.createElement('div');
-		iDiv.id = 'editors';
-		iDiv.className = 'editors';
-		document.getElementsByTagName('body')[0].appendChild(iDiv);
-
-
+		var iDiv = document.getElementById('editors');
 		console.log("creating ace div for id: "+id);
 
 		var aceDiv = document.createElement('div');
@@ -512,21 +525,77 @@ html, body{
 		aceDiv.style = "height: 100%; width: 100%";
 		aceDiv.className = 'block';
 		aceDiv.visibility = 'visible';
+		aceDiv.filename = node.data.relativePath;
 
 		iDiv.appendChild(aceDiv);
 		var editor = ace.edit(aceDiv);
 		editor.setTheme("ace/theme/tomorrow_night");
 		editor.getSession().setMode("ace/mode/lua");
-		
-		
-		editor.on("input", function() {
+		//editor.id = 0;
+		editor.commands.addCommand({
+        name: "showKeyboardShortcuts",
+        bindKey: {win: "Ctrl-s", mac: "Command-s"},
+        exec: function(editor) {
+			
+			print_to_debug_terminal('Saving '+ aceDiv.filename );
+			var f = { source: editor.getValue(), relativePath: aceDiv.filename };
+			
+			//function login_click() {
+	
+				setTimeout(function(){
+					$('#tree').addClass("active");
+					//$("#ace"+id).removeClass("active");
+				},3000);
+			//}
+			
+			post_json_save( 'http://127.0.0.1:8090/save', f);
+           // ace.config.loadModule("ace/ext/keybinding_menu", function(module) {
+          //      module.init(editor);
+          //      editor.showKeyboardShortcuts()
+          // })
+        }
+		})
+    //editor.execCommand("showKeyboardShortcuts")
+	
+		editor.getSession().on('change', function(e) {
+    // e.type, etc
+			//console.log(e);
 		});
 
+		editor.getSession().selection.on('changeSelection', function(e, ed) {
+			//console.log(aceDiv.id);
+			//console.log(ed);
+			//console.log(aceDiv);
+			//console.log(aceDiv);
+		});
+		editor.on("input", function() {
+			
+			//if( !editor.session.getUndoManager().isClean() )
+			//{
+				//console.log("input!");
+				//tab = findTab( myLayout.root,  'ace_'+id);
+				//tab.config.title = tab.config.title;
+				//console.log(tab);
+			//}
+		});
+		//return aceDiv;
 	}
 	
 	function getDocumentContent( node )
 	{
-		make_json_request('http://127.0.0.1:8090/' + node.data, loadDocument, node);
+		tab = findTab( myLayout.root,  'ace_'+node.id);
+		if( tab )
+		{
+			var d1  = findSourceContainer( myLayout.root).setActiveContentItem( 
+				tab
+			 );
+			 
+			return;
+		}
+
+		console.log('Getting document from server..' + node.data.relativePath);
+		print_to_debug_terminal('Getting document from server..' + node.data.relativePath);
+		make_json_request('http://127.0.0.1:8090/' + node.data.relativePath, loadDocument, node);
 	}
 
 	function make_json_request(theUrl, cb, tag)
@@ -538,13 +607,44 @@ html, body{
 			if (xmlHttp.readyState == 4 && xmlHttp.status == 200)
 			{
 				eval("var x = " + xmlHttp.responseText + ";");
-				console.log(x);
 				cb( x, tag );
 			}
 		}
 		xmlHttp.open("GET", theUrl, true); // true for asynchronous 
 		xmlHttp.send(null);
 	}
+	
+	function post_json_save(theUrl, file)
+	{
+		var xmlHttp = new XMLHttpRequest();
+
+		xmlHttp.onreadystatechange = function() { 
+
+			if (xmlHttp.readyState == 4 && xmlHttp.status == 200)
+			{
+				//eval("var x = " + xmlHttp.responseText + ";");
+				//cb( x, tag );
+				print_to_debug_terminal("Save successful: " + file.relativePath);
+			}
+			else if( xmlHttp.status == 400 )
+			{
+				print_to_debug_terminal("Error during save: " + xmlHttp.responseText);
+			}
+		}
+		print_to_debug_terminal("Sending file for save.."+theUrl);
+		xmlHttp.open("POST", theUrl, true);
+		xmlHttp.setRequestHeader("Content-Type", "application/json");
+		
+		xmlHttp.send(JSON.stringify({relativePath: file.relativePath, source:file.source}));	
+		
+
+
+
+	}
+	
+
+
+   
 	
 	function loadDocument( src, node )
 	{
@@ -554,44 +654,10 @@ html, body{
 		//console.log(v);
 	}
 	
-	function create_ace_div(id)
-	{
-		var iDiv = document.createElement('div');
-		iDiv.id = 'editors';
-		iDiv.className = 'editors';
-		document.getElementsByTagName('body')[0].appendChild(iDiv);
+   $(window).resize(function(){
+		myLayout.updateSize();
+	})
 
-		console.log("creating ace div for id: "+id);
-		// Your existing code unmodified...
-		var aceDiv = document.createElement('div');
-		aceDiv.id = 'ace'+id;
-		aceDiv.position = 'absolute';
-		aceDiv.display = 'block';
-		aceDiv.top = 0;
-		aceDiv.bottom = 0;
-		aceDiv.left = 0;
-		aceDiv.right = 0;
-		aceDiv.style = "height: 100%; width: 100%";
-		//iDiv.id = 'block';
-		aceDiv.className = 'block';
-		aceDiv.visibility = 'visible';
-		//document.getElementsByTagName('body')[0].appendChild(aceDiv);
-		
-
-		// The variable iDiv is still good... Just append to it.
-		iDiv.appendChild(aceDiv);
-		//console.log(aceDiv);
-		var editor = ace.edit(aceDiv);
-		editor.setTheme("ace/theme/tomorrow_night");
-		editor.getSession().setMode("ace/mode/lua");
-		
-		
-		editor.on("input", function() {
-			//btn.disabled = editor.session.getUndoManager().isClean()
-			//w2ui.layout.get('main').toolbar.refresh();
-		});
-
-	}
 
 
 </script>
