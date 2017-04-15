@@ -17,7 +17,7 @@
 		 z-index:999 !important; 
 	} 
 	</style>
-	
+<script type="text/javascript" src="bootbox/bootbox.js"></script>
 <script type="text/javascript" src="//golden-layout.com/files/latest/js/goldenlayout.min.js"></script>
 <link type="text/css" rel="stylesheet" href="//golden-layout.com/files/latest/css/goldenlayout-base.css" />
 <link type="text/css" rel="stylesheet" href="//golden-layout.com/files/latest/css/goldenlayout-dark-theme.css" />
@@ -48,7 +48,7 @@
   <link rel="stylesheet" type="text/css" href="Semantic-UI/dist/components/popup.css">
 
   <script src="Semantic-UI/examples/assets/library/iframe-content.js"></script>
-  <script src="Semantic-UI/examples/assets/show-examples.js"></script>
+
   <script type="text/javascript" src="Semantic-UI/dist/components/popup.js"></script>
 
   <!--- Component JS -->
@@ -60,6 +60,15 @@
   <script src="jquery.terminal/js/jquery.terminal.min.js"></script>
   <link href="jquery.terminal/css/jquery.terminal.css" rel="stylesheet"/>
 
+  <!-- Latest compiled and minified CSS -->
+<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+<!-- Optional theme -->
+<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+
+<!-- Latest compiled and minified JavaScript -->
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+  
 <style>
 
 h2{
@@ -129,35 +138,15 @@ html, body{
   .ui.menu:last-child {
     margin-bottom: 0px;
   }
+
   </style>
 
 </style>
-  <!--- Example Javascript -->
-  <script>
-  $(document)
-    .ready(function() {
-      $('.ui.menu .ui.dropdown').dropdown({
-        on: 'hover'
-      });
-      $('.ui.menu a.item')
-        .on('click', function() {
-          $(this)
-            .addClass('active')
-            .siblings()
-            .removeClass('active')
-          ;
-        })
-      ;
-    })
-  ;
-  </script>
+
   
 
 </head>
 <body>
-
-
-
 	<div id="editors">
 	</div>
 	<div id="terminals">
@@ -165,14 +154,38 @@ html, body{
 	<div id="wrapper">
 	  <div id="layoutContainer">
 	  
-		<div class="ui inverted menu">
+		<div class="ui inverted menu" data-inverted>
 			<div class="header item">Septem Creator</div>
-			<div class="active item">Link</div>
+			<div id="btnSave" class="inverted ui button" data-value="easy">Save</div>
 		</div>
 	  </div>
 	  
 	</div>
 	<div id="tree" class="ui segment" style="width: 100%; height: 100%;"></div>
+	
+<!--- Example Javascript -->
+  <script>
+  $(document)
+  	.on("click", ".ui.button", function () {
+	print_to_debug_terminal("click");
+    switch ($(this).data("value")) {
+    case 'easy':
+       // $("#result").html("easy");
+       // $(".ui.modal").modal("hide");
+        break;
+    case 'normal':
+        //$("#result").html("normal");
+        //$(".ui.modal").modal("hide");
+        break;
+    case 'hard':
+       // $("#result").html("hard");
+       // $(".ui.modal").modal("hide");
+        break;
+    }
+	});
+  
+
+  </script>
 
 <script>
 	// data from callback
@@ -188,8 +201,44 @@ html, body{
 		'conditionalselect' : function (node) {
 			return true; //<something that determines condition> ? true : false;
 		},
+
 		'core' : {
-			"check_callback" : true,
+			'check_callback' : function (operation, node, node_parent, node_position, more) {
+			//console.log(operation);
+			if( operation === 'move_node' )
+			{
+				//console.log(node_parent);
+				//console.log(more);
+				if( node.type == 'directory' )
+				{
+					return false;
+				}
+				else if( node_parent.type === "#" )
+				{
+					//console.log(node_parent);
+					if (more && more.core)
+						console.log("Dropping on root");
+					//moveSourceFiles( node, node_parent );
+					return true;
+				}
+				else if( node_parent.type != 'directory' )
+				{
+					//console.log("not a directory");
+					return false;
+				}
+				else
+				{
+					if (more && more.core)
+						return moveSourceFiles( node, node_parent );
+					return true;
+				}
+				//console.log(node_parent);
+			}
+			return false;
+            // operation can be 'create_node', 'rename_node', 'delete_node', 'move_node', 'copy_node' or 'edit'
+            // in case of 'rename_node' node_position is filled with the new node name
+            return operation === 'rename_node' ? true : false;
+			},
 			"themes": {
                 "name": "default-dark",
                 "dots": true,
@@ -206,9 +255,9 @@ html, body{
 			}
 			
 		},
-		'plugins' : ['contextmenu', 'types', 'conditionalselect'],
+		'plugins' : ['contextmenu', 'types', 'dnd', 'conditionalselect'],
 			'types' : {
-				'#' : { /* options */ },
+				'#' : { "max_children" : 1 },
 				'file' : { /* options */ },
 				'directory' : { /* options */ }
 				// etc...
@@ -275,13 +324,37 @@ html, body{
 				 {
 					getDocumentContent(node);
 				 }
-			});
+			}).on("click", ".ui.button", function () {
+			switch ($(this).data("value")) {
+			case 'easy':
+				print_to_debug_terminal('easy');
+				//$("#result").html("easy");
+				//$(".ui.modal").modal("hide");
+				break;
+			case 'normal':
+				//$("#result").html("normal");
+				//$(".ui.modal").modal("hide");
+				break;
+			case 'hard':
+				//$("#result").html("hard");
+				//$(".ui.modal").modal("hide");
+				break;
+			}
+	});
 	window.onbeforeunload = function() {
     return "Are you sure you want to leave?";
 	
 
 	}
-    
+	
+		$.keepalive =     
+			setInterval(function() {
+			   $.ajax({
+				  url: '/ping.html',
+				  cache: false
+			   });         
+			}, 60000);    
+
 	});
 	//var myLayout = new GoldenLayout( config );
 	var myLayout = new window.GoldenLayout( config, $('#layoutContainer') );
@@ -426,7 +499,7 @@ html, body{
 		.off( 'click' ) //unbind the current click handler
 		.click(function(){
 			//add your own
-			console.log(tab);
+			//console.log(tab);
 			var ace2 = document.getElementById('ace'+tab.contentItem.config.extid);
 			var editor = ace.edit(ace2);
 			if( !editor.session.getUndoManager().isClean() )
@@ -447,8 +520,20 @@ html, body{
 			 * when the stack is created and everytime the user clicks a tab
 			 */
 			stack.on( 'activeContentItemChanged', function( contentItem ){
-				console.log(contentItem);
+				//console.log(contentItem);
 				// interact with the contentItem
+				var ace2 = document.getElementById('ace'+tab.contentItem.config.extid);
+				var editor = ace.edit(ace2);
+				//var sav = document.getElementById('btnSave');
+				//sav.setAttribute("disabled");
+				$('#btnSave').attr('disabled','');
+							/*
+							var btn = w2ui.layout.get('main').toolbar.get('savebtn');
+							var editor = ace.edit("ace_editor");
+							editor.session.getUndoManager().markClean();
+							btn.disabled = editor.session.getUndoManager().isClean()
+							w2ui.layout.get('main').toolbar.refresh();
+							*/
 			});
 
 			/*
@@ -540,13 +625,6 @@ html, body{
 			print_to_debug_terminal('Saving '+ aceDiv.filename );
 			var f = { source: editor.getValue(), relativePath: aceDiv.filename };
 			
-			//function login_click() {
-	
-				setTimeout(function(){
-					$('#tree').addClass("active");
-					//$("#ace"+id).removeClass("active");
-				},3000);
-			//}
 			
 			post_json_save( 'http://127.0.0.1:8090/save', f);
            // ace.config.loadModule("ace/ext/keybinding_menu", function(module) {
@@ -581,6 +659,26 @@ html, body{
 		//return aceDiv;
 	}
 	
+	function moveSourceFiles( node_orig, node_target )
+	{
+
+		tab = findTab( myLayout.root,  'ace_'+node_orig.id);
+		if( tab )
+		{
+				bootbox.alert({
+				message: "Please save changes and close the file before attempting to move it."
+			});
+			//var d1  = findSourceContainer( myLayout.root).setActiveContentItem( 
+			//	tab
+			// );
+			 
+			//return;
+			
+			return false;
+		}
+		return true;
+	}
+	
 	function getDocumentContent( node )
 	{
 		tab = findTab( myLayout.root,  'ace_'+node.id);
@@ -601,6 +699,7 @@ html, body{
 	function make_json_request(theUrl, cb, tag)
 	{
 		var xmlHttp = new XMLHttpRequest();
+		
 
 		xmlHttp.onreadystatechange = function() { 
 
@@ -611,6 +710,7 @@ html, body{
 			}
 		}
 		xmlHttp.open("GET", theUrl, true); // true for asynchronous 
+		
 		xmlHttp.send(null);
 	}
 	
@@ -625,16 +725,25 @@ html, body{
 				//eval("var x = " + xmlHttp.responseText + ";");
 				//cb( x, tag );
 				print_to_debug_terminal("Save successful: " + file.relativePath);
+				dialog.modal('hide');
 			}
 			else if( xmlHttp.status == 400 )
 			{
 				print_to_debug_terminal("Error during save: " + xmlHttp.responseText);
+				dialog.modal('hide');
 			}
 		}
 		print_to_debug_terminal("Sending file for save.."+theUrl);
+		
+		var dialog = bootbox.dialog({
+		message: '<p class="text-center">Saving file...</p>',
+		closeButton: false
+		});
+		
 		xmlHttp.open("POST", theUrl, true);
 		xmlHttp.setRequestHeader("Content-Type", "application/json");
-		
+		//xmlHttp.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+		print_to_debug_terminal(file.source);
 		xmlHttp.send(JSON.stringify({relativePath: file.relativePath, source:file.source}));	
 		
 

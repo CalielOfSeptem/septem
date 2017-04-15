@@ -44,6 +44,31 @@ void default_resource_send(const HttpServer &server, const shared_ptr<HttpServer
 		bool is_directory;
 		std::vector<element> my_children;
 	};
+    
+    string unescape(const string& s)
+    {
+      string res;
+      string::const_iterator it = s.begin();
+      while (it != s.end())
+      {
+        char c = *it++;
+        if (c == '\\' && it != s.end())
+        {
+          switch (*it++) {
+          case '\\': c = '\\'; break;
+          case 'n': c = '\n'; break;
+          case 't': c = '\t'; break;
+          // all other escapes
+          default: 
+            // invalid escape sequence - skip it. alternatively you can copy it as is, throw an exception...
+            continue;
+          }
+        }
+        res += c;
+      }
+
+      return res;
+    }
 
 //[{"text" : "Root", "id" : "1", "children" : true}]
 
@@ -195,8 +220,31 @@ int start_serv(int port) {
         try {
             json j;
             j << request->content;
-            std::string l = j.dump();
-            cout << l << endl;
+           // cout << j["relativePath"];
+            
+            std::string path_to_save = DEFAULT_GAME_DATA_PATH;
+            path_to_save += j["relativePath"];
+         
+            cout << "Saving file: " << path_to_save << endl;
+            
+           // std::string l = j.dump(4);
+            //cout << l << endl;
+            
+            //std::string input;
+            //std::cin >> input;
+            std::string source = unescape(j["source"]);
+            cout << source << endl;
+            std::ofstream out(path_to_save);
+            if (out)
+            {
+                out << source;
+                out.close();
+            }
+            else
+            {
+                cout << "Error attempting to save file: " << path_to_save << endl;
+            }
+
            // ptree pt;
            // read_json(request->content, pt);
 
@@ -214,13 +262,36 @@ int start_serv(int port) {
 
     server.resource["^/save$"]["OPTIONS"]=[](shared_ptr<HttpServer::Response> response, shared_ptr<HttpServer::Request> request) {
         try {
-
+            /*
+            auto content=request->content.string();
+            cout << content << endl;
           cout << "Providing options.." << endl;
+          
+        stringstream content_stream;
+       // content_stream << "<h1>Request from " << request->remote_endpoint_address << " (" << request->remote_endpoint_port << ")</h1>";
+        content_stream << "HTTP/" << request->http_version << " 200 OK\r\n";
+        for(auto& header: request->header) {
+            content_stream << header.first << ": " << header.second << "\r\n";
+        }
+        
+        //find length of content_stream (length received using content_stream.tellp())
+        content_stream.seekp(0, ios::end);
+        std::string t = content_stream.str();
+        cout << t << endl;
+        
+        //*response <<  content_stream.rdbuf();//content_stream.tellp();//"HTTP/1.1 200 OK\r\nContent-Length: " << content_stream.tellp() << "\r\n\r\n" << content_stream.rdbuf();
+        */
             *response << "HTTP/1.1 200 OK\r\n"
                       << "Date: Mon, 01 Dec 2008 01:15:39 GMT\r\n"
                       << "Access-Control-Allow-Origin: *\r\n"
                       << "Access-Control-Allow-Methods: POST, GET, OPTIONS\r\n"
-                      << "Access-Control-Allow-Headers: Content-Type\r\n";
+                      << "Access-Control-Allow-Headers: Content-Type\r\n"
+                      << "Accept-Encoding: *\r\n"
+                      << "Accept-Language: *\r\n"
+                      << "Accept\r\n"
+                      << "Cache-Control:public, max-age=31536000\r\n"
+                      << "Access-Control-Max-Age: 31536000\r\n"
+                      << "Content-Length: 0\r\n";
 
         }
         catch(exception& e) {
@@ -258,9 +329,6 @@ int start_serv(int port) {
     cout << "Servicing request.." << endl;
    // cout << test;
         *response << "HTTP/1.1 200 OK\r\nAccess-Control-Allow-Origin: *\r\n"
-         << "Content-Type: application/json\r\n"
-        << "Access-Control-Allow-Methods: POST, GET, OPTIONS\r\n"
-        << "Access-Control-Allow-Headers: Content-Type\r\n"
         << "Content-Length: " << test.length() << "\r\n\r\n" << test;
     };
     
@@ -321,6 +389,7 @@ int start_serv(int port) {
     //Can for instance be used to retrieve an HTML 5 client that uses REST-resources on this server
     server.default_resource["GET"]=[&server](shared_ptr<HttpServer::Response> response, shared_ptr<HttpServer::Request> request) {
         try {
+            cout << "Servicing request.." << endl;
             auto web_root_path=boost::filesystem::canonical(DEFAULT_GAME_DATA_PATH);
             auto path=boost::filesystem::canonical(web_root_path/request->path);
             //Check if path is within web_root_path
@@ -373,11 +442,12 @@ int start_serv(int port) {
                 //ifs->seekg(0, ios::beg);
                     std::string test = jresp.dump(4); 
                 cout << test << std::endl;
-                cout << "Servicing request.." << endl;
+                cout << "Sending response.." << endl;
                 *response << "HTTP/1.1 200 OK\r\nAccess-Control-Allow-Origin: *\r\nContent-Length: " << test.length() << "\r\n\r\n" << test;
                 //};
                // *response << "HTTP/1.1 200 OK\r\nAccess-Control-Allow-Origin: *\r\n" << cache_control << etag << "Content-Length: " << length << "\r\n\r\n";
                 default_resource_send(server, response, ifs);
+                cout << "Done." << endl;
             }
             else
                 throw invalid_argument("could not read file");
