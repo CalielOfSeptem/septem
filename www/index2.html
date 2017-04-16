@@ -234,10 +234,10 @@ html, body{
 				}
 				//console.log(node_parent);
 			}
-			return false;
+			//return false;
             // operation can be 'create_node', 'rename_node', 'delete_node', 'move_node', 'copy_node' or 'edit'
             // in case of 'rename_node' node_position is filled with the new node name
-            return operation === 'rename_node' ? true : false;
+            return true;// === 'create_node' ? true : false;
 			},
 			"themes": {
                 "name": "default-dark",
@@ -255,15 +255,15 @@ html, body{
 			}
 			
 		},
-		'plugins' : ['contextmenu', 'types', 'dnd', 'conditionalselect'],
+		'plugins' : ['contextmenu', 'types', 'dnd', 'conditionalselect', 'state'],
 			'types' : {
 				'#' : { "max_children" : 1 },
-				'file' : { /* options */ },
-				'directory' : { /* options */ }
+				'file' : { "icon" : "jstree-file" },
+				'directory' : { "icon" : "jstree-directory" }
 				// etc...
 			},
 			'contextmenu' : {
-                    "items": ''
+                    "items": customMenu
 					}
 	});
 
@@ -745,13 +745,22 @@ html, body{
 		//xmlHttp.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
 		print_to_debug_terminal(file.source);
 		xmlHttp.send(JSON.stringify({relativePath: file.relativePath, source:file.source}));	
-		
-
-
-
 	}
 	
+	// jstree conditional select node
+	(function ($, undefined) {
+	  "use strict";
+	  $.jstree.defaults.conditionalselect = function () { return true; };
 
+	  $.jstree.plugins.conditionalselect = function (options, parent) {
+		// own function
+		this.select_node = function (obj, supress_event, prevent_open) {
+		  if(this.settings.conditionalselect.call(this, this.get_node(obj))) {
+			parent.select_node.call(this, obj, supress_event, prevent_open);
+		  }
+		};
+	  };
+	})(jQuery);
 
    
 	
@@ -767,7 +776,193 @@ html, body{
 		myLayout.updateSize();
 	})
 
+	function guid() {
+	  function s4() {
+		return Math.floor((1 + Math.random()) * 0x10000)
+		  .toString(16)
+		  .substring(1);
+	  }
+	  return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
+		s4() + '-' + s4() + s4() + s4();
+	}
 
+	function customMenu(node)
+	{
+		/*
+		var items = {
+			'itemCopy' : {
+               "separator_before": false,
+                "separator_after": false,
+                "label": "Copy",
+                "action": function (obj) { 
+                    $node2 = $("#clbk").jstree('create_node', $node2);
+                    $("#clbk").jstree('edit', $node2);
+                }
+			},
+			'itemAdd' : {
+               "separator_before": false,
+                "separator_after": false,
+                "label": "Add new",
+                "action": function (obj) { 
+                    $node2 = $("#clbk").jstree('create_node', $node2);
+                    $("#clbk").jstree('edit', $node2);
+                }
+			},
+			'itemDelete' : {
+				'label' : 'Delete',
+				'action' : function () {  }
+			}
+		}
+		*/
+		var items = { // Could be a function that should return an object like this one
+            "create" : {
+                "separator_before"  : false,
+                "separator_after"   : true,
+                "label"             : "Create",
+                "action"            : false,
+                "submenu" :{
+                    "create_file" : {
+                        "seperator_before" : false,
+                        "seperator_after" : false,
+                        "label" : "File",
+                        action : function (obj) {
+							var id = jQuery("#tree").jstree("get_selected");
+						// TODO: add logic to prevent a new file having the name of an existing file!!
+						
+							//var node = $('#tree').jstree(true).get_node(id);
+							//createNewNode( node );
+							//$("#tree").jstree("create", $("#somenode"), "inside", { "data":"new_node" }, false, true);
+						//	var CurrentNode = jQuery("#tree").jstree("get_selected");
+						//	var id = $("#tree").jstree('create_node', CurrentNode, '1', 'last');
+						bootbox.prompt("Please enter a file name:", function(result)
+						{ 
+							//console.log(result); 
+							if( result )
+							{
+								var g = guid();
+								$('#tree').jstree().create_node(id, {id: g, text: result, type: 'file'}, 'last', function() {
+										//console.log(v);
+
+									});
+								var node = $('#tree').jstree(true).get_node(g);
+								$('#tree').jstree(true).select_node(node.id);
+								//console.log(node);
+							}
+						});
+						
+
+					
+
+                        }
+                    },
+                    "create_folder" : {
+                        "seperator_before" : false,
+                        "seperator_after" : false,
+                        "label" : "Folder",
+                        action : function (obj) { 
+						//this.create(obj); 
+						}
+                    }
+                }
+            },
+			"edit" : {
+                "separator_before"  : false,
+                "separator_after"   : true,
+                "label"             : "Edit",
+                "action"            : false,
+                "submenu" :{
+                    "copy_node" : {
+                        "seperator_before" : false,
+                        "seperator_after" : false,
+                        "label" : "Copy",
+                        action : function (obj) {
+						//console.log(obj);
+                          //  this.create(obj);
+                        }
+                    },
+                    "paste_node" : {
+                        "seperator_before" : false,
+                        "seperator_after" : false,
+                        "label" : "Paste",
+                        action : function (obj) { 
+						//this.create(obj); 
+						}
+                    },
+					"delete_node" : {
+                        "seperator_before" : false,
+                        "seperator_after" : false,
+                        "label" : "Delete",
+                        action : function (obj) { 
+						//this.create(obj); 
+						}
+                    }
+                }
+            },
+			
+			"compile" : {
+                "separator_before"  : false,
+                "separator_after"   : true,
+                "label"             : "Compile",
+                action : function (obj) { 
+						//this.create(obj); 
+						}
+            }
+		}
+	
+		console.log(node.type);
+		if (node.parent === '#') {
+			delete items.edit;
+		} else if (node.type === 'file') {
+			delete items.edit.submenu.paste_node;
+			delete items.create;
+		} else if (node.type === 'directory') {
+			delete items.edit.submenu.copy_node;
+			delete items.compile;
+		}
+
+		return items;
+	}
+
+	
+	function createNewNode( parent )
+	{
+		//console.log(parent.data.relativePath);
+		//var json = JSON.stringify({op: 'create', source:file.source}));	
+		//console.log(src.text);
+		//loadSrcEditor( node, src );
+		//var v = myLayout.root.contentItems[ 0 ].contentItems[1].contentItems[0].getItemsById("myID");
+		//console.log(v);
+	}
+	function post_json_fs_cmd(theUrl, cmd)
+	{
+		var xmlHttp = new XMLHttpRequest();
+
+		xmlHttp.onreadystatechange = function() { 
+
+			if (xmlHttp.readyState == 4 && xmlHttp.status == 200)
+			{
+				print_to_debug_terminal("Save successful: " + file.relativePath);
+				dialog.modal('hide');
+			}
+			else if( xmlHttp.status == 400 )
+			{
+				print_to_debug_terminal("Error during save: " + xmlHttp.responseText);
+				dialog.modal('hide');
+			}
+		}
+		print_to_debug_terminal("Creating new node.."+theUrl);
+		
+		var dialog = bootbox.dialog({
+		message: '<p class="text-center">Creating new node...</p>',
+		closeButton: false
+		});
+		
+		xmlHttp.open("POST", theUrl, true);
+		xmlHttp.setRequestHeader("Content-Type", "application/json");
+		//xmlHttp.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+		print_to_debug_terminal(file.source);
+		xmlHttp.send(cmd);//  JSON.stringify({fileOperation: file.relativePath, source:file.source}));	
+	}
 
 </script>
 
