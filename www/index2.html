@@ -197,12 +197,22 @@ html, body{
 				//console.log('The selected node is: ' + data.instance.get_node(data.selected[0]).id);
 			}
 		})
+		.on("select_node.jstree",
+		 function(evt, data){
+		 		if( data.node.type === 'file')// && saveButton.disabled )
+				 {
+					//getDocumentContent(data.node);
+				 }
+			  //alert(data.node.text);
+		 }
+		)
 		.jstree({
 		'conditionalselect' : function (node) {
 			return true; //<something that determines condition> ? true : false;
 		},
 
 		'core' : {
+			'multiple' : false,
 			'check_callback' : function (operation, node, node_parent, node_position, more) {
 			//console.log(operation);
 			if( operation === 'move_node' )
@@ -234,6 +244,10 @@ html, body{
 				}
 				//console.log(node_parent);
 			}
+			if( operation == 'rename_node' )
+			{
+				return true;
+			}
 			//return false;
             // operation can be 'create_node', 'rename_node', 'delete_node', 'move_node', 'copy_node' or 'edit'
             // in case of 'rename_node' node_position is filled with the new node name
@@ -259,7 +273,7 @@ html, body{
 			'types' : {
 				'#' : { "max_children" : 1 },
 				'file' : { "icon" : "jstree-file" },
-				'directory' : { "icon" : "jstree-directory" }
+				'directory' : { "icon" : "jstree-folder" }
 				// etc...
 			},
 			'contextmenu' : {
@@ -318,8 +332,7 @@ html, body{
 		   $("#tree").on('dblclick','.jstree-anchor', function (e) {
 		   var instance = $.jstree.reference(this),
 				 node = instance.get_node(this);
-				 console.log(node);
-				 //var saveButton = w2ui.layout.get('main').toolbar.get('savebtn');
+				 //console.log(node);
 				 if( node.type === 'file')// && saveButton.disabled )
 				 {
 					getDocumentContent(node);
@@ -420,19 +433,19 @@ html, body{
 	var findSourceContainer = function( layout ) {
 			if( layout.contentItems[ 0 ].contentItems[1].isStack === true )
 			{
-				console.log("1");
+				//console.log("1");
 				//myLayout.root.contentItems[ 0 ].contentItems[1].addChild( newItemConfig );
 				return layout.contentItems[ 0 ].contentItems[1];//.getItemsById('ace_'+node.id);
 			}
 			else if( layout.contentItems[ 0 ].contentItems[1].contentItems.length == 1 ) // situation where the console is the only window open
 			{
-				console.log("2");
+				//console.log("2");
 				//myLayout.root.contentItems[ 0 ].contentItems[1].addChild( newItemConfig );
 				return layout.contentItems[ 0 ].contentItems[1];//getItemsById('ace_'+node.id);
 			}
 			else
 			{
-				console.log("3");
+				//console.log("3");
 				//myLayout.root.contentItems[ 0 ].contentItems[1].contentItems[0].addChild( newItemConfig );
 				//console.log(myLayout.root.contentItems[ 0 ].contentItems[1].contentItems[0]);
 				return layout.contentItems[ 0 ].contentItems[1].contentItems[0];//.getItemsById('ace_'+node.id);//src_obj.data);
@@ -481,13 +494,14 @@ html, body{
 			var editor = ace.edit(ace2);
 			editor.setValue(src_obj.text, -1);
 			newItemConfig.componentState.editor = editor;
+			
 			//console.log(node);
 			//console.log(src_obj);
 			
 			//var new_ace = $('#ace'+node.id);
 			//var ace2 = document.getElementById('ace'+node.id);
 			v[0].container.getElement().html( ace2 );//$('#ace'+node.id) );//$('#tree') );
-			
+			editor.session.getUndoManager().markClean()
 			
 
 		}
@@ -597,7 +611,7 @@ html, body{
 	{
 
 		var iDiv = document.getElementById('editors');
-		console.log("creating ace div for id: "+id);
+		//console.log("creating ace div for id: "+id);
 
 		var aceDiv = document.createElement('div');
 		aceDiv.id = 'ace'+id;
@@ -623,10 +637,14 @@ html, body{
         exec: function(editor) {
 			
 			print_to_debug_terminal('Saving '+ aceDiv.filename );
-			var f = { source: editor.getValue(), relativePath: aceDiv.filename };
+			var f = { source: editor.getValue(), relativePath: aceDiv.filename, create:false };
 			
 			
-			post_json_save( 'http://127.0.0.1:8090/save', f);
+			post_json_save( 'http://127.0.0.1:8090/save', f, function(file, resp)
+			{
+				//nothing to do.
+			}
+			);
            // ace.config.loadModule("ace/ext/keybinding_menu", function(module) {
           //      module.init(editor);
           //      editor.showKeyboardShortcuts()
@@ -714,7 +732,7 @@ html, body{
 		xmlHttp.send(null);
 	}
 	
-	function post_json_save(theUrl, file)
+	function post_json_save(theUrl, file, cb)
 	{
 		var xmlHttp = new XMLHttpRequest();
 
@@ -722,18 +740,23 @@ html, body{
 
 			if (xmlHttp.readyState == 4 && xmlHttp.status == 200)
 			{
-				//eval("var x = " + xmlHttp.responseText + ";");
+				eval("var x = " + xmlHttp.responseText + ";");
 				//cb( x, tag );
-				print_to_debug_terminal("Save successful: " + file.relativePath);
 				dialog.modal('hide');
+				print_to_debug_terminal("Save successful: " + file.relativePath);
+				
+				cb(file, x);
+				
 			}
-			else if( xmlHttp.status == 400 )
+			else if( xmlHttp.status == 400 && xmlHttp.readyState == 4 )
 			{
 				print_to_debug_terminal("Error during save: " + xmlHttp.responseText);
 				dialog.modal('hide');
+				bootbox.alert("Error during save: " + xmlHttp.responseText);
+				cb();
 			}
 		}
-		print_to_debug_terminal("Sending file for save.."+theUrl);
+		//print_to_debug_terminal("Sending file for save.."+theUrl);
 		
 		var dialog = bootbox.dialog({
 		message: '<p class="text-center">Saving file...</p>',
@@ -743,8 +766,8 @@ html, body{
 		xmlHttp.open("POST", theUrl, true);
 		xmlHttp.setRequestHeader("Content-Type", "application/json");
 		//xmlHttp.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
-		print_to_debug_terminal(file.source);
-		xmlHttp.send(JSON.stringify({relativePath: file.relativePath, source:file.source}));	
+		//print_to_debug_terminal(file.source);
+		xmlHttp.send(JSON.stringify({relativePath: file.relativePath, source:file.source, create: file.create}));	
 	}
 	
 	// jstree conditional select node
@@ -788,6 +811,8 @@ html, body{
 
 	function customMenu(node)
 	{
+	    var tree = $('#tree').jstree(true);
+        var ID = $(node).attr('id');
 		/*
 		var items = {
 			'itemCopy' : {
@@ -826,10 +851,10 @@ html, body{
                         "seperator_after" : false,
                         "label" : "File",
                         action : function (obj) {
-							var id = jQuery("#tree").jstree("get_selected");
+						var id = jQuery("#tree").jstree("get_selected");
 						// TODO: add logic to prevent a new file having the name of an existing file!!
 						
-							//var node = $('#tree').jstree(true).get_node(id);
+							var node = $('#tree').jstree(true).get_node(id);
 							//createNewNode( node );
 							//$("#tree").jstree("create", $("#somenode"), "inside", { "data":"new_node" }, false, true);
 						//	var CurrentNode = jQuery("#tree").jstree("get_selected");
@@ -839,13 +864,33 @@ html, body{
 							//console.log(result); 
 							if( result )
 							{
-								var g = guid();
-								$('#tree').jstree().create_node(id, {id: g, text: result, type: 'file'}, 'last', function() {
+								//console.log("Relative path of parent: " + node.data.relativePath );
+								//return;
+								//var g = guid();
+								var p = node.data.relativePath + "/" + result;
+								print_to_debug_terminal('Saving '+  p);
+								var f = { source: "", relativePath: p, create: true };
+								post_json_save( 'http://127.0.0.1:8090/save', f, function(file, resp)
+								{
+									if( resp )
+									{
+										$('#tree').jstree().create_node(id, {id: resp.id, text: result, type: 'file'}, 'last', function() {
 										//console.log(v);
 
-									});
-								var node = $('#tree').jstree(true).get_node(g);
-								$('#tree').jstree(true).select_node(node.id);
+										});
+										var node = $('#tree').jstree(true).get_node(resp.id);
+										node.data = { relativePath: p};
+										$('#tree').jstree(true).deselect_all();
+										$('#tree').jstree(true).select_node(resp.id);
+									}
+									else
+									{
+										
+									}
+									//nothing to do.
+								}
+								);
+
 								//console.log(node);
 							}
 						});
@@ -861,6 +906,52 @@ html, body{
                         "label" : "Folder",
                         action : function (obj) { 
 						//this.create(obj); 
+							
+							var id = jQuery("#tree").jstree("get_selected");
+
+							var node = $('#tree').jstree(true).get_node(id);
+
+							bootbox.prompt("Please enter a directory name:", function(result)
+							{ 
+								//console.log(result); 
+								if( result )
+								{
+									var specialChars = /[!@#$%^&*()+\-=\[\]{};':"\\|,.<>\/?]/gi;
+									var res = result.trim();
+									var allfound = res.match(specialChars);
+									//var count = (temp.match(///g) || []).length;
+									if( allfound )
+									{
+										bootbox.alert("Special characters are not allowed.");
+										return;
+									}
+									var p = node.data.relativePath + "/" + res;
+									print_to_debug_terminal('Creating directory '+  p);
+									
+									
+									var f = { fileA: p, fileB: "", op: "mkdir", relativePath: node.data.relativePath };
+									post_json_fs_cmd( 'http://127.0.0.1:8090/fs', f, function(file, resp)
+									{
+										if( resp )
+										{
+											$('#tree').jstree().create_node(id, {id: resp.id, text: result, type: 'directory'}, 'last', function() {
+											//console.log(v);
+
+											});
+											var node = $('#tree').jstree(true).get_node(resp.id);
+											node.data = { relativePath: p};
+											$('#tree').jstree(true).deselect_all();
+											$('#tree').jstree(true).select_node(resp.id);
+										}
+										else
+										{
+											console.log("No response from server for node: " + node.id);
+											//nothing to do, fail.
+										}
+										
+									});
+								}
+							});
 						}
                     }
                 }
@@ -893,7 +984,126 @@ html, body{
                         "seperator_after" : false,
                         "label" : "Delete",
                         action : function (obj) { 
+							//tree.delete_node([node]);
 						//this.create(obj); 
+							
+							
+							bootbox.confirm({
+									message: "This operation cannot be undone.  Delete this node permanently?",
+									buttons: {
+										confirm: {
+											label: 'Yes',
+											className: 'btn-danger'
+										},
+										cancel: {
+											label: 'No',
+											className: 'btn-success'
+										}
+									},
+									callback: function (result) {
+										//console.log('This was logged in the callback: ' + result);
+										if( !result )
+										{
+											return;
+										}
+										var f = { fileA: node.text, fileB: "", op: "rm", relativePath: node.data.relativePath };
+										post_json_fs_cmd( 'http://127.0.0.1:8090/fs', f, function(file, resp)
+										{
+											if( resp )
+											{
+												var tab = findTab( myLayout.root,  'ace_'+node.id);
+												if(tab) 
+													tab.container.close();
+												tree.delete_node([node]);
+												//tab.setActive(false);
+												
+											}
+											else
+											{
+												console.log("No response from server for node: " + node.id);
+												//nothing to do, fail.
+											}
+											
+										});
+									}
+							});
+							//console.log("Looking for " + node.id);
+							
+								
+
+						}
+                    },
+					"rename_node" : {
+                        "seperator_before" : false,
+                        "seperator_after" : false,
+                        "label" : "Rename",
+                        action : function (obj) { 
+							var id = jQuery("#tree").jstree("get_selected");
+							var node = $('#tree').jstree(true).get_node(id);
+							//console.log(node);
+						bootbox.prompt({
+						  title: "Enter a new file name:",
+						  value: node.text,
+						  callback: function(result) {
+							if( result && result != node.text )
+							{
+								//var temp = "This is a string.";
+								var specialChars = /[!@#$%^&*()+\-=\[\]{};':"\\|,.<>\/?]/gi;
+								var res = result.trim();
+								var allfound = res.match(specialChars);
+								//var count = (temp.match(///g) || []).length;
+								if( allfound )
+								{
+								
+									bootbox.alert("Special characters are not allowed.");
+								}
+								else
+								{
+									var f = { fileA: node.text, fileB: res, op: "rename", relativePath: node.data.relativePath };
+									post_json_fs_cmd( 'http://127.0.0.1:8090/fs', f, function(file, resp)
+									{
+										if( resp )
+										{
+											var tab = findTab( myLayout.root,  'ace_'+node.id);
+											console.log("Looking for " + node.id);
+											if( tab )
+											{
+												console.log(tab);
+												//console.log(tab);
+												//tab.id = 'ace_'+ resp.id;
+												//tab.addid( 'ace_'+ resp.id );
+												tab.setTitle(res);
+												tab.id = 'ace_'+ resp.id;
+												tab.config.id = 'ace_'+ resp.id;
+												var ace2 = document.getElementById('ace'+id);
+												ace2.filename = resp.relativePath;
+												ace2.id = 'ace'+ resp.id;
+												
+											}
+											console.log("Updating tree.. " + resp.id);
+											console.log(tab);
+											node.text = res;
+											node.data.relativePath = resp.relativePath;
+											node.id = resp.id;
+
+											jQuery('#tree').jstree(true).refresh(true);
+										}
+										else
+										{
+											console.log("No response from server for node: " + node.id);
+											//nothing to do, fail.
+										}
+										
+									}
+									);
+								}
+								//someString.replace(/\//g, "-");
+							}
+							// greet user
+						  }
+						});
+						//this.create(obj); 
+
 						}
                     }
                 }
@@ -923,17 +1133,8 @@ html, body{
 		return items;
 	}
 
-	
-	function createNewNode( parent )
-	{
-		//console.log(parent.data.relativePath);
-		//var json = JSON.stringify({op: 'create', source:file.source}));	
-		//console.log(src.text);
-		//loadSrcEditor( node, src );
-		//var v = myLayout.root.contentItems[ 0 ].contentItems[1].contentItems[0].getItemsById("myID");
-		//console.log(v);
-	}
-	function post_json_fs_cmd(theUrl, cmd)
+
+	function post_json_fs_cmd(theUrl, cmd, cb)
 	{
 		var xmlHttp = new XMLHttpRequest();
 
@@ -941,27 +1142,34 @@ html, body{
 
 			if (xmlHttp.readyState == 4 && xmlHttp.status == 200)
 			{
-				print_to_debug_terminal("Save successful: " + file.relativePath);
+				eval("var x = " + xmlHttp.responseText + ";");
+				//cb( x, tag );
 				dialog.modal('hide');
+				print_to_debug_terminal("Command successful.");
+				
+				cb(cmd, x);
+				
 			}
-			else if( xmlHttp.status == 400 )
+			else if( xmlHttp.status == 400 && xmlHttp.readyState == 4 )
 			{
-				print_to_debug_terminal("Error during save: " + xmlHttp.responseText);
+				print_to_debug_terminal("Error during execution of command: " + xmlHttp.responseText);
 				dialog.modal('hide');
+				bootbox.alert("Error during execution of command was: " + xmlHttp.responseText);
+				cb();
 			}
 		}
-		print_to_debug_terminal("Creating new node.."+theUrl);
+		print_to_debug_terminal("Executing fs command: "+ cmd.op);
 		
 		var dialog = bootbox.dialog({
-		message: '<p class="text-center">Creating new node...</p>',
+		message: '<p class="text-center">Executing fs command...</p>',
 		closeButton: false
 		});
 		
 		xmlHttp.open("POST", theUrl, true);
 		xmlHttp.setRequestHeader("Content-Type", "application/json");
 		//xmlHttp.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
-		print_to_debug_terminal(file.source);
-		xmlHttp.send(cmd);//  JSON.stringify({fileOperation: file.relativePath, source:file.source}));	
+		//print_to_debug_terminal(file.source);
+		xmlHttp.send(JSON.stringify({relativePath: cmd.relativePath, fileA: cmd.fileA, fileB: cmd.fileB, op: cmd.op}));	
 	}
 
 </script>

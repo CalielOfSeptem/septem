@@ -35,6 +35,47 @@ using namespace boost::lambda;
 typedef SimpleWeb::Server<SimpleWeb::HTTP> HttpServer;
 typedef SimpleWeb::Client<SimpleWeb::HTTP> HttpClient;
 
+class Exception: public std::exception
+{
+public:
+    /** Constructor (C strings).
+     *  @param message C-style string error message.
+     *                 The string contents are copied upon construction.
+     *                 Hence, responsibility for deleting the char* lies
+     *                 with the caller. 
+     */
+    explicit Exception(const char* message):
+      msg_(message)
+      {
+      }
+
+    /** Constructor (C++ STL strings).
+     *  @param message The error message.
+     */
+    explicit Exception(const std::string& message):
+      msg_(message)
+      {}
+
+    /** Destructor.
+     * Virtual to allow for subclassing.
+     */
+    virtual ~Exception() throw (){}
+
+    /** Returns a pointer to the (constant) error description.
+     *  @return A pointer to a const char*. The underlying memory
+     *          is in posession of the Exception object. Callers must
+     *          not attempt to free the memory.
+     */
+    virtual const char* what() const throw (){
+       return msg_.c_str();
+    }
+
+protected:
+    /** Error message.
+     */
+    std::string msg_;
+};
+
 //Added for the default_resource example
 void default_resource_send(const HttpServer &server, const shared_ptr<HttpServer::Response> &response,
                            const shared_ptr<ifstream> &ifs);
@@ -81,7 +122,15 @@ void default_resource_send(const HttpServer &server, const shared_ptr<HttpServer
       //cout << " file: " << str.substr(found+1) << endl;
       return str.substr(found+1);
     }
-
+    std::string SplitDirectoryname(const string& str)
+    {
+      size_t found;
+      //cout << "Splitting: " << str << endl;
+      found=str.find_last_of("/\\");
+      //cout << " folder: " << str.substr(0,found) << endl;
+      //cout << " file: " << str.substr(found+1) << endl;
+      return str.substr(0, found);
+    }
 
 	bool load_directory_map( const fs::path & dir_path, json& j )
 	{
@@ -224,6 +273,46 @@ int start_serv(int port) {
             
             std::string path_to_save = DEFAULT_GAME_DATA_PATH;
             path_to_save += j["relativePath"];
+            
+            if( j["create"] && fs::exists(fs::path(path_to_save) ))
+            {
+                std::string relpath = j["relativePath"];
+                std::string ferror = "Error. File " + relpath + " already exists.";
+                *response << "HTTP/1.1 400 Bad Request\r\n"
+                 << "Access-Control-Allow-Origin: *\r\n"
+                 << "Content-Length: " << ferror.length() << "\r\n\r\n" << ferror;
+                return;
+            }
+            /*
+            if( j["isDirectory"] )
+            {
+                json resp;
+                resp["relativePath"] = j["relativePath"];
+                std::size_t str_hash = std::hash<std::string>{}(path_to_save);
+            
+                resp["id"] = std::to_string( str_hash );
+                std::string jsonstr = resp.dump();
+                
+                boost::filesystem::path dir(path_to_save);
+                if (boost::filesystem::create_directory(dir))
+                {
+
+                    //std::cout<<"wrote the file successfully!"<<std::endl;
+                    *response << "HTTP/1.1 200 OK\r\n"
+                          << "Content-Type: application/json\r\n"
+                          << "Access-Control-Allow-Origin: *\r\n"
+                          << "Content-Length: " << jsonstr.length() << "\r\n\r\n" << jsonstr;
+                }
+                else
+                {
+                    //std::cerr<<"Failed to open file : "<<SYSERROR()<<std::endl;
+                    //return -1;
+                    std::string ferror = "Unable to save file " + path_to_save;
+                    *response << "HTTP/1.1 400 Bad Request\r\nContent-Length: " << ferror.length() << "\r\n\r\n" << ferror;
+                }
+                return;
+            }
+             */
          
             cout << "Saving file: " << path_to_save << endl;
             
@@ -235,14 +324,32 @@ int start_serv(int port) {
             std::string source = unescape(j["source"]);
             cout << source << endl;
             std::ofstream out(path_to_save);
-            if (out)
+            
+            json resp;
+            resp["relativePath"] = j["relativePath"];
+            std::size_t str_hash = std::hash<std::string>{}(path_to_save);
+        
+            resp["id"] = std::to_string( str_hash );
+            std::string jsonstr = resp.dump();
+            if(out.is_open())
             {
                 out << source;
+                out.flush();
                 out.close();
+                //std::cout<<"wrote the file successfully!"<<std::endl;
+                *response << "HTTP/1.1 200 OK\r\n"
+                      << "Content-Type: application/json\r\n"
+                      << "Access-Control-Allow-Origin: *\r\n"
+                      << "Content-Length: " << jsonstr.length() << "\r\n\r\n" << jsonstr;
             }
             else
             {
-                cout << "Error attempting to save file: " << path_to_save << endl;
+                //std::cerr<<"Failed to open file : "<<SYSERROR()<<std::endl;
+                //return -1;
+                std::string ferror = "Unable to save file " + path_to_save;
+                *response << "HTTP/1.1 400 Bad Request\r\n"
+                << "Access-Control-Allow-Origin: *\r\n"
+                << "Content-Length: " << ferror.length() << "\r\n\r\n" << ferror;
             }
 
            // ptree pt;
@@ -250,37 +357,19 @@ int start_serv(int port) {
 
            // string name=pt.get<string>("firstName")+" "+pt.get<string>("lastName");
 
-            *response << "HTTP/1.1 200 OK\r\n"
-                      << "Content-Type: application/json\r\n"
-                      << "Access-Control-Allow-Origin: *\r\n"
-                      << "Content-Length: 0" << "\r\n\r\n";
+           // *response << "HTTP/1.1 200 OK\r\n"
+           //           << "Content-Type: application/json\r\n"
+            ////          << "Access-Control-Allow-Origin: *\r\n"
+           //           << "Content-Length: 0" << "\r\n\r\n";
         }
         catch(exception& e) {
-            *response << "HTTP/1.1 400 Bad Request\r\nContent-Length: " << strlen(e.what()) << "\r\n\r\n" << e.what();
+            *response << "HTTP/1.1 400 Bad Request\r\nAccess-Control-Allow-Origin: *\r\nContent-Length: " << strlen(e.what()) << "\r\n\r\n" << e.what();
         }
     };
 
     server.resource["^/save$"]["OPTIONS"]=[](shared_ptr<HttpServer::Response> response, shared_ptr<HttpServer::Request> request) {
         try {
-            /*
-            auto content=request->content.string();
-            cout << content << endl;
-          cout << "Providing options.." << endl;
-          
-        stringstream content_stream;
-       // content_stream << "<h1>Request from " << request->remote_endpoint_address << " (" << request->remote_endpoint_port << ")</h1>";
-        content_stream << "HTTP/" << request->http_version << " 200 OK\r\n";
-        for(auto& header: request->header) {
-            content_stream << header.first << ": " << header.second << "\r\n";
-        }
-        
-        //find length of content_stream (length received using content_stream.tellp())
-        content_stream.seekp(0, ios::end);
-        std::string t = content_stream.str();
-        cout << t << endl;
-        
-        //*response <<  content_stream.rdbuf();//content_stream.tellp();//"HTTP/1.1 200 OK\r\nContent-Length: " << content_stream.tellp() << "\r\n\r\n" << content_stream.rdbuf();
-        */
+
             *response << "HTTP/1.1 200 OK\r\n"
                       << "Date: Mon, 01 Dec 2008 01:15:39 GMT\r\n"
                       << "Access-Control-Allow-Origin: *\r\n"
@@ -299,6 +388,26 @@ int start_serv(int port) {
         }
     };
 
+    server.resource["^/fs$"]["OPTIONS"]=[](shared_ptr<HttpServer::Response> response, shared_ptr<HttpServer::Request> request) {
+        try {
+
+            *response << "HTTP/1.1 200 OK\r\n"
+                      << "Date: Mon, 01 Dec 2008 01:15:39 GMT\r\n"
+                      << "Access-Control-Allow-Origin: *\r\n"
+                      << "Access-Control-Allow-Methods: POST, GET, OPTIONS\r\n"
+                      << "Access-Control-Allow-Headers: Content-Type\r\n"
+                      << "Accept-Encoding: *\r\n"
+                      << "Accept-Language: *\r\n"
+                      << "Accept\r\n"
+                      << "Cache-Control:public, max-age=31536000\r\n"
+                      << "Access-Control-Max-Age: 31536000\r\n"
+                      << "Content-Length: 0\r\n";
+
+        }
+        catch(exception& e) {
+            *response << "HTTP/1.1 400 Bad Request\r\nAccess-Control-Allow-Origin: *\r\nContent-Length: " << strlen(e.what()) << "\r\n\r\n" << e.what();
+        }
+    };
     
     
     //GET-example for the path /info
@@ -316,6 +425,113 @@ int start_serv(int port) {
         
         *response <<  "HTTP/1.1 200 OK\r\nContent-Length: " << content_stream.tellp() << "\r\n\r\n" << content_stream.rdbuf();
     };
+    
+   
+    server.resource["^/fs$"]["POST"]=[](shared_ptr<HttpServer::Response> response, shared_ptr<HttpServer::Request> request) {
+            
+        try
+        {
+            json j;
+            j << request->content;
+            
+            if( j["op"] == "mkdir")
+            {
+                std::string game_path = DEFAULT_GAME_DATA_PATH;
+                
+                //std::string relpath = j["relativePath"];
+
+                //relpath = SplitDirectoryname(relpath);
+                
+                //game_path += relpath;
+                
+                std::string fileA = j["fileA"];
+                fileA = game_path  + fileA;
+                
+                if( fs::exists(fileA) )
+                {
+                    throw Exception( "File already exists.");
+                }
+                fs::create_directory( fs::path(fileA) );//rename( fs::path(fileA), fs::path(fileB) );
+                
+                json resp;
+                resp["relativePath"] =  std::regex_replace(fileA, std::regex("\\" + std::string(DEFAULT_GAME_DATA_PATH)), "");//j["relativePath"];
+                std::size_t str_hash = std::hash<std::string>{}(fileA);
+        
+                resp["id"] = std::to_string( str_hash );
+                std::string jsonstr = resp.dump();
+                
+                *response <<  "HTTP/1.1 200 OK\r\nAccess-Control-Allow-Origin: *\r\nContent-Length: " << jsonstr.length() << "\r\n\r\n" << jsonstr;
+            }
+            else if( j["op"] == "rm")
+            {
+                std::string game_path = DEFAULT_GAME_DATA_PATH;
+                
+                std::string relpath = j["relativePath"];
+                
+                game_path += relpath;
+                
+                if( !fs::exists(game_path) )
+                {
+                    throw Exception( "File does not exist.");
+                }
+                fs::remove( fs::path(game_path) );//rename( fs::path(fileA), fs::path(fileB) );
+                
+                json resp;
+                resp["relativePath"] =  std::regex_replace(game_path, std::regex("\\" + std::string(DEFAULT_GAME_DATA_PATH)), "");//j["relativePath"];
+                std::size_t str_hash = std::hash<std::string>{}(game_path);
+        
+                resp["id"] = std::to_string( str_hash );
+                std::string jsonstr = resp.dump();
+                
+                *response <<  "HTTP/1.1 200 OK\r\nAccess-Control-Allow-Origin: *\r\nContent-Length: " << jsonstr.length() << "\r\n\r\n" << jsonstr;
+            }
+            else if( j["op"] == "rename")
+            {
+                std::string game_path = DEFAULT_GAME_DATA_PATH;
+                
+                std::string relpath = j["relativePath"];
+                
+                relpath = SplitDirectoryname(relpath);
+                game_path += relpath;
+                std::string fileA = j["fileA"];
+                fileA = game_path  + "/" + fileA;
+                std::string fileB = j["fileB"];
+                fileB = game_path  + "/" + fileB;
+               // fs::path fileA = fs::path(path_to_save + "/" + "")
+               
+                if( !fs::exists(fileA) )
+                {
+                    throw Exception( "File does not exist.");
+                }
+                if( fs::exists(fileB) )
+                {
+                    throw Exception("File already exists with that name.");
+                }
+                fs::rename( fs::path(fileA), fs::path(fileB) );
+                
+                json resp;
+                resp["relativePath"] =  std::regex_replace(fileB, std::regex("\\" + std::string(DEFAULT_GAME_DATA_PATH)), "");//j["relativePath"];
+                std::size_t str_hash = std::hash<std::string>{}(fileB);
+        
+                resp["id"] = std::to_string( str_hash );
+                std::string jsonstr = resp.dump();
+                
+                *response <<  "HTTP/1.1 200 OK\r\nAccess-Control-Allow-Origin: *\r\nContent-Length: " << jsonstr.length() << "\r\n\r\n" << jsonstr;
+               // fs::rename()
+                
+            }
+            else
+            {
+                throw Exception("Operation not permitted.");
+            }
+        }
+        catch(const exception &e) {
+            
+            *response << "HTTP/1.1 400 Bad Request\r\nAccess-Control-Allow-Origin: *\r\nContent-Length: " << strlen(e.what()) << "\r\n\r\n" << e.what();
+        }
+
+    };
+
 
 
     //GET-example for the path /match/[number], responds with the matched string in path (number)
