@@ -156,6 +156,7 @@ html, body{
 	  
 		<div class="ui inverted menu" data-inverted>
 			<div class="header item">Septem Creator</div>
+			<div id="connectedStatus" class="right header item">Offline</div>
 			<div id="btnSave" class="inverted ui button" data-value="easy">Save</div>
 		</div>
 	  </div>
@@ -360,13 +361,27 @@ html, body{
 
 	}
 	
-		$.keepalive =     
-			setInterval(function() {
-			   $.ajax({
-				  url: '/ping.html',
-				  cache: false
-			   });         
-			}, 60000);    
+	$.keepalive =     
+		setInterval(function() {
+		  // $.ajax({
+		//	  url: '/ping.html',
+		//	  cache: false
+		 //  });       
+			post_json_auth( 'http://127.0.0.1:8090/authenticate', 'user', 'password', function(resp)
+			{
+				if( resp )
+				{
+					change_status("Online");
+				}
+				else
+				{
+					change_status("Offline");
+				}
+				//nothing to do.
+			}
+			);
+		 
+		}, 5000);    
 
 	});
 	//var myLayout = new GoldenLayout( config );
@@ -393,6 +408,10 @@ html, body{
 
 
 	myLayout.init();
+	
+	$(window).resize(function(){
+		myLayout.updateSize();
+	})
 	
 
 
@@ -501,7 +520,7 @@ html, body{
 			//var new_ace = $('#ace'+node.id);
 			//var ace2 = document.getElementById('ace'+node.id);
 			v[0].container.getElement().html( ace2 );//$('#ace'+node.id) );//$('#tree') );
-			editor.session.getUndoManager().markClean()
+			editor.session.getUndoManager().markClean();
 			
 
 		}
@@ -683,17 +702,26 @@ html, body{
 		tab = findTab( myLayout.root,  'ace_'+node_orig.id);
 		if( tab )
 		{
-				bootbox.alert({
-				message: "Please save changes and close the file before attempting to move it."
+			bootbox.alert({
+			message: "Please save changes and close the file before attempting to move it."
 			});
-			//var d1  = findSourceContainer( myLayout.root).setActiveContentItem( 
-			//	tab
-			// );
-			 
-			//return;
-			
 			return false;
 		}
+		var f = { fileA: node_orig.data.relativePath, fileB: node_target.data.relativePath, 
+			op: "move", relativePath: "" };
+		post_json_fs_cmd( 'http://127.0.0.1:8090/fs', f, function(file, resp)
+		{
+			if( resp )
+			{
+				jQuery('#tree').jstree(true).refresh(true);
+			}
+			else
+			{
+				console.log("No response from server for node: " + node.id);
+				//nothing to do, fail.
+			}
+			
+		});
 		return true;
 	}
 	
@@ -723,7 +751,8 @@ html, body{
 
 			if (xmlHttp.readyState == 4 && xmlHttp.status == 200)
 			{
-				eval("var x = " + xmlHttp.responseText + ";");
+				//eval("var x = " + xmlHttp.responseText + ";");
+				var x = JSON.parse( xmlHttp.responseText);
 				cb( x, tag );
 			}
 		}
@@ -732,43 +761,7 @@ html, body{
 		xmlHttp.send(null);
 	}
 	
-	function post_json_save(theUrl, file, cb)
-	{
-		var xmlHttp = new XMLHttpRequest();
 
-		xmlHttp.onreadystatechange = function() { 
-
-			if (xmlHttp.readyState == 4 && xmlHttp.status == 200)
-			{
-				eval("var x = " + xmlHttp.responseText + ";");
-				//cb( x, tag );
-				dialog.modal('hide');
-				print_to_debug_terminal("Save successful: " + file.relativePath);
-				
-				cb(file, x);
-				
-			}
-			else if( xmlHttp.status == 400 && xmlHttp.readyState == 4 )
-			{
-				print_to_debug_terminal("Error during save: " + xmlHttp.responseText);
-				dialog.modal('hide');
-				bootbox.alert("Error during save: " + xmlHttp.responseText);
-				cb();
-			}
-		}
-		//print_to_debug_terminal("Sending file for save.."+theUrl);
-		
-		var dialog = bootbox.dialog({
-		message: '<p class="text-center">Saving file...</p>',
-		closeButton: false
-		});
-		
-		xmlHttp.open("POST", theUrl, true);
-		xmlHttp.setRequestHeader("Content-Type", "application/json");
-		//xmlHttp.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
-		//print_to_debug_terminal(file.source);
-		xmlHttp.send(JSON.stringify({relativePath: file.relativePath, source:file.source, create: file.create}));	
-	}
 	
 	// jstree conditional select node
 	(function ($, undefined) {
@@ -789,26 +782,9 @@ html, body{
 	
 	function loadDocument( src, node )
 	{
-		//console.log(src.text);
 		loadSrcEditor( node, src );
-		//var v = myLayout.root.contentItems[ 0 ].contentItems[1].contentItems[0].getItemsById("myID");
-		//console.log(v);
 	}
 	
-   $(window).resize(function(){
-		myLayout.updateSize();
-	})
-
-	function guid() {
-	  function s4() {
-		return Math.floor((1 + Math.random()) * 0x10000)
-		  .toString(16)
-		  .substring(1);
-	  }
-	  return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
-		s4() + '-' + s4() + s4() + s4();
-	}
-
 	function customMenu(node)
 	{
 	    var tree = $('#tree').jstree(true);
@@ -1114,8 +1090,23 @@ html, body{
                 "separator_after"   : true,
                 "label"             : "Compile",
                 action : function (obj) { 
-						//this.create(obj); 
-						}
+							var f = { fileA: node.data.relativePath, fileB: "", op: "compile", relativePath: "" };
+							post_json_fs_cmd( 'http://127.0.0.1:8090/fs', f, function(file, resp)
+							{
+								if( resp )
+								{
+									//if( resp.result == "OK" 
+									print_to_debug_terminal(resp.text);
+								}
+								else
+								{
+									//console.log("No response from server for node: " + node.id);
+									//nothing to do, fail.
+								}
+								
+							}
+							);
+				}
             }
 		}
 	
@@ -1129,20 +1120,92 @@ html, body{
 			delete items.edit.submenu.copy_node;
 			delete items.compile;
 		}
-
+		delete items.edit.submenu.copy_node;
+		delete items.edit.submenu.paste_node;
 		return items;
 	}
 
+	function post_json_auth(theUrl, username, password, cb)
+	{
+		var xmlHttp = new XMLHttpRequest();
 
+		xmlHttp.onreadystatechange = function() { 
+			//console.log( "state= " + xmlHttp.readyState + ", xmlHttp.status = " + xmlHttp.status);
+			if (xmlHttp.readyState == 4 && xmlHttp.status == 200)
+			{
+				//print_to_debug_terminal("Auth successful.");
+				cb('OK');	
+			}
+			else if( xmlHttp.status == 400 && xmlHttp.readyState == 4 )
+			{
+				//print_to_debug_terminal("Error during auth: " + xmlHttp.responseText);
+				cb();
+			}
+			else if ( xmlHttp.readyState == 4 && xmlHttp.status === 0  )
+			{
+				cb();
+			}
+		}
+		xmlHttp.open("POST", theUrl, true);
+		xmlHttp.setRequestHeader("Content-Type", "application/json");
+		xmlHttp.send(JSON.stringify({username: username, password: password}));	
+	}
+	
+	function post_json_save(theUrl, file, cb)
+	{
+		var xmlHttp = new XMLHttpRequest();
+
+		xmlHttp.onreadystatechange = function() { 
+			console.log( "state= " + xmlHttp.readyState + ", xmlHttp.status = " + xmlHttp.status);
+			if (xmlHttp.readyState == 4 && xmlHttp.status == 200)
+			{
+				//eval("var x = " + xmlHttp.responseText + ";");
+				var x = JSON.parse( xmlHttp.responseText);
+				//cb( x, tag );
+				dialog.modal('hide');
+				print_to_debug_terminal("Save successful: " + file.relativePath);
+				
+				cb(file, x);
+				
+			}
+			else if( xmlHttp.status == 400 && xmlHttp.readyState == 4 )
+			{
+				print_to_debug_terminal("Error during save: " + xmlHttp.responseText);
+				dialog.modal('hide');
+				bootbox.alert("Error during save: " + xmlHttp.responseText);
+				cb();
+			}
+			else if ( xmlHttp.readyState == 4 && xmlHttp.status === 0 )
+			{
+				print_to_debug_terminal("Server unavailable");
+				dialog.modal('hide');
+				bootbox.alert("Error: server unavailable.");
+				cb();
+			}
+		}
+		//print_to_debug_terminal("Sending file for save.."+theUrl);
+		
+		var dialog = bootbox.dialog({
+		message: '<p class="text-center">Saving file...</p>',
+		closeButton: false
+		});
+		
+		xmlHttp.open("POST", theUrl, true);
+		xmlHttp.setRequestHeader("Content-Type", "application/json");
+		//xmlHttp.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+		//print_to_debug_terminal(file.source);
+		xmlHttp.send(JSON.stringify({relativePath: file.relativePath, source:file.source, create: file.create}));	
+	}
 	function post_json_fs_cmd(theUrl, cmd, cb)
 	{
 		var xmlHttp = new XMLHttpRequest();
 
 		xmlHttp.onreadystatechange = function() { 
-
+			
 			if (xmlHttp.readyState == 4 && xmlHttp.status == 200)
 			{
-				eval("var x = " + xmlHttp.responseText + ";");
+				//eval("var x = " + xmlHttp.responseText + ";");
+				var x = JSON.parse( xmlHttp.responseText);
 				//cb( x, tag );
 				dialog.modal('hide');
 				print_to_debug_terminal("Command successful.");
@@ -1155,6 +1218,13 @@ html, body{
 				print_to_debug_terminal("Error during execution of command: " + xmlHttp.responseText);
 				dialog.modal('hide');
 				bootbox.alert("Error during execution of command was: " + xmlHttp.responseText);
+				cb();
+			}
+			else if ( xmlHttp.readyState == 4 && xmlHttp.status === 0  )
+			{
+				print_to_debug_terminal("Server unavailable.");
+				dialog.modal('hide');
+				bootbox.alert("Error: server unavailable.");
 				cb();
 			}
 		}
@@ -1171,7 +1241,10 @@ html, body{
 		//print_to_debug_terminal(file.source);
 		xmlHttp.send(JSON.stringify({relativePath: cmd.relativePath, fileA: cmd.fileA, fileB: cmd.fileB, op: cmd.op}));	
 	}
-
+	function change_status(status)
+	{
+		document.getElementById("connectedStatus").innerHTML = status;
+	}
 </script>
 
 </body>

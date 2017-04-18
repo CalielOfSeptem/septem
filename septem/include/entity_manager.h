@@ -267,6 +267,8 @@ private:
      void get_change_env_script( std::string& script_path, EntityType& etype, std::string& env_script);
      
      bool compile_daemon_entity(std::string& file_path, std::string& reason);
+     
+     bool compile_room_entity(std::string& file_path, std::map< std::string, std::vector< shared_ptr < entity_wrapper > > >& inventory, std::string& reason);
 };
 
 

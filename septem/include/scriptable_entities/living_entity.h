@@ -16,11 +16,11 @@ struct living_entity : base_entity
     {
     }
 
-    virtual void SendToEntity(const std::string& entity)
+    virtual void SendToEntity(const std::string& msg)
     {
     }
 
-    virtual void SendToEnvironment(const std::string& entity)
+    virtual void SendToEnvironment(const std::string& msg)
     {
     }
     

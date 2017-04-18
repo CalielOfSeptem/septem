@@ -98,7 +98,11 @@ struct room : base_entity, container
         : base_entity(EntityType::ROOM)
     {
     }
-
+    
+    ~room()
+    {
+        
+    }
     bool AddExit(sol::as_table_t<std::vector<std::string>> exit, const string& exit_path, bool obvious)
     {
         // TODO: add in validation code
@@ -164,15 +168,28 @@ struct room : base_entity, container
         return short_description;
     }
     
-    virtual void AddEntityToInventory(const shared_ptr< entity_wrapper >& ew)
+    virtual void AddEntityToInventory(const shared_ptr< entity_wrapper >& ew) override
     {
         ew->script_obj->SetEnvironment( (base_entity*)this );//ew->script_obj );
         container::AddEntityToInventory(ew);
     }
     
-    virtual bool RemoveEntityFromInventory(const std::string& id)
+    virtual bool RemoveEntityFromInventory(const std::string& id) override
     {
-        return container::RemoveEntityFromInventory(id);
+        std::set< shared_ptr<entity_wrapper> >::iterator it = this->inventory.begin();
+         
+          while (it != this->inventory.end()) {
+                // Check if key's first character is Fi
+                if( (*it)->get_object_uid().compare(id) == 0 ) 
+                {
+                    (*it)->script_obj->SetEnvironment( NULL );
+                    it = this->inventory.erase(it);
+                    break;
+                }
+                else
+                    it++;
+          }
+        return true;//container::RemoveEntityFromInventory(id);
     }
 
 

@@ -17,17 +17,17 @@ struct player_entity : living_entity, container
          
      }
      
-     void SendToEntity(const std::string& str)
+     void SendToEntity(const std::string& msg)  override
      {
         if( client_obj )
-            (*client_obj).send(str);
-        living_entity::SendToEntity(str);
+            (*client_obj).send(msg);
+        living_entity::SendToEntity(msg);
      }
      
-     void SendToEnvironment(const std::string& str)
+     void SendToEnvironment(const std::string& msg) override
      {
          // TODO: implement this
-         living_entity::SendToEnvironment(str);
+         living_entity::SendToEnvironment(msg);
      }
      
 public:

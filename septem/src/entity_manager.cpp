@@ -172,8 +172,57 @@ bool entity_manager::compile_entity(std::string& file_path, std::string& reason)
         reason = error_str;
         return false;
     }
+    std::map< std::string, std::vector< shared_ptr < entity_wrapper > > > living;
     switch(etype)
     {
+        case EntityType::ROOM:
+        {
+            // Iterator pointing to first element in map
+            std::unordered_map<std::string, shared_ptr<entity_wrapper>>::iterator it = this->room_objs.begin();
+            
+            
+            // Erase all element whose key starts with letter 'F' in an iteration
+            while (it != room_objs.end()) {
+                // Check if key's first character is Fi
+                if (it->second->script_path.compare(file_path) == 0 ) {
+                    // erase() function returns the iterator of the next
+                    // to last deleted element.
+                    shared_ptr<entity_wrapper> & er = it->second;
+                    
+                    // TODO: Add in code to make sure the player's in the room are dealt with
+                    
+                    std::vector<std::string> entity_env;
+                    entity_env.reserve(2);
+                    get_entity_env_path(er->script_path, er->entity_type, entity_env);
+                    assert( entity_env.size() == 2 );
+                    
+                    room * r = (*lua_primary)[entity_env[0]][entity_env[1]][er->script_obj_name];
+                    for( auto p : r->GetInventory() )
+                    {
+                        living[er->script_path].push_back(p);
+                    }
+                    for( auto l : living[er->script_path] )
+                    {
+                        r->RemoveEntityFromInventory( l->get_object_uid() );
+                    }
+                    //for( auto p : r->GetInventory() )
+                    //{
+                     //   p->RemoveEntityFromInventory(er->get_object_uid());
+                   // }
+                    // TODO: insert logic to deal with room object name changes. This may orphan players when we try
+                    // to reinsert them into a recompiled room
+                    (*lua_primary)[entity_env[0]][entity_env[1]][er->script_obj_name] = sol::nil;
+                    (*lua_primary).collect_garbage();
+                    
+                    it = room_objs.erase(it);
+                } else
+                    it++;
+            }
+            //std::string reason;
+            // TODO: Perhaps add in logic that moves players into the void room in case the next command fails..
+            return this->compile_room_entity(file_path, living, reason);
+            break;
+        }
         case EntityType::DAEMON:
         {
             // Iterator pointing to first element in map
@@ -204,6 +253,7 @@ bool entity_manager::compile_entity(std::string& file_path, std::string& reason)
             break;
         }
         default:
+            reason = "Unknown entity type.";
         break;
     }
     return false;
@@ -537,6 +587,75 @@ bool entity_manager::compile_daemon_entity(std::string& file_path, std::string& 
     }
     return true;
 }
+
+
+bool entity_manager::compile_room_entity(std::string& file_path, std::map< std::string, std::vector< shared_ptr < entity_wrapper > > >& inventory, std::string& reason)
+{
+    std::unordered_set<shared_ptr<entity_wrapper> > entities;
+    //std::string reason;
+    std::string fpath = file_path;
+    
+    if(compile_script(fpath, entities, reason)) {
+
+        for(auto ent : entities) {
+            switch(ent->entity_type) {
+            case EntityType::ROOM: {
+                base_entity* be = &ent->script_obj.value();
+                room* ce = dynamic_cast<room*>(be);
+                for( auto l : inventory )
+                {
+
+                    if( l.first.compare(ent->script_path) == 0 )//&& l.first.compare(ent->script_obj_name) )
+                    {
+                        for( auto v : l.second )
+                        {
+                            if( v->script_obj_name.compare( ent->script_obj_name ) == 0 )
+                            {
+                                base_entity * be1 = &v->script_obj.value();
+                                player_entity* p = dynamic_cast<player_entity*>(be1);
+                                ce->AddEntityToInventory(v);
+                                p->SendToEntity("The room shimmers momentarily.\r\n");
+                                
+                            }
+
+                        }
+
+                    }
+                }
+            //    for( auto l : inventory )
+            //    {
+            //        if( l->script_obj.value().GetType() == EntityType::PLAYER )
+            //        {
+             //           player_entity* p = dynamic_cast<player_entity*>(l->script_obj.value());
+             //           p.SendToEntity("The room shimmers momentarily.");
+             //           ce->AddEntityToInventory(l->script_obj.value());
+             //       }
+             //   }
+  
+                //room_objs.insert({ boost::to_lower_copy(ce->GetName()), ent });
+                
+                room_objs.insert({ ent->get_object_uid(), ent }); // path+ std::to_string(x) + ent->script_obj_name, ent });//
+                                           // reference_wrapper<base_entity>(*(*lua)[r_name]) });
+                LOG_INFO << "Loaded room: " << fpath;
+                if(fpath == std::string(DEFAULT_VOID_PATH)) {
+                    void_room = ent;
+                    LOG_INFO << "Void room identified: " << fpath;
+                }
+            } break;
+            default:
+                LOG_DEBUG << "A non-room entity was detected when loading commands... strange.. " << fpath;
+                reason = "A non-room entity object found within the script.";
+                break;
+            }
+        }
+    } else {
+        LOG_ERROR << "Unable to load " << fpath << ": " << reason;
+        reason = "Unable to compile script.";
+        return false;
+    }
+    return true;
+}
+
 
 bool entity_manager::load_entities_from_fs(const fs::path& dir_path)
 {
@@ -1075,7 +1194,7 @@ bool entity_manager::load_script_text(std::string& script_path,
     script_text = vector_to_string(file_tokens, '\n');
     //cerr << script_text << std::endl;
     if(bFoundType == false) {
-        //  reason = "No inherit directive found in script.";
+          reason = "No inherit directive found in script.";
           return false;
     }
     return true;

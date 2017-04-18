@@ -22,9 +22,27 @@
      virtual bool RemoveEntityFromInventory( const std::string& id  )
      {
          // TODO: implement this and be sure to nuke a removed items environment_ pointer..
+         std::set< shared_ptr<entity_wrapper> >::iterator it = this->inventory.begin();
+         
+          while (it != this->inventory.end()) {
+                // Check if key's first character is Fi
+                if( (*it)->get_object_uid().compare(id) == 0 ) 
+                {
+                    it = this->inventory.erase(it);
+                    break;
+                }
+                else
+                    it++;
+          }
+          
          return true;
      }
-     private:
+     
+     virtual const  std::set< shared_ptr<entity_wrapper> >& GetInventory()
+     {
+         return inventory;
+     }
+     protected:
      std::set< shared_ptr<entity_wrapper> > inventory;
  };
  #endif

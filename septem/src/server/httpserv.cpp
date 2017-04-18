@@ -3,6 +3,7 @@
 #include "../../../Simple-Web-Server/client_http.hpp"
 #include "../../../json/src/json.hpp"
 #include "config.h"
+#include "entity_manager.h"
 
 // for convenience
 using json = nlohmann::json;
@@ -257,6 +258,53 @@ int start_serv(int port) {
         }
     };
 
+
+    server.resource["^/authenticate$"]["POST"]=[](shared_ptr<HttpServer::Response> response, shared_ptr<HttpServer::Request> request) {
+        try {
+            json j;
+            j << request->content;
+           // cout << j["relativePath"];
+            json resp;
+            std::size_t str_hash = std::hash<std::string>{}("fake");
+            resp["sessionKey"] = std::to_string( str_hash );
+            
+            std::string jsonstr = resp.dump();
+            
+           /// std::string path_to_save = DEFAULT_GAME_DATA_PATH;
+           // path_to_save += j["relativePath"];
+                *response << "HTTP/1.1 200 OK\r\n"
+                      << "Content-Type: application/json\r\n"
+                      << "Access-Control-Allow-Origin: *\r\n"
+                      << "Content-Length: " << jsonstr.length() << "\r\n\r\n" << jsonstr;
+        }
+        catch(exception& e) {
+            *response << "HTTP/1.1 400 Bad Request\r\nAccess-Control-Allow-Origin: *\r\nContent-Length: " << strlen(e.what()) << "\r\n\r\n" << e.what();
+        }
+    };
+
+    server.resource["^/authenticate$"]["OPTIONS"]=[](shared_ptr<HttpServer::Response> response, shared_ptr<HttpServer::Request> request) {
+        try {
+
+            *response << "HTTP/1.1 200 OK\r\n"
+                      << "Date: Mon, 01 Dec 2008 01:15:39 GMT\r\n"
+                      << "Access-Control-Allow-Origin: *\r\n"
+                      << "Access-Control-Allow-Methods: POST, GET, OPTIONS\r\n"
+                      << "Access-Control-Allow-Headers: Content-Type\r\n"
+                      << "Accept-Encoding: *\r\n"
+                      << "Accept-Language: *\r\n"
+                      << "Accept\r\n"
+                      << "Cache-Control:public, max-age=31536000\r\n"
+                      << "Access-Control-Max-Age: 31536000\r\n"
+                      << "Content-Length: 0\r\n";
+
+        }
+        catch(exception& e) {
+            *response << "HTTP/1.1 400 Bad Request\r\nContent-Length: " << strlen(e.what()) << "\r\n\r\n" << e.what();
+        }
+    };
+    
+    
+ 
     //POST-example for the path /save, responds firstName+" "+lastName from the posted json
     //Responds with an appropriate error message if the posted json is not valid, or if firstName or lastName is missing
     //Example posted json:
@@ -520,6 +568,71 @@ int start_serv(int port) {
                // fs::rename()
                 
             }
+            else if( j["op"] == "compile")
+            {
+                std::string game_path = DEFAULT_GAME_DATA_PATH;
+                std::string fileA = j["fileA"];
+                fileA = game_path + fileA;
+
+                if( !fs::exists(fileA) )
+                {
+                    throw Exception( "File does not exist.");
+                }
+
+                //fs::rename( fs::path(fileA), fs::path(fileB) );
+                std::string reason;
+                if( entity_manager::Instance().compile_entity(fileA, reason) )
+                {
+                    json resp;
+                    //std::size_t str_hash = std::hash<std::string>{}(fileA);
+            
+                    resp["result"] = "OK";
+                    resp["text"] = "Compiled " + std::regex_replace(fileA, std::regex("\\" + std::string(DEFAULT_GAME_DATA_PATH)), "");
+                    std::string jsonstr = resp.dump();
+                    
+                    *response <<  "HTTP/1.1 200 OK\r\nAccess-Control-Allow-Origin: *\r\nContent-Length: " << jsonstr.length() << "\r\n\r\n" << jsonstr;
+                }
+                else
+                {
+                    throw Exception(reason);
+                }
+                
+
+               // fs::rename()
+                
+            }
+            else if( j["op"] == "move")
+            {
+                std::string game_path = DEFAULT_GAME_DATA_PATH;
+                std::string fileA = j["fileA"];
+                fileA = game_path  + fileA;
+                std::string fileB = j["fileB"];
+                fileB = game_path  + fileB;
+                
+                std::string new_file_path = fileB + "/" + SplitFilename(fileA);
+               // fs::path fileA = fs::path(path_to_save + "/" + "")
+               
+                if( !fs::exists(fileA) )
+                {
+                    throw Exception( "File does not exist.");
+                }
+                if( fs::exists(new_file_path) )
+                {
+                    throw Exception("File already exists with that name.");
+                }
+                fs::rename( fs::path(fileA), fs::path(new_file_path) );
+                
+                json resp;
+                resp["relativePath"] =  std::regex_replace(new_file_path, std::regex("\\" + std::string(DEFAULT_GAME_DATA_PATH)), "");//j["relativePath"];
+                std::size_t str_hash = std::hash<std::string>{}(new_file_path);
+        
+                resp["id"] = std::to_string( str_hash );
+                std::string jsonstr = resp.dump();
+                
+                *response <<  "HTTP/1.1 200 OK\r\nAccess-Control-Allow-Origin: *\r\nContent-Length: " << jsonstr.length() << "\r\n\r\n" << jsonstr;
+               // fs::rename()
+                
+            }
             else
             {
                 throw Exception("Operation not permitted.");
@@ -542,7 +655,7 @@ int start_serv(int port) {
     load_directory_map(DEFAULT_GAME_DATA_PATH, j1);
     std::string test = j1.dump(4); 
     //cout << s << std::endl;
-    cout << "Servicing request.." << endl;
+    //cout << "Servicing request.." << endl;
    // cout << test;
         *response << "HTTP/1.1 200 OK\r\nAccess-Control-Allow-Origin: *\r\n"
         << "Content-Length: " << test.length() << "\r\n\r\n" << test;
@@ -605,7 +718,7 @@ int start_serv(int port) {
     //Can for instance be used to retrieve an HTML 5 client that uses REST-resources on this server
     server.default_resource["GET"]=[&server](shared_ptr<HttpServer::Response> response, shared_ptr<HttpServer::Request> request) {
         try {
-            cout << "Servicing request.." << endl;
+            //cout << "Servicing request.." << endl;
             auto web_root_path=boost::filesystem::canonical(DEFAULT_GAME_DATA_PATH);
             auto path=boost::filesystem::canonical(web_root_path/request->path);
             //Check if path is within web_root_path
@@ -656,14 +769,14 @@ int start_serv(int port) {
                 jresp["path"] = path.string();
                // auto length=ifs->tellg();
                 //ifs->seekg(0, ios::beg);
-                    std::string test = jresp.dump(4); 
-                cout << test << std::endl;
-                cout << "Sending response.." << endl;
+                std::string test = jresp.dump(4); 
+                //cout << test << std::endl;
+                //cout << "Sending response.." << endl;
                 *response << "HTTP/1.1 200 OK\r\nAccess-Control-Allow-Origin: *\r\nContent-Length: " << test.length() << "\r\n\r\n" << test;
                 //};
                // *response << "HTTP/1.1 200 OK\r\nAccess-Control-Allow-Origin: *\r\n" << cache_control << etag << "Content-Length: " << length << "\r\n\r\n";
                 default_resource_send(server, response, ifs);
-                cout << "Done." << endl;
+               // cout << "Done." << endl;
             }
             else
                 throw invalid_argument("could not read file");
@@ -678,7 +791,7 @@ int start_serv(int port) {
         //Start server
         server.start();
     });
-    
+    /*
     //Wait for server to start so that the client can connect
     this_thread::sleep_for(chrono::seconds(1));
     
@@ -693,6 +806,7 @@ int start_serv(int port) {
     
     auto r3=client.request("POST", "/json", json_string);
     cout << r3->content.rdbuf() << endl;
+     */
     
     server_thread.join();
     
